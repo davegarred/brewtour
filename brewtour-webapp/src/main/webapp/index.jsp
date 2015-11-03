@@ -4,7 +4,7 @@
 <title>Seattle Brewery Tour</title>
 <script type="text/javascript" src="resources/lib/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="resources/lib/bootstrap.3.3.4.min.js"></script>
-<script type="text/javascript" src="resources/lib/angular.1.4.0-rc.2.min.js"></script>
+<script type="text/javascript" src="resources/lib/angular/angular.min.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/lib/bootstrap.3.3.4.css">
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByxWmpMEVn7YBBNR4XU22VI8NqxsW_RGc"></script>
