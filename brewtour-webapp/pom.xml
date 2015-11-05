@@ -23,16 +23,6 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- Custom -->
-		<dependency>
-			<groupId>com.nullgeodesic</groupId>
-			<artifactId>object-store</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.nullgeodesic</groupId>
-			<artifactId>cqrs</artifactId>
-		</dependency>
-
 		<!-- common -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -172,4 +162,7 @@
 	</dependencies>
 
 	<packaging>war</packaging>
+	<build>
+		<finalName>brewtour</finalName>
+	</build>
 </project>

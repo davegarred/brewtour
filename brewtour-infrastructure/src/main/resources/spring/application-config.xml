@@ -16,11 +16,5 @@
 
 	<import resource="persistence-config.xml"/>
 	<import resource="beans-config.xml"/>
-	<import resource="security-config.xml"/>
 	
-<!-- 
-	<tx:annotation-driven transaction-manager="transactionManager" />
-	<bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager" />
- -->	
-
 </beans>

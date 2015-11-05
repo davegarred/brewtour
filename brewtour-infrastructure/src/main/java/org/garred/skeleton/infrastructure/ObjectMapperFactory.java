@@ -2,9 +2,9 @@ package org.garred.skeleton.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SerializerFactory {
+public class ObjectMapperFactory {
 
-	public static ObjectMapper infrastructureSerializer() {
+	public static ObjectMapper objectMapper() {
 		final ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper;
 	}

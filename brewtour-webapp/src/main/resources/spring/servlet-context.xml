@@ -24,10 +24,7 @@
 	<resources mapping="/resources/**" location="/resources/" />
 	
 	<beans:bean class="org.garred.skeleton.controller.GenericController"
-		c:commandGateway-ref="commandGateway"
 		c:skeletonRepo-ref="skeletonRepo"
-		c:commandLogger-ref="commandLogger"
-		c:eventLogger-ref="eventLogger"
 		 />
 	
 	<beans:bean class="org.garred.skeleton.controller.UserController"/>

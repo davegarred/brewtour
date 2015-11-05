@@ -7,17 +7,9 @@
 		<artifactId>brewtour</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>org.garred</groupId>
 	<artifactId>brewtour-application</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<dependencies>
-
-		<!-- Custom -->
-		<dependency>
-			<groupId>com.nullgeodesic</groupId>
-			<artifactId>cqrs</artifactId>
-		</dependency>
 
 		<!-- common -->
 		<dependency>

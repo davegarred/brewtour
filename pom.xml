@@ -39,18 +39,6 @@
 	<dependencyManagement>
 		<dependencies>
 
-			<!-- Custom -->
-			<dependency>
-				<groupId>com.nullgeodesic</groupId>
-				<artifactId>object-store</artifactId>
-				<version>${object-store.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.nullgeodesic</groupId>
-				<artifactId>cqrs</artifactId>
-				<version>${cqrs.version}</version>
-			</dependency>
-
 			<!-- common -->
 			<dependency>
 				<groupId>org.apache.commons</groupId>

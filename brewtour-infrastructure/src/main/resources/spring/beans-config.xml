@@ -14,37 +14,15 @@
 	<bean class="org.garred.skeleton.config.ApplicationStartedListener" />
 	<bean class="org.garred.skeleton.config.ApplicationClosedListener" />
 
+		
+	<bean id="skeletonRepo" class="org.garred.skeleton.infrastructure.SkeletonRepositoryImpl" 
+		c:datasource-ref="dataSource" 
+		c:objectMapper-ref="objectMapper" />
 	
-	<bean id="serializer" class="org.garred.skeleton.infrastructure.SerializerFactory"
-		factory-method="infrastructureSerializer"/>
+	<bean id="objectMapper" class="org.garred.skeleton.infrastructure.ObjectMapperFactory"
+		factory-method="objectMapper"/>
 		
-	<bean id="commandLogger" class="org.garred.skeleton.infrastructure.HashMapMessageLogger" />
-	<bean id="eventLogger" class="org.garred.skeleton.infrastructure.HashMapMessageLogger" />
-		
-	<bean id="commandBus" class="com.nullgeodesic.cqrs.CommandBus" />
-	<bean id="eventBus" class="com.google.common.eventbus.EventBus" />
 	
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-	<bean id="validationCommandFilter" class="org.garred.skeleton.validation.ValidationCommandFilter"
-	    c:validator-ref="validator" />
-	<bean id="commandGateway" class="com.nullgeodesic.cqrs.CommandGateway" c:commandBus-ref="commandBus" >
-	    <property name="filters">
-	        <list>
-	            <ref bean="validationCommandFilter"/>
-	        </list>
-	    </property>
-	</bean>
-
-	<bean id="skelCommandHandler" class="org.garred.skeleton.SkelCommandHandler"
-		c:commandBus-ref="commandBus"
-		c:eventBus-ref="eventBus" 
-		p:commandLogger-ref="commandLogger" 
-		p:eventLogger-ref="eventLogger" />
-
-	<bean id="skeletonRepo" class="org.garred.skeleton.infrastructure.SkeletonRepositoryImpl"
-		c:objectStore-ref="objectStore" />
-	<bean id="skelEventHandler" class="org.garred.skeleton.SkelEventHandler"
-		c:repository-ref="skeletonRepo" 
-		c:eventBus-ref="eventBus"/>
 
 </beans>
