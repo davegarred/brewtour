@@ -1,4 +1,4 @@
-package org.garred.skeleton.infrastructure;
+package org.garred.skeleton.repository;
 
 import static java.lang.String.format;
 

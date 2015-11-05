@@ -3,7 +3,7 @@ package org.garred.skeleton.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.garred.skeleton.api.SkelId;
-import org.garred.skeleton.infrastructure.SkeletonRepositoryImpl;
+import org.garred.skeleton.repository.SkeletonRepositoryImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

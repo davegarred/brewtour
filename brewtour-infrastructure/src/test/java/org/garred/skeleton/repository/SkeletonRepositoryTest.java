@@ -1,4 +1,4 @@
-package org.garred.skeleton.infrastructure;
+package org.garred.skeleton.repository;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.garred.skeleton.api.SkelAggregate;
 import org.garred.skeleton.api.SkelId;
+import org.garred.skeleton.repository.ObjectDoesNotExistException;
 import org.garred.skeleton.repository.SkeletonRepository;
 import org.junit.Before;
 import org.junit.Test;

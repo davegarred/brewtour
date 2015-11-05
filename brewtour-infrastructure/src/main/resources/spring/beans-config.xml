@@ -15,7 +15,7 @@
 	<bean class="org.garred.skeleton.config.ApplicationClosedListener" />
 
 		
-	<bean id="skeletonRepo" class="org.garred.skeleton.infrastructure.SkeletonRepositoryImpl" 
+	<bean id="skeletonRepo" class="org.garred.skeleton.repository.SkeletonRepositoryImpl" 
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper" />
 	
