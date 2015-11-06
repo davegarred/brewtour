@@ -1,0 +1,16 @@
+{
+  "locationId" : "locationId",
+  "brewDbId" : "someBrewDbId",
+  "name" : "Brewery Name",
+  "description" : "A nice little description of the brewery",
+  "longitude" : -122.315,
+  "images" : {
+    "icon" : "image 1",
+    "medium" : "image 2",
+    "large" : ""
+  },
+  "beers" : [ {
+    "brewDbId" : "beer id"
+  } ],
+  "lattitude" : 47.614
+}

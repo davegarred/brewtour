@@ -1,0 +1,75 @@
+package org.garred.brewtour.application;
+
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+
+import org.garred.brewtour.infrastructure.ObjectMapperFactory;
+import org.junit.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class SerializationTest {
+
+	private static final LocationId LOCATION_ID = new LocationId("locationId");
+	private static final Image IMAGE_2 = new Image("image 2");
+	private static final Image IMAGE_1 = new Image("image 1");
+	private static final ObjectMapper MAPPER = ObjectMapperFactory.objectMapper();
+
+
+	@Test
+	public void testImage() {
+		validate(new Image("test value"));
+	}
+
+	@Test
+	public void testBeer() {
+		validate(new Beer("beer id"));
+	}
+
+	@Test
+	public void testAvailableImages() {
+		validate(new AvailableImages(IMAGE_1, IMAGE_2, null));
+	}
+
+	@Test
+	public void testLocationId() {
+		validate(LOCATION_ID);
+	}
+
+	@Test
+	public void testLocation() {
+		validate(new Location(LOCATION_ID, "someBrewDbId", "Brewery Name", "A nice little description of the brewery",
+				new BigDecimal("47.614"), new BigDecimal("-122.315"), new AvailableImages(IMAGE_1, IMAGE_2, null), asList(new Beer("beer id"))));
+	}
+
+
+
+
+
+
+	protected <T> void validate(T object) {
+		try {
+			System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object));
+			final String serializedObject = MAPPER.writeValueAsString(object);
+			final Object deserializedObject = MAPPER.readValue(serializedObject, object.getClass());
+			assertEquals("Serialization/deserialization process has modified object", object, deserializedObject);
+
+			final Object storedObject = retriveStored(object.getClass());
+			assertEquals("The test object has changed from the stored reference instance", storedObject, object);
+		} catch (final IOException e) {
+			fail(e.getMessage());
+			new RuntimeException(e);
+		}
+	}
+
+	private static Object retriveStored(Class<?> clazz) throws IOException {
+		final InputStream in = new FileInputStream("src/test/resources/json/" + clazz.getSimpleName() + ".json");
+		return MAPPER.readValue(in, clazz);
+	}
+}

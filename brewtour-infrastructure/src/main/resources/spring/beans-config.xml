@@ -11,15 +11,11 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
 
-	<bean class="org.garred.skeleton.config.ApplicationStartedListener" />
-	<bean class="org.garred.skeleton.config.ApplicationClosedListener" />
-
-		
-	<bean id="skeletonRepo" class="org.garred.skeleton.repository.SkeletonRepositoryImpl" 
+	<bean id="locationRepo" class="org.garred.brewtour.repository.LocationRepositoryImpl" 
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper" />
 	
-	<bean id="objectMapper" class="org.garred.skeleton.infrastructure.ObjectMapperFactory"
+	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>
 		
 	

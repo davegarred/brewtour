@@ -23,12 +23,10 @@
 
 	<resources mapping="/resources/**" location="/resources/" />
 	
-	<beans:bean class="org.garred.skeleton.controller.GenericController"
-		c:skeletonRepo-ref="skeletonRepo"
-		 />
+	<beans:bean class="org.garred.brewtour.controller.LocationController"
+		c:locationRepo-ref="locationRepo" />
 	
-	<beans:bean class="org.garred.skeleton.controller.UserController"/>
-	<beans:bean class="org.garred.skeleton.controller.ApplicationStatusController"/>
+	<beans:bean class="org.garred.brewtour.controller.ApplicationStatusController"/>
 
 	<beans:bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
