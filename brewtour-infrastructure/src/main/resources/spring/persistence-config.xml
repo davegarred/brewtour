@@ -8,14 +8,10 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
 
-	<!-- <tx:annotation-driven transaction-manager="transactionManager" /> <bean 
-		class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager" 
-		/> -->
-
 	<beans profile="default">
 		<bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
 			<property name="dataSource" ref="dataSource" />
-			<property name="locations" value="classpath:db/migration/h2" />
+			<property name="locations" value="classpath:db/migration/h2,classpath:org/garred/brewtour/config/flyway" />
 		</bean>
 		<bean id="dataSource"
 			class="org.springframework.jdbc.datasource.DriverManagerDataSource">

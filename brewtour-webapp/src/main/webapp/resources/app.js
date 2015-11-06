@@ -6,7 +6,7 @@
     	
 //    	$scope.focusedLocation = true;
     	
-    	$http.get('resources/locations.json')
+    	$http.get('locations')
     	.then(function successCallback(response) {
     		$scope.locations = response.data;
     		initMap();
