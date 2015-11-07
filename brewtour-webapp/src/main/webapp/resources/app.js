@@ -32,9 +32,8 @@
         	    var marker = new google.maps.Marker(details);
         	    marker.setMap($scope.map);
 
-        	    var infoWindowImage = location.images ? "<p><img src='" + location.images.large + "'></p>" : "";
-        	    var infoWindowDescription = location.description ? "<p>" + location.description + "</p>" : "";
-        	    var infoWindowContent = infoWindowImage + "<h3>" + location.name + "</h3>" + infoWindowDescription;
+        	    var infoWindowImage = location.images ? "<p><img src='" + location.images.medium + "'></p>" : "";
+        	    var infoWindowContent = infoWindowImage + "<h4><center>" + location.name + "</center></h4>";
         	    bindInfoWindow(marker, $scope.map, infoWindowContent, location); 
         	  }
 

@@ -26,8 +26,14 @@ html, body {
 <body ng-app="brewtour">
 	<div ng-controller="MapController">
 		<div>
-			<div class="hidden-md hidden-lg" ng-if="focusedLocation">{{focusedLocation}}</div>
-			<div class="hidden-xs hidden-sm" ng-if="focusedLocation" style="float: left; width: 200px;">{{focusedLocation}}</div>
+			<div class="hidden-md hidden-lg" ng-if="focusedLocation">
+				<img src='{{focusedLocation.images.medium}}'>
+			</div>
+			<div class="hidden-xs hidden-sm" ng-if="focusedLocation" style="float: left; width: 400px;">
+				<img src='{{focusedLocation.images.medium}}'>
+				<h3>{{focusedLocation.name}}</h3>
+				<p>{{focusedLocation.description}}</p>
+			</div>
 			<div id="map"></div>
 		</div>
 	</div>
