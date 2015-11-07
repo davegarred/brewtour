@@ -1,36 +1,39 @@
 package org.garred.brewtour.controller;
 
+import static org.garred.brewtour.application.LocaleId.SEATTLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-import java.util.Collection;
-
+import org.garred.brewtour.application.Locale;
 import org.garred.brewtour.application.Location;
+import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.repository.LocaleRepository;
 import org.garred.brewtour.repository.LocationRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 @Controller
 public class LocationController extends AbstractRestController {
 
-	private final ObjectMapper objectMapper;
+	private final LocaleRepository localeRepo;
 	private final LocationRepository locationRepo;
 
-
-	public LocationController(LocationRepository locationRepo) {
+	public LocationController(LocaleRepository localeRepo, LocationRepository locationRepo) {
+		this.localeRepo = localeRepo;
 		this.locationRepo = locationRepo;
-		this.objectMapper = new ObjectMapper();
-		this.objectMapper.registerModule(new JSR310Module());
 	}
 
 	@RequestMapping(value = "/locations", method = GET, produces="application/json")
 	@ResponseBody
-	public Collection<Location> locations() throws JsonProcessingException {
-		return this.locationRepo.findAll();
+	public Locale locations() {
+		return this.localeRepo.get(SEATTLE);
+	}
+	
+	@RequestMapping(value = "/location/{locationId}", method = GET, produces="application/json")
+	@ResponseBody
+	public Location location(@PathVariable String locationId) {
+		return this.locationRepo.get(new LocationId(locationId));
 	}
 
 }

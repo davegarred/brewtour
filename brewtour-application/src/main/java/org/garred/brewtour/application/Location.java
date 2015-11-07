@@ -12,7 +12,7 @@ public class Location extends AbstractEntity<LocationId> {
 	public final String brewDbId;
 	public final String name;
 	public final String description;
-	public final BigDecimal lattitude;
+	public final BigDecimal latitude;
 	public final BigDecimal longitude;
 	public final AvailableImages images;
 	public final List<Beer> beers;
@@ -30,7 +30,7 @@ public class Location extends AbstractEntity<LocationId> {
 		this.brewDbId = brewDbId;
 		this.name = name;
 		this.description = description;
-		this.lattitude = latitude;
+		this.latitude = latitude;
 		this.longitude = longitude;
 		this.images = images;
 		this.beers = beers;
@@ -49,7 +49,7 @@ public class Location extends AbstractEntity<LocationId> {
 		result = prime * result + ((this.brewDbId == null) ? 0 : this.brewDbId.hashCode());
 		result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
 		result = prime * result + ((this.images == null) ? 0 : this.images.hashCode());
-		result = prime * result + ((this.lattitude == null) ? 0 : this.lattitude.hashCode());
+		result = prime * result + ((this.latitude == null) ? 0 : this.latitude.hashCode());
 		result = prime * result + ((this.locationId == null) ? 0 : this.locationId.hashCode());
 		result = prime * result + ((this.longitude == null) ? 0 : this.longitude.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
@@ -85,10 +85,10 @@ public class Location extends AbstractEntity<LocationId> {
 				return false;
 		} else if (!this.images.equals(other.images))
 			return false;
-		if (this.lattitude == null) {
-			if (other.lattitude != null)
+		if (this.latitude == null) {
+			if (other.latitude != null)
 				return false;
-		} else if (!this.lattitude.equals(other.lattitude))
+		} else if (!this.latitude.equals(other.latitude))
 			return false;
 		if (this.locationId == null) {
 			if (other.locationId != null)

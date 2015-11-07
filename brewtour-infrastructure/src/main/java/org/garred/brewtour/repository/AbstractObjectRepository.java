@@ -63,7 +63,7 @@ public abstract class AbstractObjectRepository<I extends Identifier,T> implement
 		try {
 			final Integer version = this.jdbcTemplate.queryForObject(this.findVersionQuery, Integer.class, key.getId());
 			return version != null;
-		} catch(@SuppressWarnings("unused") final EmptyResultDataAccessException e) {
+		} catch(final EmptyResultDataAccessException e) {
 			return false;
 		}
 	}

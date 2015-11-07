@@ -14,6 +14,9 @@
 	<bean id="locationRepo" class="org.garred.brewtour.repository.LocationRepositoryImpl" 
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper" />
+	<bean id="localeRepo" class="org.garred.brewtour.repository.LocaleRepositoryImpl" 
+		c:datasource-ref="dataSource" 
+		c:objectMapper-ref="objectMapper" />
 	
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>

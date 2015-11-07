@@ -1,0 +1,19 @@
+{
+  "name" : "Brewery Name",
+  "latitude" : 47.614,
+  "longitude" : -122.315,
+  "zoom" : 8,
+  "locations" : [ {
+    "locationId" : "locationId",
+    "name" : "Brewery Name",
+    "description" : "A nice little description of the brewery",
+    "latitude" : 47.614,
+    "longitude" : -122.315,
+    "images" : {
+      "icon" : "image 1",
+      "medium" : "image 2",
+      "large" : ""
+    }
+  } ],
+  "localeId" : "SEATTLE"
+}

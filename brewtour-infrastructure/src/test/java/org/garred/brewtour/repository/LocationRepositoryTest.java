@@ -9,8 +9,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Collection;
-
 import javax.sql.DataSource;
 
 import org.garred.brewtour.application.Location;
@@ -29,7 +27,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class LocationRepositoryTest {
 
 	private static final LocationId LOCATION_ID = new LocationId("someKey");
-	private static final LocationId LOCATION_ID_2 = new LocationId("someOtherKey");
 	private static final Location LOCATION = new Location(LOCATION_ID, "", "", "", ZERO, ZERO, NO_IMAGES, emptyList());
 	private static final Location LOCATION_2 = new Location(LOCATION_ID, "", "", "", ONE, ONE, NO_IMAGES, emptyList());
 
@@ -50,7 +47,7 @@ public class LocationRepositoryTest {
 	public void testSave() {
 		this.locationRepo.save(LOCATION_ID, LOCATION);
 		final Location result = this.locationRepo.get(LOCATION_ID);
-		assertEquals(ZERO, result.lattitude);
+		assertEquals(ZERO, result.latitude);
 	}
 
 	@Test
@@ -72,7 +69,7 @@ public class LocationRepositoryTest {
 
 		this.locationRepo.update(LOCATION_ID, LOCATION_2);
 		final Location result = this.locationRepo.get(LOCATION_ID);
-		assertEquals(ONE, result.lattitude);
+		assertEquals(ONE, result.latitude);
 	}
 
 	@Test(expected = ObjectDoesNotExistException.class)
@@ -87,15 +84,7 @@ public class LocationRepositoryTest {
 		try {
 			this.locationRepo.get(LOCATION_ID);
 			fail();
-		} catch(@SuppressWarnings("unused") final DataIntegrityViolationException e) {}
-	}
-
-	@Test
-	public void testFindAll() {
-		this.locationRepo.save(LOCATION_ID, LOCATION);
-		this.locationRepo.save(LOCATION_ID_2, LOCATION_2);
-		final Collection<Location> result = this.locationRepo.findAll();
-		assertEquals(2,result.size());
+		} catch(final DataIntegrityViolationException e) {}
 	}
 
 }

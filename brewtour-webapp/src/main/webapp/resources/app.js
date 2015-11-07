@@ -8,7 +8,7 @@
     	
     	$http.get('locations')
     	.then(function successCallback(response) {
-    		$scope.locations = response.data;
+    		$scope.locale = response.data;
     		initMap();
     	}, function errorCallback(response) {
     		debugger;
@@ -16,24 +16,25 @@
     	});
     	
         function initMap() {
+        	var locale = $scope.locale;
         	$scope.map = new google.maps.Map(document.getElementById('map'), {
-        	    center: {lat: 47.61, lng: -122.333},
-        	    zoom: 12
+        	    center: {lat: locale.latitude, lng: locale.longitude},
+        	    zoom: locale.zoom
         	  });
 
-        	  for(var l in $scope.locations) {
-        	    var location = $scope.locations[l];
+        	  for(var l in locale.locations) {
+        	    var location = locale.locations[l];
         	    var locationPosition = {lat: location.latitude, lng: location.longitude};
         	    var details = {
         	        position: locationPosition,
-        	        title: location.breweryName
+        	        title: location.name
         	    };
         	    var marker = new google.maps.Marker(details);
         	    marker.setMap($scope.map);
 
         	    var infoWindowImage = location.images ? "<p><img src='" + location.images.large + "'></p>" : "";
-        	    var infoWindowDescription = location.breweryDescription ? "<p>" + location.breweryDescription + "</p>" : "";
-        	    var infoWindowContent = infoWindowImage + "<h3>" + location.breweryName + "</h3>" + infoWindowDescription;
+        	    var infoWindowDescription = location.description ? "<p>" + location.description + "</p>" : "";
+        	    var infoWindowContent = infoWindowImage + "<h3>" + location.name + "</h3>" + infoWindowDescription;
         	    bindInfoWindow(marker, $scope.map, infoWindowContent, location); 
         	  }
 

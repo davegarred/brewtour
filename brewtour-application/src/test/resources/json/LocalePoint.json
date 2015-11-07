@@ -1,6 +1,5 @@
 {
   "locationId" : "locationId",
-  "brewDbId" : "someBrewDbId",
   "name" : "Brewery Name",
   "description" : "A nice little description of the brewery",
   "latitude" : 47.614,
@@ -9,13 +8,5 @@
     "icon" : "image 1",
     "medium" : "image 2",
     "large" : ""
-  },
-  "beers" : [ {
-    "brewDbId" : "beer id",
-    "name" : "a beer name",
-    "status" : "someStatus",
-    "style" : "awesome style",
-    "category" : "niche category",
-    "abv" : 6.2
-  } ]
+  }
 }

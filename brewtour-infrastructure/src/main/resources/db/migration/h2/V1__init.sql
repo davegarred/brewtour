@@ -4,3 +4,8 @@ CREATE TABLE brewtour.location (
   version integer NOT NULL,
   data clob
 );
+CREATE TABLE brewtour.locale (
+  id varchar(32) NOT NULL,
+  version integer NOT NULL,
+  data clob
+);
