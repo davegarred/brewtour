@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SerializationTest {
 
+	private static final Beer BEER = new Beer("beer id", "a beer name", "someStatus", "awesome style", "niche category", new BigDecimal("6.2"));
 	private static final LocationId LOCATION_ID = new LocationId("locationId");
 	private static final Image IMAGE_2 = new Image("image 2");
 	private static final Image IMAGE_1 = new Image("image 1");
@@ -29,7 +30,7 @@ public class SerializationTest {
 
 	@Test
 	public void testBeer() {
-		validate(new Beer("beer id"));
+		validate(BEER);
 	}
 
 	@Test
@@ -45,7 +46,7 @@ public class SerializationTest {
 	@Test
 	public void testLocation() {
 		validate(new Location(LOCATION_ID, "someBrewDbId", "Brewery Name", "A nice little description of the brewery",
-				new BigDecimal("47.614"), new BigDecimal("-122.315"), new AvailableImages(IMAGE_1, IMAGE_2, null), asList(new Beer("beer id"))));
+				new BigDecimal("47.614"), new BigDecimal("-122.315"), new AvailableImages(IMAGE_1, IMAGE_2, null), asList(BEER)));
 	}
 
 

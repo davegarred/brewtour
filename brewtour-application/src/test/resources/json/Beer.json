@@ -1,3 +1,8 @@
 {
-  "brewDbId" : "beer id"
+  "brewDbId" : "beer id",
+  "name" : "a beer name",
+  "status" : "someStatus",
+  "style" : "awesome style",
+  "category" : "niche category",
+  "abv" : 6.2
 }
