@@ -16,6 +16,8 @@ import java.util.Map;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.garred.brewtour.application.AvailableImages;
 import org.garred.brewtour.application.Beer;
+import org.garred.brewtour.application.GoogleMapsParameters;
+import org.garred.brewtour.application.GoogleMapsParameters.GoogleMapsPosition;
 import org.garred.brewtour.application.Image;
 import org.garred.brewtour.application.Locale;
 import org.garred.brewtour.application.LocalePoint;
@@ -51,7 +53,8 @@ public class V1_1__TestLocationData implements JdbcMigration {
 			statement.executeUpdate();
 			seattleLocales.add(convertToLocalePoint(location));
 		}
-		Locale seattle = new Locale(SEATTLE, "Seattle", new BigDecimal("47.61"), new BigDecimal("-122.333"), 12, seattleLocales);
+		GoogleMapsParameters params = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.61"), new BigDecimal("-122.333")), 12);
+		Locale seattle = new Locale(SEATTLE, "Seattle", params, seattleLocales);
 		final PreparedStatement statement = connection.prepareStatement("INSERT INTO brewtour.locale(id,version,data) VALUES (?,1,?)");
 		statement.setString(1, seattle.localeId.id);
 		statement.setString(2, objectMapper.writeValueAsString(seattle));

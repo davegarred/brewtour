@@ -17,10 +17,7 @@
     	
         function initMap() {
         	var locale = $scope.locale;
-        	$scope.map = new google.maps.Map(document.getElementById('map'), {
-        	    center: {lat: locale.latitude, lng: locale.longitude},
-        	    zoom: locale.zoom
-        	  });
+        	$scope.map = new google.maps.Map(document.getElementById('map'), locale.googleMapsParameters);
 
         	  for(var l in locale.locations) {
         	    var location = locale.locations[l];
