@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 
+import org.garred.brewtour.application.GoogleMapsParameters.GoogleMapsPosition;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,20 +52,21 @@ public class SerializationTest {
 		validate(new Location(LOCATION_ID, "someBrewDbId", "Brewery Name", "A nice little description of the brewery",
 				new BigDecimal("47.614"), new BigDecimal("-122.315"), new AvailableImages(IMAGE_1, IMAGE_2, null), asList(BEER)));
 	}
-	
+
 	@Test
 	public void testLocaleId() {
 		validate(SEATTLE);
 	}
-	
+
 	@Test
 	public void testLocalePoint() {
 		validate(LOCALE_POINT);
 	}
-	
+
 	@Test
 	public void testLocale() {
-		validate(new Locale(SEATTLE, "Brewery Name", new BigDecimal("47.614"), new BigDecimal("-122.315"), 8, asList(LOCALE_POINT)));
+		final GoogleMapsParameters mapParams = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.614"), new BigDecimal("-122.315")), 8);
+		validate(new Locale(SEATTLE, "Brewery Name", mapParams, asList(LOCALE_POINT)));
 	}
 
 

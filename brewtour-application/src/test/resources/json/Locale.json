@@ -1,8 +1,12 @@
 {
   "name" : "Brewery Name",
-  "latitude" : 47.614,
-  "longitude" : -122.315,
-  "zoom" : 8,
+  "googleMapsParameters" : {
+    "center" : {
+      "lat" : 47.614,
+      "lng" : -122.315
+    },
+    "zoom" : 8
+  },
   "locations" : [ {
     "locationId" : "locationId",
     "name" : "Brewery Name",

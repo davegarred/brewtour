@@ -21,7 +21,6 @@
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>
 		
-	
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
 </beans>

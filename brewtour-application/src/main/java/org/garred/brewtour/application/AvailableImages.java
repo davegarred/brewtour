@@ -5,7 +5,7 @@ import static org.garred.brewtour.application.Image.NOT_AVAILABLE;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AvailableImages {
+public class AvailableImages extends AbstractObject {
 
 	public static final AvailableImages NO_IMAGES = new AvailableImages(NOT_AVAILABLE, NOT_AVAILABLE, NOT_AVAILABLE);
 
