@@ -23,6 +23,7 @@
 
 	<resources mapping="/resources/**" location="/resources/" />
 	
+	<beans:bean class="org.garred.brewtour.controller.UserController"/>
 	<beans:bean class="org.garred.brewtour.controller.LocationController"
 		c:localeRepo-ref="localeRepo"
 		c:locationRepo-ref="locationRepo" />

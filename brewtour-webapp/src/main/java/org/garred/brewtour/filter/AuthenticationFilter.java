@@ -1,7 +1,5 @@
 package org.garred.brewtour.filter;
 
-import static java.util.Collections.emptyList;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -15,12 +13,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuthenticationFilter implements Filter {
+
+	private static final String USER_COOKIE_NAME = "user";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -28,29 +27,36 @@ public class AuthenticationFilter implements Filter {
 		final SecurityContext context = SecurityContextHolder.getContext();
 		final Authentication auth = context.getAuthentication();
 		if(auth == null) {
-			Cookie userCookie = null;
-			final HttpServletRequest httpRequest = (HttpServletRequest) request;
-			final HttpServletResponse httpResponse = (HttpServletResponse) response;
+			final UUID uuid = uuid(request, response);
+			context.setAuthentication(new AnonymousAuthentication(uuid));
+		}
+		chain.doFilter(request, response);
+	}
+
+	private static UUID uuid(ServletRequest request, ServletResponse response) {
+		Cookie userCookie = null;
+		final HttpServletRequest httpRequest = (HttpServletRequest) request;
+		if(httpRequest.getCookies() != null) {
 			for(final Cookie cookie : httpRequest.getCookies()) {
-				System.out.println(cookie.getName());
-				if(cookie.getName().equals("user")) {
+				if(cookie.getName().equals(USER_COOKIE_NAME)) {
 					userCookie = cookie;
 				}
 			}
-
-			UUID uuid = null;
-			if(userCookie == null) {
-				uuid = UUID.randomUUID();
-				userCookie = new Cookie("user", uuid.toString());
-				httpResponse.addCookie(userCookie);
-			} else {
-				uuid = UUID.fromString(userCookie.getValue());
-			}
-			context.setAuthentication(new RememberMeAuthenticationToken(uuid.toString(), uuid, emptyList()));
-		} else {
-			System.out.println(auth.getName());
 		}
-		chain.doFilter(request, response);
+
+		if(userCookie != null && userCookie.getValue() != null && !userCookie.getValue().isEmpty()) {
+			return UUID.fromString(userCookie.getValue());
+		}
+		return newUuid(response);
+	}
+
+	private static UUID newUuid(ServletResponse response) {
+		final UUID uuid = UUID.randomUUID();
+		final Cookie cookie = new Cookie(USER_COOKIE_NAME, uuid.toString());
+		cookie.setMaxAge(-1);
+		final HttpServletResponse httpResponse = (HttpServletResponse) response;
+		httpResponse.addCookie(cookie);
+		return uuid;
 	}
 
 	@Override
