@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class AbstractRestController {
 
@@ -18,7 +18,7 @@ public class AbstractRestController {
 	
 	public AbstractRestController() {
 		this.objectMapper = new ObjectMapper();
-		objectMapper.registerModule(new JSR310Module());
+		objectMapper.registerModule(new JavaTimeModule());
 	}
 	
 	@ExceptionHandler(value = ConstraintViolationException.class)

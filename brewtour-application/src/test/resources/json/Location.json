@@ -1,5 +1,4 @@
 {
-  "locationId" : "locationId",
   "brewDbId" : "someBrewDbId",
   "name" : "Brewery Name",
   "description" : "A nice little description of the brewery",
@@ -16,6 +15,8 @@
     "status" : "someStatus",
     "style" : "awesome style",
     "category" : "niche category",
-    "abv" : 6.2
-  } ]
+    "abv" : 6.2,
+    "ibu" : 45
+  } ],
+  "identifier" : "a location id"
 }

@@ -9,7 +9,6 @@ public class LocalePoint extends AbstractObject {
 
 	public final LocationId locationId;
 	public final String name;
-	public final String description;
 	public final BigDecimal latitude;
 	public final BigDecimal longitude;
 	public final AvailableImages images;
@@ -17,13 +16,11 @@ public class LocalePoint extends AbstractObject {
 	@JsonCreator
 	public LocalePoint(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("name") String name,
-			@JsonProperty("description") String description,
 			@JsonProperty("latitude") BigDecimal latitude,
 			@JsonProperty("longitude") BigDecimal longitude,
 			@JsonProperty("images") AvailableImages images) {
 		this.locationId = locationId;
 		this.name = name;
-		this.description = description;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.images = images;
@@ -33,7 +30,6 @@ public class LocalePoint extends AbstractObject {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((images == null) ? 0 : images.hashCode());
 		result = prime * result + ((latitude == null) ? 0 : latitude.hashCode());
 		result = prime * result + ((locationId == null) ? 0 : locationId.hashCode());
@@ -50,11 +46,6 @@ public class LocalePoint extends AbstractObject {
 		if (getClass() != obj.getClass())
 			return false;
 		LocalePoint other = (LocalePoint) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
 		if (images == null) {
 			if (other.images != null)
 				return false;

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Location extends AbstractEntity<LocationId> {
 
-	public final LocationId locationId;
 	public final String brewDbId;
 	public final String name;
 	public final String description;
@@ -26,7 +25,7 @@ public class Location extends AbstractEntity<LocationId> {
 			@JsonProperty("longitude") BigDecimal longitude,
 			@JsonProperty("images") AvailableImages images,
 			@JsonProperty("beers") List<Beer> beers) {
-		this.locationId = locationId;
+		super(locationId);
 		this.brewDbId = brewDbId;
 		this.name = name;
 		this.description = description;
@@ -34,11 +33,6 @@ public class Location extends AbstractEntity<LocationId> {
 		this.longitude = longitude;
 		this.images = images;
 		this.beers = beers;
-	}
-
-	@Override
-	public LocationId identifier() {
-		return this.locationId;
 	}
 
 	@Override
@@ -50,7 +44,6 @@ public class Location extends AbstractEntity<LocationId> {
 		result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
 		result = prime * result + ((this.images == null) ? 0 : this.images.hashCode());
 		result = prime * result + ((this.latitude == null) ? 0 : this.latitude.hashCode());
-		result = prime * result + ((this.locationId == null) ? 0 : this.locationId.hashCode());
 		result = prime * result + ((this.longitude == null) ? 0 : this.longitude.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
 		return result;
@@ -89,11 +82,6 @@ public class Location extends AbstractEntity<LocationId> {
 			if (other.latitude != null)
 				return false;
 		} else if (!this.latitude.equals(other.latitude))
-			return false;
-		if (this.locationId == null) {
-			if (other.locationId != null)
-				return false;
-		} else if (!this.locationId.equals(other.locationId))
 			return false;
 		if (this.longitude == null) {
 			if (other.longitude != null)

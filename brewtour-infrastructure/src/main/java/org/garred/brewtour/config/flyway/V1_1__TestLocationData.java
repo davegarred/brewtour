@@ -35,8 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class V1_1__TestLocationData implements JdbcMigration {
 
-	private static int i = 0;
-	private static Map<String,Beer> beerMap = new HashMap<>();
+	private static int i = 1000;
+	private static Map<String, Beer> beerMap = new HashMap<>();
 
 	@Override
 	public void migrate(Connection connection) throws Exception {
@@ -45,64 +45,56 @@ public class V1_1__TestLocationData implements JdbcMigration {
 		List<LocalePoint> seattleLocales = new ArrayList<>();
 		final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("json/test_locations.json");
 		final BrewDbLocationList locations = objectMapper.readValue(in, BrewDbLocationList.class);
-		for(final BrewDbLocation brewDbLocation : locations) {
+		for (final BrewDbLocation brewDbLocation : locations) {
 			final Location location = convertToLocation(brewDbLocation);
-			final PreparedStatement statement = connection.prepareStatement("INSERT INTO brewtour.location(id,version,data) VALUES (?,1,?)");
-			statement.setString(1, location.locationId.id);
+			final PreparedStatement statement = connection
+					.prepareStatement("INSERT INTO brewtour.location(id,version,data) VALUES (?,1,?)");
+			statement.setString(1, location.getIdentifier().id);
 			statement.setString(2, objectMapper.writeValueAsString(location));
 			statement.executeUpdate();
 			seattleLocales.add(convertToLocalePoint(location));
 		}
-		GoogleMapsParameters params = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.61"), new BigDecimal("-122.333")), 12);
+		GoogleMapsParameters params = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.61"), new BigDecimal("-122.333")),
+				12);
 		Locale seattle = new Locale(SEATTLE, "Seattle", params, seattleLocales);
 		final PreparedStatement statement = connection.prepareStatement("INSERT INTO brewtour.locale(id,version,data) VALUES (?,1,?)");
-		statement.setString(1, seattle.localeId.id);
+		statement.setString(1, seattle.getIdentifier().id);
 		statement.setString(2, objectMapper.writeValueAsString(seattle));
 		statement.executeUpdate();
 	}
 
 	private static Location convertToLocation(BrewDbLocation brewDbLocation) {
 		final LocationId id = new LocationId(String.format("LOCA%4d", new Integer(i++)));
-		final Map<String,String> bdbImages = brewDbLocation.images;
-		final AvailableImages images = bdbImages == null ? NO_IMAGES : new AvailableImages(new Image(bdbImages.get("icon")), new Image(bdbImages.get("medium")), new Image(bdbImages.get("large")));
+		final Map<String, String> bdbImages = brewDbLocation.images;
+		final AvailableImages images = bdbImages == null ? NO_IMAGES
+				: new AvailableImages(new Image(bdbImages.get("icon")), new Image(bdbImages.get("medium")),
+						new Image(bdbImages.get("large")));
 		final List<Beer> beers = new ArrayList<>();
-		if(brewDbLocation.beerIds == null) {
-			for(final String beerId : brewDbLocation.beerIds) {
+		if (brewDbLocation.beerIds != null) {
+			for (final String beerId : brewDbLocation.beerIds) {
 				beers.add(beerMap.get(beerId));
 			}
 		}
-		return new Location(id,
-				brewDbLocation.id,
-				brewDbLocation.breweryName,
-				brewDbLocation.breweryDescription,
-				brewDbLocation.latitude,
-				brewDbLocation.longitude,
-				images,
-				beers);
+		return new Location(id, brewDbLocation.id, brewDbLocation.breweryName, brewDbLocation.breweryDescription, brewDbLocation.latitude,
+				brewDbLocation.longitude, images, beers);
 	}
-	
+
 	private static LocalePoint convertToLocalePoint(Location location) {
-		return new LocalePoint(location.locationId,
-				location.name,
-				location.description,
-				location.latitude,
-				location.longitude,
-				location.images);
+		return new LocalePoint(location.getIdentifier(), location.name, location.latitude, location.longitude, location.images);
 	}
 
 	private static void loadBeerData(ObjectMapper objectMapper) throws JsonParseException, JsonMappingException, IOException {
 		try (final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("json/test_beers.json")) {
 			final BrewDbBeerList beers = objectMapper.readValue(in, BrewDbBeerList.class);
-			for(final BrewDbBeer brewDbBeer : beers) {
+			for (final BrewDbBeer brewDbBeer : beers) {
 				beerMap.put(brewDbBeer.id, convert(brewDbBeer));
 			}
 
 		}
 	}
+
 	private static Beer convert(BrewDbBeer beer) {
-		return new Beer(beer.id, beer.name, beer.status,
-				beer.style == null ? "" : beer.style.name,
-						beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name,
-				beer.abv);
+		return new Beer(beer.id, beer.name, beer.status, beer.style == null ? "" : beer.style.name,
+				beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name, beer.abv, beer.ibu);
 	}
 }

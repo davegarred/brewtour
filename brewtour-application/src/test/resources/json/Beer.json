@@ -4,5 +4,6 @@
   "status" : "someStatus",
   "style" : "awesome style",
   "category" : "niche category",
-  "abv" : 6.2
+  "abv" : 6.2,
+  "ibu" : 45
 }

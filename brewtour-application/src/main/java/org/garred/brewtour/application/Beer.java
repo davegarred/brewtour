@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Beer extends AbstractObject {
 
 	private final String brewDbId,name,status,style,category;
-	private final BigDecimal abv;
+	private final BigDecimal abv,ibu;
 
 	@JsonCreator
 	public Beer(@JsonProperty("brewDbId") String brewDbId,
@@ -16,13 +16,15 @@ public class Beer extends AbstractObject {
 			@JsonProperty("status") String status,
 			@JsonProperty("style") String style,
 			@JsonProperty("category") String category,
-			@JsonProperty("abv") BigDecimal abv) {
+			@JsonProperty("abv") BigDecimal abv,
+			@JsonProperty("ibu") BigDecimal ibu) {
 		this.brewDbId = brewDbId;
 		this.name = name;
 		this.status = status;
 		this.style = style;
 		this.category = category;
 		this.abv = abv;
+		this.ibu = ibu;
 	}
 
 	public String getBrewDbId() {
@@ -48,12 +50,17 @@ public class Beer extends AbstractObject {
 	public BigDecimal getAbv() {
 		return this.abv;
 	}
+	
+	public BigDecimal getIbu() {
+		return ibu;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((this.abv == null) ? 0 : this.abv.hashCode());
+		result = prime * result + ((this.ibu == null) ? 0 : this.ibu.hashCode());
 		result = prime * result + ((this.brewDbId == null) ? 0 : this.brewDbId.hashCode());
 		result = prime * result + ((this.category == null) ? 0 : this.category.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
@@ -74,6 +81,11 @@ public class Beer extends AbstractObject {
 			if (other.abv != null)
 				return false;
 		} else if (!this.abv.equals(other.abv))
+			return false;
+		if (this.ibu == null) {
+			if (other.ibu != null)
+				return false;
+		} else if (!this.ibu.equals(other.ibu))
 			return false;
 		if (this.brewDbId == null) {
 			if (other.brewDbId != null)

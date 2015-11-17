@@ -6,8 +6,8 @@ import static java.util.Collections.emptyList;
 import static org.garred.brewtour.application.AvailableImages.NO_IMAGES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import javax.sql.DataSource;
 
@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -81,10 +80,7 @@ public class LocationRepositoryTest {
 	public void testDelete() {
 		this.locationRepo.save(LOCATION_ID, LOCATION);
 		this.locationRepo.delete(LOCATION_ID);
-		try {
-			this.locationRepo.get(LOCATION_ID);
-			fail();
-		} catch(final DataIntegrityViolationException e) {}
+		assertNull(this.locationRepo.get(LOCATION_ID));
 	}
 
 }

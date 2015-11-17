@@ -89,7 +89,9 @@ public abstract class AbstractObjectRepository<I extends Identifier,T> implement
 		final ResultSetExtractor<T> extractor = new ResultSetExtractor<T>() {
 			@Override
 			public T extractData(ResultSet rs) throws SQLException, DataAccessException {
-				rs.next();
+				if(!rs.next()) {
+					return null;
+				}
 				final Reader data = rs.getCharacterStream("data");
 				return deserialize(data);
 			}

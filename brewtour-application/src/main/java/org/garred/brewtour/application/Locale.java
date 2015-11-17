@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Locale extends AbstractEntity<LocaleId> {
 
-	public final LocaleId localeId;
 	public final String name;
 	public final GoogleMapsParameters googleMapsParameters;
 	public final List<LocalePoint> locations;
@@ -17,16 +16,10 @@ public class Locale extends AbstractEntity<LocaleId> {
 			@JsonProperty("name") String name,
 			@JsonProperty("googleMapsParameters") GoogleMapsParameters googleMapsParameters,
 			@JsonProperty("locations") List<LocalePoint> locations) {
-		super();
-		this.localeId = localeId;
+		super(localeId);
 		this.name = name;
 		this.googleMapsParameters = googleMapsParameters;
 		this.locations = locations;
-	}
-
-	@Override
-	public LocaleId identifier() {
-		return this.localeId;
 	}
 
 	@Override
@@ -34,7 +27,6 @@ public class Locale extends AbstractEntity<LocaleId> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((this.googleMapsParameters == null) ? 0 : this.googleMapsParameters.hashCode());
-		result = prime * result + ((this.localeId == null) ? 0 : this.localeId.hashCode());
 		result = prime * result + ((this.locations == null) ? 0 : this.locations.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
 		return result;
@@ -52,11 +44,6 @@ public class Locale extends AbstractEntity<LocaleId> {
 			if (other.googleMapsParameters != null)
 				return false;
 		} else if (!this.googleMapsParameters.equals(other.googleMapsParameters))
-			return false;
-		if (this.localeId == null) {
-			if (other.localeId != null)
-				return false;
-		} else if (!this.localeId.equals(other.localeId))
 			return false;
 		if (this.locations == null) {
 			if (other.locations != null)
