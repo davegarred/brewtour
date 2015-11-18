@@ -2,8 +2,10 @@ package org.garred.brewtour.controller;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+import org.garred.brewtour.application.UserId;
 import org.garred.brewtour.validation.ConstraintViolationDto;
 import org.garred.brewtour.validation.ConstraintViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,5 +28,9 @@ public class AbstractRestController {
 	@ResponseStatus(value = BAD_REQUEST)
 	public String constraintViolation(ConstraintViolationException e) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(new ConstraintViolationDto(e.getViolations()));
+	}
+	
+	protected static UserId userId() {
+		return new UserId(SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 }

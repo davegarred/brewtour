@@ -2,7 +2,7 @@ package org.garred.brewtour.application;
 
 public abstract class AbstractEntity<I> extends AbstractObject {
 
-	private final I identifier;
+	protected final I identifier;
 	
 	public AbstractEntity(I identifier) {
 		this.identifier = identifier;

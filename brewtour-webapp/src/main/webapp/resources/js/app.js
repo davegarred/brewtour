@@ -3,6 +3,7 @@
     var brewtour = angular.module('brewtour', [ ]);
 
     brewtour.controller('MapController', ['$scope', '$http', function ($scope, $http) {
+    	$scope.removedBeers = [];
     	
     	var favoriteLocationIds = [];
     	$scope.isFavorite = function(id) {
@@ -72,7 +73,7 @@
         	    var marker = new google.maps.Marker(details);
         	    marker.setMap($scope.map);
 
-        	    var infoWindowContent = "<h4><center>" + location.name + "</center></h4>";
+        	    var infoWindowContent = "<strong>" + location.name + "</strong>";
         	    bindInfoWindow(marker, $scope.map, infoWindowContent, location); 
         	  }
 
@@ -96,10 +97,52 @@
             		error(response);
             	});
         	});
-        } 
+        }
+        $scope.sendComment = function() {
+        	var dto = {
+        			locationId : $scope.locationDetails.identifier,
+        			comment : $scope.locationDetailsComment
+        	};
+        	$scope.debug = dto;
+        	$scope.locationDetailsComment = "";
+        	$('#editLocationModal').modal('hide');
+        }
+        $scope.beerRemoved = function(beerName) {
+        	for(var i in $scope.removedBeers) {
+        		var removed = $scope.removedBeers[i];
+        		if(removed.locationId == $scope.locationDetails.identifier
+        				&& removed.beerName == beerName) {
+        			return true;
+        		}
+        	}
+        	return false;
+        }
+        $scope.removeBeer = function(beerName) {
+        	var dto = {
+        			locationId : $scope.locationDetails.identifier,
+        			beerName : beerName
+        	};
+        	$scope.removedBeers.push(dto);
+        	$scope.debug = dto;
+        }
+        $scope.reinstateBeer = function(beerName) {
+        	var dto = {
+        			locationId : $scope.locationDetails.identifier,
+        			beerName : beerName
+        	};
+        	for(var i in $scope.removedBeers) {
+        		var removed = $scope.removedBeers[i];
+        		if(removed.locationId == $scope.locationDetails.identifier
+        				&& removed.beerName == beerName) {
+        			$scope.removedBeers.splice(i,1);
+        		}
+        	}
+        	$scope.debug = dto;
+        }
         
         $http.get('user')
     	.then(function successCallback(response) {
+    		$scope.admin = response.data.admin;
     		favoriteLocationIds = response.data ? response.data.favoriteLocations : [];
     	}, function errorCallback(response) {
     		error(response);

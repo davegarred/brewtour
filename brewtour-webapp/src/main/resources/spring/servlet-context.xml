@@ -25,6 +25,8 @@
 	
 	<beans:bean class="org.garred.brewtour.controller.UserController"
 		c:userService-ref="userService" />
+	<beans:bean class="org.garred.brewtour.controller.AdminController"
+		c:userService-ref="userService" />
 	<beans:bean class="org.garred.brewtour.controller.LocationController"
 		c:localeRepo-ref="localeRepo"
 		c:locationRepo-ref="locationRepo" />

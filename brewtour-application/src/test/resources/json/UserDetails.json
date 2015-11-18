@@ -1,4 +1,6 @@
 {
+  "login" : "dgarred",
   "favoriteLocations" : [ "a location id", "another location id" ],
+  "admin" : false,
   "identifier" : "a user id"
 }

@@ -10,8 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.garred.brewtour.application.AvailableImages;
@@ -25,6 +27,7 @@ import org.garred.brewtour.application.Location;
 import org.garred.brewtour.application.LocationId;
 import org.garred.brewtour.brewdb.BrewDbBeer;
 import org.garred.brewtour.brewdb.BrewDbBeer.BrewDbBeerList;
+import org.garred.brewtour.brewdb.BrewDbBeer.Style;
 import org.garred.brewtour.brewdb.BrewDbLocation;
 import org.garred.brewtour.brewdb.BrewDbLocation.BrewDbLocationList;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
@@ -84,13 +87,17 @@ public class V1_1__TestLocationData implements JdbcMigration {
 	}
 
 	private static void loadBeerData(ObjectMapper objectMapper) throws JsonParseException, JsonMappingException, IOException {
+		final Set<Style> bdbStyles = new HashSet<>();
 		try (final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("json/test_beers.json")) {
 			final BrewDbBeerList beers = objectMapper.readValue(in, BrewDbBeerList.class);
 			for (final BrewDbBeer brewDbBeer : beers) {
-				beerMap.put(brewDbBeer.id, convert(brewDbBeer));
+				Beer beer = convert(brewDbBeer);
+				bdbStyles.add(brewDbBeer.style);
+				beerMap.put(brewDbBeer.id, beer);
 			}
-
 		}
+		System.out.println(objectMapper.writeValueAsString(bdbStyles));
+		System.out.println();
 	}
 
 	private static Beer convert(BrewDbBeer beer) {

@@ -20,6 +20,7 @@ import org.junit.Test;
 
 public class ApplicationSerializationTest extends AbstractSerializationTest {
 
+	private static final String LOGIN = "dgarred";
 	private static final UserId USER_ID = new UserId("a user id");
 	private static final Beer BEER = new Beer("beer id", "a beer name", "someStatus", "awesome style", "niche category", new BigDecimal("6.2"), new BigDecimal("45"));
 	private static final Image IMAGE_2 = new Image("image 2");
@@ -76,7 +77,7 @@ public class ApplicationSerializationTest extends AbstractSerializationTest {
 
 	@Test
 	public void testUserDetails() {
-		validate(new UserDetails(USER_ID, new HashSet<>(asList(LOCATION_ID, LOCATION_ID_2))));
+		validate(new UserDetails(USER_ID, LOGIN,  new HashSet<>(asList(LOCATION_ID, LOCATION_ID_2)), false));
 	}
 
 }

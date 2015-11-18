@@ -6,9 +6,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.garred.brewtour.api.AddFavoriteLocation;
 import org.garred.brewtour.api.RemoveFavoriteLocation;
 import org.garred.brewtour.application.UserDetails;
-import org.garred.brewtour.application.UserId;
 import org.garred.brewtour.service.UserService;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,10 +38,6 @@ public class UserController extends AbstractRestController {
 	@ResponseBody
 	public UserDetails removeFavorite(@RequestBody RemoveFavoriteLocation dto) {
 		return userService.removeFavorite(userId(),dto.locationId);
-	}
-
-	private static UserId userId() {
-		return new UserId(SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 
 }
