@@ -1,6 +1,7 @@
 package org.garred.brewtour.service;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.garred.brewtour.application.LocationId;
 import org.garred.brewtour.application.UserDetails;
@@ -10,46 +11,54 @@ import org.garred.brewtour.repository.UserDetailsRepository;
 public class UserService {
 
 	private final UserDetailsRepository userRepo;
-	
+
 	public UserService(UserDetailsRepository userRepo) {
 		this.userRepo = userRepo;
 	}
 
 	public UserDetails getDetails(UserId userId) {
-		return userRepo.get(userId);
+		if(userId == null) {
+			return null;
+		}
+		return this.userRepo.get(userId);
 	}
 
-	public UserDetails discoverUser(UserId userId, String login, boolean admin) {
-		UserDetails details = userRepo.get(userId);
-		if(details == null) {
-			details = new UserDetails(userId, login, new HashSet<>(), admin);
-			userRepo.save(userId, details);
-		} else {
-			details = details.discover(login, admin);
-			userRepo.update(userId, details);
+	public UserDetails discoverUser(UserId userId, UserId previousUserId, boolean testUser, boolean admin) {
+		if(userId == null) {
+			return null;
 		}
+		final UserDetails previousUser = this.userRepo.get(previousUserId);
+		final Set<LocationId> favorites = previousUser == null ? new HashSet<>() : previousUser.getFavoriteLocations();
+		final UserDetails details = new UserDetails(userId, favorites, testUser, admin);
+		this.userRepo.save(userId, details);
 		return details;
 	}
-	
+
 	public UserDetails addFavorite(UserId userId, LocationId locationId) {
-		UserDetails user = userRepo.get(userId);
+		if(userId == null) {
+			return null;
+		}
+		UserDetails user = this.userRepo.get(userId);
 		if(user == null) {
-			HashSet<LocationId> locations = new HashSet<LocationId>(1);
+			final HashSet<LocationId> locations = new HashSet<LocationId>(1);
 			locations.add(locationId);
-			user = UserDetails.anonymousUserDetails(userId, locations);
-			userRepo.save(userId, user);
+			user = UserDetails.userDetails(userId, locations);
+			this.userRepo.save(userId, user);
 		} else {
 			user.getFavoriteLocations().add(locationId);
-			userRepo.update(userId, user);
+			this.userRepo.update(userId, user);
 		}
 		return user;
 	}
 
 	public UserDetails removeFavorite(UserId userId, LocationId locationId) {
-		UserDetails user = userRepo.get(userId);
+		if(userId == null) {
+			return null;
+		}
+		final UserDetails user = this.userRepo.get(userId);
 		user.getFavoriteLocations().remove(locationId);
-		userRepo.update(userId, user);
+		this.userRepo.update(userId, user);
 		return user;
 	}
-	
+
 }

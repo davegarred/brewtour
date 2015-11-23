@@ -3,6 +3,8 @@ package org.garred.brewtour.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.garred.brewtour.api.AddFavoriteLocation;
 import org.garred.brewtour.api.RemoveFavoriteLocation;
 import org.garred.brewtour.application.UserDetails;
@@ -16,28 +18,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController extends AbstractRestController {
 
 	private final UserService userService;
-	
+
 	public UserController(UserService userService) {
 		this.userService = userService;
 	}
 
 	@RequestMapping(value = "/user", method = GET, produces="application/json")
 	@ResponseBody
-	public UserDetails user() {
-		UserDetails details = userService.getDetails(userId());
+	public UserDetails user(HttpServletRequest request) {
+		final UserDetails details = this.userService.getDetails(userId(request));
 		return details;
 	}
-	
+
+
 	@RequestMapping(value = "/addFavorite", method = POST, produces="application/json")
 	@ResponseBody
-	public UserDetails addFavorite(@RequestBody AddFavoriteLocation dto) {
-		return userService.addFavorite(userId(),dto.locationId);
+	public UserDetails addFavorite(HttpServletRequest request, @RequestBody AddFavoriteLocation dto) {
+		return this.userService.addFavorite(userId(request),dto.locationId);
 	}
-	
+
 	@RequestMapping(value = "/removeFavorite", method = POST, produces="application/json")
 	@ResponseBody
-	public UserDetails removeFavorite(@RequestBody RemoveFavoriteLocation dto) {
-		return userService.removeFavorite(userId(),dto.locationId);
+	public UserDetails removeFavorite(HttpServletRequest request, @RequestBody RemoveFavoriteLocation dto) {
+		return this.userService.removeFavorite(userId(request),dto.locationId);
 	}
 
 }

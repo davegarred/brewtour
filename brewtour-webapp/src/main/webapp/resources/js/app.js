@@ -142,6 +142,7 @@
         
         $http.get('user')
     	.then(function successCallback(response) {
+    		$scope.user = response.data;
     		$scope.admin = response.data.admin;
     		favoriteLocationIds = response.data ? response.data.favoriteLocations : [];
     	}, function errorCallback(response) {

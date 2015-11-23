@@ -9,55 +9,32 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.garred.brewtour.application.UserId;
 
 public class AuthenticationFilter implements Filter {
 
-	private static final String USER_COOKIE_NAME = "user";
+public static final String USER_ATTR = "userId";
+
+//	private static final String USER_COOKIE_NAME = "user";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		final SecurityContext context = SecurityContextHolder.getContext();
-		final Authentication auth = context.getAuthentication();
-		if(auth == null) {
-			final UUID uuid = uuid(request, response);
-			context.setAuthentication(new AnonymousAuthentication(uuid));
+		final HttpServletRequest httpRequest = (HttpServletRequest) request;
+		final HttpSession session = httpRequest.getSession();
+		UserId user = (UserId) session.getAttribute(USER_ATTR);
+		if(user == null) {
+			user = new UserId(UUID.randomUUID().toString());
+			System.out.println(user.id);
+			session.setAttribute(USER_ATTR, user);
 		}
 		chain.doFilter(request, response);
 	}
 
-	private static UUID uuid(ServletRequest request, ServletResponse response) {
-		Cookie userCookie = null;
-		final HttpServletRequest httpRequest = (HttpServletRequest) request;
-		if(httpRequest.getCookies() != null) {
-			for(final Cookie cookie : httpRequest.getCookies()) {
-				if(cookie.getName().equals(USER_COOKIE_NAME)) {
-					userCookie = cookie;
-				}
-			}
-		}
 
-		if(userCookie != null && userCookie.getValue() != null && !userCookie.getValue().isEmpty()) {
-			return UUID.fromString(userCookie.getValue());
-		}
-		return newUuid(response);
-	}
-
-	private static UUID newUuid(ServletResponse response) {
-		final UUID uuid = UUID.randomUUID();
-		final Cookie cookie = new Cookie(USER_COOKIE_NAME, uuid.toString());
-		cookie.setMaxAge(-1);
-		final HttpServletResponse httpResponse = (HttpServletResponse) response;
-		httpResponse.addCookie(cookie);
-		return uuid;
-	}
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
