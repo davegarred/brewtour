@@ -11,7 +11,6 @@ import java.io.Reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -68,16 +67,15 @@ public abstract class AbstractObjectRepository<I extends Identifier,T> implement
 		}
 	}
 
-	@SuppressWarnings("boxing")
 	@Override
 	public void update(I key, T value) {
 		int version;
 		try {
-			version = this.jdbcTemplate.queryForObject(this.findVersionQuery, Integer.class, key.getId());
+			version = this.jdbcTemplate.queryForObject(this.findVersionQuery, Integer.class, key.getId()).intValue();
 		} catch(final EmptyResultDataAccessException e) {
 			throw new ObjectDoesNotExistException(this.clazz, key.getId(), e);
 		}
-		final List<Object> params = Arrays.asList(version+1, serialize(value), key.getId(), version);
+		final List<Object> params = asList(new Integer(version+1), serialize(value), key.getId(), new Integer(version));
 		final int result = this.jdbcTemplate.update(this.update.newPreparedStatementCreator(params));
 		if(result != 1) {
 			throw new OptimisticLockingException(this.clazz, key.getId());

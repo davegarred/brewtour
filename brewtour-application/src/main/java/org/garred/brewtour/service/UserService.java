@@ -6,7 +6,7 @@ import org.garred.brewtour.application.UserId;
 
 public interface UserService {
 
-	UserDetails discoverUser(UserId userId, String login, boolean b);
+	UserDetails discoverUser(UserId userId, UserId previousUserId, boolean testUser, boolean admin);
 
 	UserDetails getDetails(UserId userId);
 
