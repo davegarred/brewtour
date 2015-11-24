@@ -21,7 +21,7 @@
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper"/>
 	
-	<bean id="userService" class="org.garred.brewtour.service.UserService"
+	<bean id="userService" class="org.garred.brewtour.service.UserServiceImpl"
 		c:userRepo-ref="userDetailsRepo" />
 	
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"

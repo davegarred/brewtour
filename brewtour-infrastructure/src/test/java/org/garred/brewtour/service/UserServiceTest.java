@@ -19,12 +19,12 @@ public class UserServiceTest {
 
 	private UserDetailsRepository userRepo;
 	
-	private UserService userService;
+	private UserServiceImpl userService;
 	
 	@Before
 	public void setup() {
 		userRepo = new UserDetailsRepositoryStub();
-		userService = new UserService(userRepo);
+		userService = new UserServiceImpl(userRepo);
 	}
 	
 	@Test
