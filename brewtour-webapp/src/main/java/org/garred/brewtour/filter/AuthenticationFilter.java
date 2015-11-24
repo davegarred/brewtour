@@ -13,28 +13,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.garred.brewtour.application.UserId;
+import org.garred.brewtour.brewdb.UserHandler;
 
 public class AuthenticationFilter implements Filter {
 
-public static final String USER_ATTR = "userId";
-
-//	private static final String USER_COOKIE_NAME = "user";
+	public static final String USER_ATTR = "userId";
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		if(UserHandler.get() != null) {
+			throw new RuntimeException("problem with my filter");
+		}
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpSession session = httpRequest.getSession();
-		UserId user = (UserId) session.getAttribute(USER_ATTR);
-		if(user == null) {
-			user = new UserId(UUID.randomUUID().toString());
-			System.out.println(user.id);
-			session.setAttribute(USER_ATTR, user);
+		UserId userId = (UserId) session.getAttribute(USER_ATTR);
+		if(userId == null) {
+			userId = new UserId(UUID.randomUUID().toString());
+			session.setAttribute(USER_ATTR, userId);
 		}
-		chain.doFilter(request, response);
+		try {
+			UserHandler.set(userId);
+			chain.doFilter(request, response);
+		} finally {
+			UserHandler.clear();
+		}
 	}
-
-
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {

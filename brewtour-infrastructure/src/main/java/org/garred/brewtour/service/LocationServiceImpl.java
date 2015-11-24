@@ -12,21 +12,27 @@ import org.garred.brewtour.application.Locale;
 import org.garred.brewtour.application.LocaleId;
 import org.garred.brewtour.application.Location;
 import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.application.UserDetails;
+import org.garred.brewtour.brewdb.UserHandler;
 import org.garred.brewtour.repository.LocaleRepository;
 import org.garred.brewtour.repository.LocationRepository;
+import org.garred.brewtour.repository.UserDetailsRepository;
 
 public class LocationServiceImpl implements LocationService {
 
 	private final LocationRepository locationRepository;
 	private final LocaleRepository localeRepository;
+	private final UserDetailsRepository userRepo;
 
-	public LocationServiceImpl(LocationRepository locationRepository, LocaleRepository localeRepository) {
+	public LocationServiceImpl(LocationRepository locationRepository, LocaleRepository localeRepository, UserDetailsRepository userRepo) {
 		this.locationRepository = locationRepository;
 		this.localeRepository = localeRepository;
+		this.userRepo = userRepo;
 	}
 
 	@Override
 	public void addBeer(AddBeer addBeer) {
+		validateAdminOrTest();
 		final Location location = this.locationRepository.require(addBeer.locationId);
 		if(findBeer(location,addBeer.name) != null) {
 			//TODO translate this exception back to the user
@@ -38,6 +44,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 	@Override
 	public void modifyBeer(ModifyBeer modifyBeer) {
+		validateAdminOrTest();
 		final Location location = this.locationRepository.require(modifyBeer.locationId);
 		final Beer beer = findBeer(location,modifyBeer.name);
 		beer.setStyle(modifyBeer.style);
@@ -49,6 +56,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public void beerAvailable(BeerAvailable beerAvailable) {
+		validateAdminOrTest();
 		final Location location = this.locationRepository.require(beerAvailable.locationId);
 		final Beer beer = findBeer(location,beerAvailable.name);
 		beer.setAvailable(true);
@@ -57,6 +65,7 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public void beerUnavailable(BeerUnavailable beerUnavailable) {
+		validateAdminOrTest();
 		final Location location = this.locationRepository.require(beerUnavailable.locationId);
 		final Beer beer = findBeer(location,beerUnavailable.name);
 		beer.setAvailable(false);
@@ -65,9 +74,18 @@ public class LocationServiceImpl implements LocationService {
 
 	@Override
 	public void modifyLocationDescription(ModifyLocationDescription modifyDescription) {
+		validateAdminOrTest();
 		final Location location = this.locationRepository.require(modifyDescription.locationId);
 		location.description = modifyDescription.description;
 		this.locationRepository.update(location);
+	}
+
+	//TODO use aspect
+	private void validateAdminOrTest() {
+		final UserDetails user = this.userRepo.get(UserHandler.get());
+		if(user == null || !(user.isAdmin() || user.isTestUser())) {
+			throw new RuntimeException("Attempt to modify an object without permission");
+		}
 	}
 
 	private static Beer findBeer(Location location, String beername) {

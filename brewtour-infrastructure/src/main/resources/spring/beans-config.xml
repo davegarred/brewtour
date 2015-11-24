@@ -25,7 +25,8 @@
 		c:userRepo-ref="userDetailsRepo" />
 	<bean id="locationService" class="org.garred.brewtour.service.LocationServiceImpl"
 		c:localeRepository-ref="localeRepo"
-		c:locationRepository-ref="locationRepo"/>
+		c:locationRepository-ref="locationRepo"
+		c:userRepo-ref="userDetailsRepo"/>
 	
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>
