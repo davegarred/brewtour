@@ -21,7 +21,7 @@ import org.garred.brewtour.application.Location;
 import org.garred.brewtour.application.LocationId;
 import org.garred.brewtour.application.UserDetails;
 import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.brewdb.UserHandler;
+import org.garred.brewtour.config.UserHandler;
 import org.garred.brewtour.repository.LocaleRepository;
 import org.garred.brewtour.repository.LocationRepository;
 import org.garred.brewtour.repository.UserDetailsRepository;

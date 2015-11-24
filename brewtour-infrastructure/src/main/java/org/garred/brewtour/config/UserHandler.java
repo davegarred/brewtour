@@ -1,4 +1,4 @@
-package org.garred.brewtour.brewdb;
+package org.garred.brewtour.config;
 
 import org.garred.brewtour.application.UserId;
 

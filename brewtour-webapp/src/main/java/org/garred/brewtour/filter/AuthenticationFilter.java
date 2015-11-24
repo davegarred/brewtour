@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.brewdb.UserHandler;
+import org.garred.brewtour.config.UserHandler;
 
 public class AuthenticationFilter implements Filter {
 
