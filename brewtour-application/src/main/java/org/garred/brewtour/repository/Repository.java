@@ -1,11 +1,15 @@
 package org.garred.brewtour.repository;
 
-public interface Repository<I, T> {
+import org.garred.brewtour.application.Entity;
+import org.garred.brewtour.application.Identifier;
+
+public interface Repository<I extends Identifier, T extends Entity<I>> {
 
 	boolean exists(I key);
 	T get(I key);
-	void save(I key, T value);
-	void update(I key, T value);
+	T require(I key) throws ObjectDoesNotExistException;
+	void save(T value);
+	void update(T value) throws ObjectDoesNotExistException;
 	void delete(I key);
 
 }

@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.garred.brewtour.application.Entity;
 import org.garred.brewtour.application.Identifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,7 +26,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class AbstractObjectRepository<I extends Identifier,T> implements Repository<I,T> {
+public abstract class AbstractObjectRepository<I extends Identifier,T extends Entity<I>> implements Repository<I,T> {
 
 	private final PreparedStatementCreatorFactory findOne;
 	private final PreparedStatementCreatorFactory insert;
@@ -49,8 +50,9 @@ public abstract class AbstractObjectRepository<I extends Identifier,T> implement
 	}
 
 	@Override
-	public void save(I key, T value) {
+	public void save(T value) {
 		final List<Object> params = new ArrayList<>();
+		final I key = value.getIdentifier();
 		params.add(key.getId());
 		params.add(new Integer(1));
 		params.add(serialize(value));
@@ -68,8 +70,9 @@ public abstract class AbstractObjectRepository<I extends Identifier,T> implement
 	}
 
 	@Override
-	public void update(I key, T value) {
+	public void update(T value) throws ObjectDoesNotExistException {
 		int version;
+		final I key = value.getIdentifier();
 		try {
 			version = this.jdbcTemplate.queryForObject(this.findVersionQuery, Integer.class, key.getId()).intValue();
 		} catch(final EmptyResultDataAccessException e) {
@@ -95,6 +98,15 @@ public abstract class AbstractObjectRepository<I extends Identifier,T> implement
 			}
 		};
 		return this.jdbcTemplate.query(this.findOne.newPreparedStatementCreator(asList(key.getId())), extractor);
+	}
+
+	@Override
+	public T require(I key) throws ObjectDoesNotExistException {
+		final T object = get(key);
+		if(object == null) {
+			throw new ObjectDoesNotExistException(this.clazz, key.getId());
+		}
+		return object;
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class V1_1__TestLocationData implements JdbcMigration {
 	public void migrate(Connection connection) throws Exception {
 		final ObjectMapper objectMapper = ObjectMapperFactory.objectMapper();
 		loadBeerData(objectMapper);
-		List<LocalePoint> seattleLocales = new ArrayList<>();
+		final List<LocalePoint> seattleLocales = new ArrayList<>();
 		final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("json/test_locations.json");
 		final BrewDbLocationList locations = objectMapper.readValue(in, BrewDbLocationList.class);
 		for (final BrewDbLocation brewDbLocation : locations) {
@@ -57,9 +57,9 @@ public class V1_1__TestLocationData implements JdbcMigration {
 			statement.executeUpdate();
 			seattleLocales.add(convertToLocalePoint(location));
 		}
-		GoogleMapsParameters params = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.61"), new BigDecimal("-122.333")),
+		final GoogleMapsParameters params = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.61"), new BigDecimal("-122.333")),
 				12);
-		Locale seattle = new Locale(SEATTLE, "Seattle", params, seattleLocales);
+		final Locale seattle = new Locale(SEATTLE, "Seattle", params, seattleLocales);
 		final PreparedStatement statement = connection.prepareStatement("INSERT INTO brewtour.locale(id,version,data) VALUES (?,1,?)");
 		statement.setString(1, seattle.getIdentifier().id);
 		statement.setString(2, objectMapper.writeValueAsString(seattle));
@@ -91,7 +91,7 @@ public class V1_1__TestLocationData implements JdbcMigration {
 		try (final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("json/test_beers.json")) {
 			final BrewDbBeerList beers = objectMapper.readValue(in, BrewDbBeerList.class);
 			for (final BrewDbBeer brewDbBeer : beers) {
-				Beer beer = convert(brewDbBeer);
+				final Beer beer = convert(brewDbBeer);
 				bdbStyles.add(brewDbBeer.style);
 				beerMap.put(brewDbBeer.id, beer);
 			}
@@ -102,6 +102,7 @@ public class V1_1__TestLocationData implements JdbcMigration {
 
 	private static Beer convert(BrewDbBeer beer) {
 		return new Beer(beer.id, beer.name, beer.status, beer.style == null ? "" : beer.style.name,
-				beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name, beer.abv, beer.ibu);
+				beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name,
+				beer.abv, beer.ibu, true);
 	}
 }

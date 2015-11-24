@@ -44,14 +44,26 @@ public class LocationRepositoryTest {
 
 	@Test
 	public void testSave() {
-		this.locationRepo.save(LOCATION_ID, LOCATION);
+		this.locationRepo.save(LOCATION);
 		final Location result = this.locationRepo.get(LOCATION_ID);
 		assertEquals(ZERO, result.latitude);
 	}
 
 	@Test
+	public void testRequire() throws ObjectDoesNotExistException {
+		this.locationRepo.save(LOCATION);
+		final Location result = this.locationRepo.require(LOCATION_ID);
+		assertEquals(ZERO, result.latitude);
+	}
+
+	@Test(expected = ObjectDoesNotExistException.class)
+	public void testRequire_doesNotExist() throws ObjectDoesNotExistException {
+		this.locationRepo.require(LOCATION_ID);
+	}
+
+	@Test
 	public void testExists() {
-		this.locationRepo.save(LOCATION_ID, LOCATION);
+		this.locationRepo.save(LOCATION);
 		final boolean result = this.locationRepo.exists(LOCATION_ID);
 		assertTrue(result);
 	}
@@ -63,22 +75,22 @@ public class LocationRepositoryTest {
 	}
 
 	@Test
-	public void testUpdate() {
-		this.locationRepo.save(LOCATION_ID, LOCATION);
+	public void testUpdate() throws ObjectDoesNotExistException {
+		this.locationRepo.save(LOCATION);
 
-		this.locationRepo.update(LOCATION_ID, LOCATION_2);
+		this.locationRepo.update(LOCATION_2);
 		final Location result = this.locationRepo.get(LOCATION_ID);
 		assertEquals(ONE, result.latitude);
 	}
 
 	@Test(expected = ObjectDoesNotExistException.class)
-	public void testUpdate_doesNotExist() {
-		this.locationRepo.update(LOCATION_ID, LOCATION);
+	public void testUpdate_doesNotExist() throws ObjectDoesNotExistException {
+		this.locationRepo.update(LOCATION);
 	}
 
 	@Test
 	public void testDelete() {
-		this.locationRepo.save(LOCATION_ID, LOCATION);
+		this.locationRepo.save(LOCATION);
 		this.locationRepo.delete(LOCATION_ID);
 		assertNull(this.locationRepo.get(LOCATION_ID));
 	}

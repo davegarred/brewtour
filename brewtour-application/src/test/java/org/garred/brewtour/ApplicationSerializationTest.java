@@ -21,7 +21,7 @@ import org.junit.Test;
 public class ApplicationSerializationTest extends AbstractSerializationTest {
 
 	private static final UserId USER_ID = new UserId("a user id");
-	private static final Beer BEER = new Beer("beer id", "a beer name", "someStatus", "awesome style", "niche category", new BigDecimal("6.2"), new BigDecimal("45"));
+	private static final Beer BEER = new Beer("beer id", "a beer name", "someStatus", "awesome style", "niche category", new BigDecimal("6.2"), new BigDecimal("45"), true);
 	private static final Image IMAGE_2 = new Image("image 2");
 	private static final Image IMAGE_1 = new Image("image 1");
 	private static final LocalePoint LOCALE_POINT = new LocalePoint(LOCATION_ID, "Brewery Name",

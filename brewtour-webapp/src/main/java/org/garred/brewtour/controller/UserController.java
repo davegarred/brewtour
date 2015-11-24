@@ -34,13 +34,13 @@ public class UserController extends AbstractRestController {
 	@RequestMapping(value = "/addFavorite", method = POST, produces="application/json")
 	@ResponseBody
 	public UserDetails addFavorite(HttpServletRequest request, @RequestBody AddFavoriteLocation dto) {
-		return this.userService.addFavorite(userId(request),dto.locationId);
+		return this.userService.addFavorite(userId(request),dto);
 	}
 
 	@RequestMapping(value = "/removeFavorite", method = POST, produces="application/json")
 	@ResponseBody
 	public UserDetails removeFavorite(HttpServletRequest request, @RequestBody RemoveFavoriteLocation dto) {
-		return this.userService.removeFavorite(userId(request),dto.locationId);
+		return this.userService.removeFavorite(userId(request),dto);
 	}
 
 }

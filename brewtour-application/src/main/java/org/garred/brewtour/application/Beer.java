@@ -7,8 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Beer extends AbstractObject {
 
-	private final String brewDbId,name,status,style,category;
-	private final BigDecimal abv,ibu;
+	private final String brewDbId,name,status;
+	private String style,category;
+	private BigDecimal abv,ibu;
+	private boolean available;
 
 	@JsonCreator
 	public Beer(@JsonProperty("brewDbId") String brewDbId,
@@ -17,7 +19,8 @@ public class Beer extends AbstractObject {
 			@JsonProperty("style") String style,
 			@JsonProperty("category") String category,
 			@JsonProperty("abv") BigDecimal abv,
-			@JsonProperty("ibu") BigDecimal ibu) {
+			@JsonProperty("ibu") BigDecimal ibu,
+			@JsonProperty("available") boolean available) {
 		this.brewDbId = brewDbId;
 		this.name = name;
 		this.status = status;
@@ -25,8 +28,39 @@ public class Beer extends AbstractObject {
 		this.category = category;
 		this.abv = abv;
 		this.ibu = ibu;
+		this.available = available;
 	}
 
+	public String getStyle() {
+		return this.style;
+	}
+	public void setStyle(String style) {
+		this.style = style;
+	}
+	public String getCategory() {
+		return this.category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public BigDecimal getAbv() {
+		return this.abv;
+	}
+	public void setAbv(BigDecimal abv) {
+		this.abv = abv;
+	}
+	public BigDecimal getIbu() {
+		return this.ibu;
+	}
+	public void setIbu(BigDecimal ibu) {
+		this.ibu = ibu;
+	}
+	public boolean isAvailable() {
+		return this.available;
+	}
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
 	public String getBrewDbId() {
 		return this.brewDbId;
 	}
@@ -34,25 +68,8 @@ public class Beer extends AbstractObject {
 	public String getName() {
 		return this.name;
 	}
-
 	public String getStatus() {
 		return this.status;
-	}
-
-	public String getStyle() {
-		return this.style;
-	}
-
-	public String getCategory() {
-		return this.category;
-	}
-
-	public BigDecimal getAbv() {
-		return this.abv;
-	}
-	
-	public BigDecimal getIbu() {
-		return ibu;
 	}
 
 	@Override
@@ -60,9 +77,10 @@ public class Beer extends AbstractObject {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((this.abv == null) ? 0 : this.abv.hashCode());
-		result = prime * result + ((this.ibu == null) ? 0 : this.ibu.hashCode());
+		result = prime * result + (this.available ? 1231 : 1237);
 		result = prime * result + ((this.brewDbId == null) ? 0 : this.brewDbId.hashCode());
 		result = prime * result + ((this.category == null) ? 0 : this.category.hashCode());
+		result = prime * result + ((this.ibu == null) ? 0 : this.ibu.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
 		result = prime * result + ((this.status == null) ? 0 : this.status.hashCode());
 		result = prime * result + ((this.style == null) ? 0 : this.style.hashCode());
@@ -82,10 +100,7 @@ public class Beer extends AbstractObject {
 				return false;
 		} else if (!this.abv.equals(other.abv))
 			return false;
-		if (this.ibu == null) {
-			if (other.ibu != null)
-				return false;
-		} else if (!this.ibu.equals(other.ibu))
+		if (this.available != other.available)
 			return false;
 		if (this.brewDbId == null) {
 			if (other.brewDbId != null)
@@ -96,6 +111,11 @@ public class Beer extends AbstractObject {
 			if (other.category != null)
 				return false;
 		} else if (!this.category.equals(other.category))
+			return false;
+		if (this.ibu == null) {
+			if (other.ibu != null)
+				return false;
+		} else if (!this.ibu.equals(other.ibu))
 			return false;
 		if (this.name == null) {
 			if (other.name != null)
@@ -114,4 +134,5 @@ public class Beer extends AbstractObject {
 			return false;
 		return true;
 	}
+
 }

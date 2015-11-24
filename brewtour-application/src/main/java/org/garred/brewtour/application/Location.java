@@ -10,7 +10,7 @@ public class Location extends AbstractEntity<LocationId> {
 
 	public final String brewDbId;
 	public final String name;
-	public final String description;
+	public String description;
 	public final BigDecimal latitude;
 	public final BigDecimal longitude;
 	public final AvailableImages images;
