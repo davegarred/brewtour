@@ -18,6 +18,7 @@ import org.garred.brewtour.application.Beer;
 import org.garred.brewtour.application.Image;
 import org.garred.brewtour.application.Location;
 import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.repository.LocaleRepository;
 import org.garred.brewtour.repository.LocationRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,13 +48,15 @@ public class LocationServiceTest {
 		return new Location(locationId, null, "a location name", LOCATION_DESCRIPTION, new BigDecimal("47.614"), new BigDecimal("-122.315"), new AvailableImages(IMAGE_1, IMAGE_2, null), new ArrayList<>());
 	}
 	private LocationRepository locationRepo;
+	private LocaleRepository localeRepo;
 
 	private LocationService locationService;
 
 	@Before
 	public void setup() {
 		this.locationRepo = new LocationRepositoryStub();
-		this.locationService = new LocationServiceImpl(this.locationRepo);
+		this.localeRepo = new LocaleRepositoryStub();
+		this.locationService = new LocationServiceImpl(this.locationRepo, this.localeRepo);
 		this.locationRepo.save(location(LOCATION_ID));
 		this.locationRepo.save(location(LOCATION_ID_2));
 	}

@@ -1,20 +1,28 @@
 package org.garred.brewtour.service;
 
+import static org.garred.brewtour.application.LocaleId.SEATTLE;
+
 import org.garred.brewtour.api.AddBeer;
 import org.garred.brewtour.api.BeerAvailable;
 import org.garred.brewtour.api.BeerUnavailable;
 import org.garred.brewtour.api.ModifyBeer;
 import org.garred.brewtour.api.ModifyLocationDescription;
 import org.garred.brewtour.application.Beer;
+import org.garred.brewtour.application.Locale;
+import org.garred.brewtour.application.LocaleId;
 import org.garred.brewtour.application.Location;
+import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.repository.LocaleRepository;
 import org.garred.brewtour.repository.LocationRepository;
 
 public class LocationServiceImpl implements LocationService {
 
 	private final LocationRepository locationRepository;
+	private final LocaleRepository localeRepository;
 
-	public LocationServiceImpl(LocationRepository locationRepository) {
+	public LocationServiceImpl(LocationRepository locationRepository, LocaleRepository localeRepository) {
 		this.locationRepository = locationRepository;
+		this.localeRepository = localeRepository;
 	}
 
 	@Override
@@ -69,6 +77,16 @@ public class LocationServiceImpl implements LocationService {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public Location getLocation(LocationId locationId) {
+		return this.locationRepository.get(locationId);
+	}
+
+	@Override
+	public Locale getLocale(LocaleId seattle) {
+		return this.localeRepository.get(SEATTLE);
 	}
 
 }

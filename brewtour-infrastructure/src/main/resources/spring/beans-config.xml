@@ -23,10 +23,11 @@
 	
 	<bean id="userService" class="org.garred.brewtour.service.UserServiceImpl"
 		c:userRepo-ref="userDetailsRepo" />
+	<bean id="locationService" class="org.garred.brewtour.service.LocationServiceImpl"
+		c:localeRepository-ref="localeRepo"
+		c:locationRepository-ref="locationRepo"/>
 	
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>
 		
-	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-
 </beans>

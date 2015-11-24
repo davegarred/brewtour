@@ -1,7 +1,14 @@
 <div ng-controller="MapController">
-	<div ng-if="user">
-		<button class="btn btn-xs">logout</button>
-		{{user.identifier}}, {{user.login}}
+	<div>
+		<span ng-if="user">
+			{{user.identifier}}, {{user.login}}
+		</span>
+		<span ng-if="!user.admin">
+			<button class="btn btn-xs">login</button>
+		</span>
+		<span ng-if="user.admin">
+			<button class="btn btn-xs">logout</button>
+		</span>
 	</div>
 	<div>
 		<div class="hidden-md hidden-lg" ng-if="locationDetails">
