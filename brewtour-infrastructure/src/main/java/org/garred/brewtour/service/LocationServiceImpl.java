@@ -7,7 +7,6 @@ import org.garred.brewtour.api.BeerAvailable;
 import org.garred.brewtour.api.BeerUnavailable;
 import org.garred.brewtour.api.ModifyBeer;
 import org.garred.brewtour.api.ModifyLocationDescription;
-import org.garred.brewtour.application.Beer;
 import org.garred.brewtour.application.Locale;
 import org.garred.brewtour.application.LocaleId;
 import org.garred.brewtour.application.Location;
@@ -34,23 +33,14 @@ public class LocationServiceImpl implements LocationService {
 	public void addBeer(AddBeer addBeer) {
 		validateAdminOrTest();
 		final Location location = this.locationRepository.require(addBeer.locationId);
-		if(findBeer(location,addBeer.name) != null) {
-			//TODO translate this exception back to the user
-			throw new RuntimeException("Can not add a beer with the same name");
-		}
-		final Beer beer = new Beer(null, addBeer.name, null, addBeer.style, addBeer.category, addBeer.abv, addBeer.ibu, true);
-		location.beers.add(beer);
+		location.addBeer(addBeer);
 		this.locationRepository.update(location);
 	}
 	@Override
 	public void modifyBeer(ModifyBeer modifyBeer) {
 		validateAdminOrTest();
 		final Location location = this.locationRepository.require(modifyBeer.locationId);
-		final Beer beer = findBeer(location,modifyBeer.name);
-		beer.setStyle(modifyBeer.style);
-		beer.setCategory(modifyBeer.category);
-		beer.setAbv(modifyBeer.abv);
-		beer.setIbu(modifyBeer.ibu);
+		location.modifyBeer(modifyBeer);
 		this.locationRepository.update(location);
 	}
 
@@ -58,8 +48,7 @@ public class LocationServiceImpl implements LocationService {
 	public void beerAvailable(BeerAvailable beerAvailable) {
 		validateAdminOrTest();
 		final Location location = this.locationRepository.require(beerAvailable.locationId);
-		final Beer beer = findBeer(location,beerAvailable.name);
-		beer.setAvailable(true);
+		location.beerAvailable(beerAvailable);
 		this.locationRepository.update(location);
 	}
 
@@ -67,8 +56,7 @@ public class LocationServiceImpl implements LocationService {
 	public void beerUnavailable(BeerUnavailable beerUnavailable) {
 		validateAdminOrTest();
 		final Location location = this.locationRepository.require(beerUnavailable.locationId);
-		final Beer beer = findBeer(location,beerUnavailable.name);
-		beer.setAvailable(false);
+		location.beerUnavailable(beerUnavailable);
 		this.locationRepository.update(location);
 	}
 
@@ -76,7 +64,7 @@ public class LocationServiceImpl implements LocationService {
 	public void modifyLocationDescription(ModifyLocationDescription modifyDescription) {
 		validateAdminOrTest();
 		final Location location = this.locationRepository.require(modifyDescription.locationId);
-		location.description = modifyDescription.description;
+		location.modifyLocationDescription(modifyDescription);
 		this.locationRepository.update(location);
 	}
 
@@ -86,15 +74,6 @@ public class LocationServiceImpl implements LocationService {
 		if(user == null || !(user.isAdmin() || user.isTestUser())) {
 			throw new RuntimeException("Attempt to modify an object without permission");
 		}
-	}
-
-	private static Beer findBeer(Location location, String beername) {
-		for(final Beer beer : location.beers) {
-			if(beer.getName().equals(beername)) {
-				return beer;
-			}
-		}
-		return null;
 	}
 
 	@Override

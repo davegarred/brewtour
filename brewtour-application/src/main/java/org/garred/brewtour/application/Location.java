@@ -3,6 +3,12 @@ package org.garred.brewtour.application;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.garred.brewtour.api.AddBeer;
+import org.garred.brewtour.api.BeerAvailable;
+import org.garred.brewtour.api.BeerUnavailable;
+import org.garred.brewtour.api.ModifyBeer;
+import org.garred.brewtour.api.ModifyLocationDescription;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,6 +39,43 @@ public class Location extends AbstractEntity<LocationId> {
 		this.longitude = longitude;
 		this.images = images;
 		this.beers = beers;
+	}
+
+	public void addBeer(AddBeer addBeer) {
+		if(findBeer(addBeer.name) != null) {
+			//TODO translate this exception back to the user
+			throw new RuntimeException("Can not add a beer with the same name");
+		}
+		final Beer beer = new Beer(null, addBeer.name, null, addBeer.style, addBeer.category, addBeer.abv, addBeer.ibu, true);
+		this.beers.add(beer);
+	}
+	public void modifyBeer(ModifyBeer modifyBeer) {
+		final Beer beer = findBeer(modifyBeer.name);
+		beer.setStyle(modifyBeer.style);
+		beer.setCategory(modifyBeer.category);
+		beer.setAbv(modifyBeer.abv);
+		beer.setIbu(modifyBeer.ibu);
+	}
+	public void beerAvailable(BeerAvailable beerAvailable) {
+		final Beer beer = findBeer(beerAvailable.name);
+		beer.setAvailable(true);
+	}
+	public void beerUnavailable(BeerUnavailable beerUnavailable) {
+		final Beer beer = findBeer(beerUnavailable.name);
+		beer.setAvailable(false);
+	}
+
+	public void modifyLocationDescription(ModifyLocationDescription modifyDescription) {
+		this.description = modifyDescription.description;
+	}
+
+	private Beer findBeer(String beername) {
+		for(final Beer beer : this.beers) {
+			if(beer.getName().equals(beername)) {
+				return beer;
+			}
+		}
+		return null;
 	}
 
 	@Override
