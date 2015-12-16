@@ -1,26 +1,27 @@
 package org.garred.brewtour.api;
 
 import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.application.Review;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BeerUnavailable extends LocationCommand {
+public class AddLocationReview extends LocationCommand {
 
-	public final String name;
+	public final Review review;
 
 	@JsonCreator
-	public BeerUnavailable(@JsonProperty("locationId") LocationId locationId,
-			@JsonProperty("name") String name) {
+	public AddLocationReview(@JsonProperty("locationId") LocationId locationId,
+			@JsonProperty("review") Review review) {
 		super(locationId);
-		this.name = name;
+		this.review = review;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+		result = prime * result + ((this.review == null) ? 0 : this.review.hashCode());
 		return result;
 	}
 
@@ -32,13 +33,12 @@ public class BeerUnavailable extends LocationCommand {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final BeerUnavailable other = (BeerUnavailable) obj;
-		if (this.name == null) {
-			if (other.name != null)
+		final AddLocationReview other = (AddLocationReview) obj;
+		if (this.review == null) {
+			if (other.review != null)
 				return false;
-		} else if (!this.name.equals(other.name))
+		} else if (!this.review.equals(other.review))
 			return false;
 		return true;
 	}
-
 }

@@ -2,9 +2,12 @@ package org.garred.brewtour.service;
 
 import static org.garred.brewtour.application.LocaleId.SEATTLE;
 
+import java.util.function.Consumer;
+
 import org.garred.brewtour.api.AddBeer;
 import org.garred.brewtour.api.BeerAvailable;
 import org.garred.brewtour.api.BeerUnavailable;
+import org.garred.brewtour.api.LocationCommand;
 import org.garred.brewtour.api.ModifyBeer;
 import org.garred.brewtour.api.ModifyLocationDescription;
 import org.garred.brewtour.application.Locale;
@@ -28,54 +31,37 @@ public class LocationServiceImpl implements LocationService {
 	@Override
 	@Secure
 	public void addBeer(AddBeer addBeer) {
-//		validateAdminOrTest();
-		final Location location = this.locationRepository.require(addBeer.locationId);
-		location.addBeer(addBeer);
-		this.locationRepository.update(location);
+		process(addBeer, l -> l.addBeer(addBeer));
 	}
 	@Override
 	@Secure
 	public void modifyBeer(ModifyBeer modifyBeer) {
-//		validateAdminOrTest();
-		final Location location = this.locationRepository.require(modifyBeer.locationId);
-		location.modifyBeer(modifyBeer);
-		this.locationRepository.update(location);
+		process(modifyBeer, l -> l.modifyBeer(modifyBeer));
 	}
 
 	@Override
 	@Secure
 	public void beerAvailable(BeerAvailable beerAvailable) {
-//		validateAdminOrTest();
-		final Location location = this.locationRepository.require(beerAvailable.locationId);
-		location.beerAvailable(beerAvailable);
-		this.locationRepository.update(location);
+		process(beerAvailable, l -> l.beerAvailable(beerAvailable));
 	}
 
 	@Override
 	@Secure
 	public void beerUnavailable(BeerUnavailable beerUnavailable) {
-//		validateAdminOrTest();
-		final Location location = this.locationRepository.require(beerUnavailable.locationId);
-		location.beerUnavailable(beerUnavailable);
-		this.locationRepository.update(location);
+		process(beerUnavailable, l -> l.beerUnavailable(beerUnavailable));
 	}
 
 	@Override
 	@Secure
 	public void modifyLocationDescription(ModifyLocationDescription modifyDescription) {
-//		validateAdminOrTest();
-		final Location location = this.locationRepository.require(modifyDescription.locationId);
-		location.modifyLocationDescription(modifyDescription);
-		this.locationRepository.update(location);
+		process(modifyDescription, l -> l.modifyLocationDescription(modifyDescription));
 	}
 
-//	//TODO use aspect
-//	private void validateAdminOrTest() {
-//		final UserDetails user = this.userRepo.get(UserHandler.get());
-//		if(user == null || !(user.isAdmin() || user.isTestUser())) {
-//			throw new RuntimeException("Attempt to modify an object without permission");
-//		}
-//	}
+	private void process(LocationCommand command, Consumer<Location> consumer) {
+		final Location location = this.locationRepository.require(command.locationId);
+		consumer.accept(location);
+		this.locationRepository.update(location);
+	}
 
 	@Override
 	public Location getLocation(LocationId locationId) {

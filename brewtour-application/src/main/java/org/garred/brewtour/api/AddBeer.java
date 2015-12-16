@@ -7,9 +7,8 @@ import org.garred.brewtour.application.LocationId;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AddBeer {
+public class AddBeer extends LocationCommand {
 
-	public final LocationId locationId;
 	public final String name,style,category;
 	public final BigDecimal abv,ibu;
 
@@ -20,7 +19,7 @@ public class AddBeer {
 			@JsonProperty("category") String category,
 			@JsonProperty("abv") BigDecimal abv,
 			@JsonProperty("ibu") BigDecimal ibu) {
-		this.locationId = locationId;
+		super(locationId);
 		this.name = name;
 		this.style = style;
 		this.category = category;
@@ -31,11 +30,10 @@ public class AddBeer {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result + ((this.abv == null) ? 0 : this.abv.hashCode());
 		result = prime * result + ((this.category == null) ? 0 : this.category.hashCode());
 		result = prime * result + ((this.ibu == null) ? 0 : this.ibu.hashCode());
-		result = prime * result + ((this.locationId == null) ? 0 : this.locationId.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
 		result = prime * result + ((this.style == null) ? 0 : this.style.hashCode());
 		return result;
@@ -45,7 +43,7 @@ public class AddBeer {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -65,11 +63,6 @@ public class AddBeer {
 				return false;
 		} else if (!this.ibu.equals(other.ibu))
 			return false;
-		if (this.locationId == null) {
-			if (other.locationId != null)
-				return false;
-		} else if (!this.locationId.equals(other.locationId))
-			return false;
 		if (this.name == null) {
 			if (other.name != null)
 				return false;
@@ -82,5 +75,4 @@ public class AddBeer {
 			return false;
 		return true;
 	}
-
 }

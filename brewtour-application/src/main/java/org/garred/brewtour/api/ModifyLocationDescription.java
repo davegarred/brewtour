@@ -5,15 +5,14 @@ import org.garred.brewtour.application.LocationId;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ModifyLocationDescription {
+public class ModifyLocationDescription extends LocationCommand {
 
-	public final LocationId locationId;
 	public final String description;
 
 	@JsonCreator
 	public ModifyLocationDescription(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("description") String description) {
-		this.locationId = locationId;
+		super(locationId);
 		this.description = description;
 	}
 
