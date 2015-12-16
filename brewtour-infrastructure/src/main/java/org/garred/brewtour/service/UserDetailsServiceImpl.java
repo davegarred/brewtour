@@ -1,7 +1,6 @@
 package org.garred.brewtour.service;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import org.garred.brewtour.api.AddFavoriteLocation;
 import org.garred.brewtour.api.RemoveFavoriteLocation;
@@ -13,13 +12,13 @@ import org.garred.brewtour.repository.UserDetailsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserServiceImpl implements UserService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
 	private final UserDetailsRepository userRepo;
 
-	public UserServiceImpl(UserDetailsRepository userRepo) {
+	public UserDetailsServiceImpl(UserDetailsRepository userRepo) {
 		this.userRepo = userRepo;
 	}
 
@@ -31,17 +30,6 @@ public class UserServiceImpl implements UserService {
 		return this.userRepo.get(userId);
 	}
 
-	@Override
-	public UserDetails discoverUser(UserId userId, UserId previousUserId, boolean testUser, boolean admin) {
-		if(userId == null) {
-			return null;
-		}
-		final UserDetails previousUser = this.userRepo.get(previousUserId);
-		final Set<LocationId> favorites = previousUser == null ? new HashSet<>() : previousUser.getFavoriteLocations();
-		final UserDetails details = new UserDetails(userId, favorites, testUser, admin);
-		this.userRepo.save(details);
-		return details;
-	}
 	@Override
 	public UserDetails addFavorite(UserId userId, AddFavoriteLocation location) {
 		if(userId == null) {

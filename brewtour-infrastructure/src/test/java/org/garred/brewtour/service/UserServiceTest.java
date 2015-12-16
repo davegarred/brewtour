@@ -21,12 +21,12 @@ public class UserServiceTest {
 
 	private UserDetailsRepository userRepo;
 
-	private UserServiceImpl userService;
+	private UserDetailsServiceImpl userService;
 
 	@Before
 	public void setup() {
 		this.userRepo = new UserDetailsRepositoryStub();
-		this.userService = new UserServiceImpl(this.userRepo);
+		this.userService = new UserDetailsServiceImpl(this.userRepo);
 	}
 
 	@Test

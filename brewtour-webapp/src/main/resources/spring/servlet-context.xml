@@ -33,9 +33,9 @@
  -->
 	
 	<beans:bean class="org.garred.brewtour.controller.UserController"
-		c:userService-ref="userService" />
+		c:userService-ref="userDetailsService" />
 	<beans:bean class="org.garred.brewtour.controller.AdminController"
-		c:userService-ref="userService" />
+		c:userService-ref="userAuthService" />
 	<beans:bean class="org.garred.brewtour.controller.LocationController"
 		c:locationService-ref="locationService"/>
 	

@@ -1,15 +1,15 @@
 package org.garred.brewtour.config;
 
-import org.garred.brewtour.application.UserId;
+import org.garred.brewtour.application.UserAuth;
 
 public class UserHandler {
 
-	private static ThreadLocal<UserId> tl = new ThreadLocal<>();
+	private static ThreadLocal<UserAuth> tl = new ThreadLocal<>();
 
-	public static void set(UserId userId) {
-		tl.set(userId);
+	public static void set(UserAuth user) {
+		tl.set(user);
 	}
-	public static UserId get() {
+	public static UserAuth get() {
 		return tl.get();
 	}
 	public static void clear() {

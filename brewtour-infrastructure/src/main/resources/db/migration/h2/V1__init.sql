@@ -14,3 +14,8 @@ CREATE TABLE brewtour.user_details (
   version integer NOT NULL,
   data clob
 );
+CREATE TABLE brewtour.user_auth (
+  id varchar(36) NOT NULL,
+  version integer NOT NULL,
+  data clob
+);

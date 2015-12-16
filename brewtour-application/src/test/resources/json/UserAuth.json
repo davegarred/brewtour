@@ -1,0 +1,5 @@
+{
+  "identifier" : "a user id",
+  "login" : "a user login",
+  "roles" : [ "ADMIN", "TEST" ]
+}

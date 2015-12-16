@@ -2,10 +2,6 @@ package org.garred.brewtour.controller;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.filter.AuthenticationFilter;
 import org.garred.brewtour.validation.ConstraintViolationDto;
 import org.garred.brewtour.validation.ConstraintViolationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,7 +28,4 @@ public class AbstractRestController {
 		return this.objectMapper.writeValueAsString(new ConstraintViolationDto(e.getViolations()));
 	}
 
-	protected UserId userId(HttpServletRequest request) {
-		return (UserId) request.getSession().getAttribute(AuthenticationFilter.USER_ATTR);
-	}
 }

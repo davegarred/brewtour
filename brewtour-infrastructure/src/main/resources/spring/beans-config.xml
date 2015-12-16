@@ -20,18 +20,21 @@
 	<bean id="userDetailsRepo" class="org.garred.brewtour.repository.UserDetailsRepositoryImpl"  
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper"/>
+	<bean id="userAuthRepo" class="org.garred.brewtour.repository.UserAuthRepositoryImpl"  
+		c:datasource-ref="dataSource" 
+		c:objectMapper-ref="objectMapper"/>
 	
-	<bean id="userService" class="org.garred.brewtour.service.UserServiceImpl"
+	<bean id="userDetailsService" class="org.garred.brewtour.service.UserDetailsServiceImpl"
 		c:userRepo-ref="userDetailsRepo" />
+	<bean id="userAuthService" class="org.garred.brewtour.service.UserAuthServiceImpl"
+		c:userRepo-ref="userAuthRepo" />
 	<bean id="locationService" class="org.garred.brewtour.service.LocationServiceImpl"
 		c:localeRepository-ref="localeRepo"
-		c:locationRepository-ref="locationRepo"
-		c:userRepo-ref="userDetailsRepo"/>
+		c:locationRepository-ref="locationRepo"/>
 	
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>
 		
-	<bean class="org.garred.brewtour.config.SecureAspect" 
-		c:userRepo-ref="userDetailsRepo" />
+	<bean class="org.garred.brewtour.config.SecureAspect" />
 		
 </beans>

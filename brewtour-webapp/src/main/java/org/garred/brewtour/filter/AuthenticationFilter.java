@@ -12,7 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.garred.brewtour.application.UserId;
+import org.garred.brewtour.application.UserAuth;
 import org.garred.brewtour.config.UserHandler;
 
 public class AuthenticationFilter implements Filter {
@@ -29,13 +29,13 @@ public class AuthenticationFilter implements Filter {
 		}
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpSession session = httpRequest.getSession();
-		UserId userId = (UserId) session.getAttribute(USER_ATTR);
-		if(userId == null) {
-			userId = new UserId(UUID.randomUUID().toString());
-			session.setAttribute(USER_ATTR, userId);
+		UserAuth user = (UserAuth) session.getAttribute(USER_ATTR);
+		if(user == null) {
+			user = UserAuth.guest(UUID.randomUUID().toString());
+			session.setAttribute(USER_ATTR, user);
 		}
 		try {
-			UserHandler.set(userId);
+			UserHandler.set(user);
 			chain.doFilter(request, response);
 		} finally {
 			UserHandler.clear();

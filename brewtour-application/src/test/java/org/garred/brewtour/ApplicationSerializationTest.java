@@ -2,6 +2,8 @@ package org.garred.brewtour;
 
 import static java.util.Arrays.asList;
 import static org.garred.brewtour.application.LocaleId.SEATTLE;
+import static org.garred.brewtour.application.UserAuth.ADMIN_ROLE;
+import static org.garred.brewtour.application.UserAuth.TEST_ROLE;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -14,12 +16,14 @@ import org.garred.brewtour.application.Image;
 import org.garred.brewtour.application.Locale;
 import org.garred.brewtour.application.LocalePoint;
 import org.garred.brewtour.application.Location;
+import org.garred.brewtour.application.UserAuth;
 import org.garred.brewtour.application.UserDetails;
 import org.garred.brewtour.application.UserId;
 import org.junit.Test;
 
 public class ApplicationSerializationTest extends AbstractSerializationTest {
 
+	private static final String LOGIN = "a user login";
 	private static final UserId USER_ID = new UserId("a user id");
 	private static final Beer BEER = new Beer("beer id", "a beer name", "someStatus", "awesome style", "niche category", new BigDecimal("6.2"), new BigDecimal("45"), true);
 	private static final Image IMAGE_2 = new Image("image 2");
@@ -76,7 +80,12 @@ public class ApplicationSerializationTest extends AbstractSerializationTest {
 
 	@Test
 	public void testUserDetails() {
-		validate(new UserDetails(USER_ID, new HashSet<>(asList(LOCATION_ID, LOCATION_ID_2)), false, false));
+		validate(new UserDetails(USER_ID, new HashSet<>(asList(LOCATION_ID, LOCATION_ID_2))));
+	}
+
+	@Test
+	public void testUserAuth() {
+		validate(new UserAuth(USER_ID, LOGIN,  new HashSet<>(asList(TEST_ROLE, ADMIN_ROLE))));
 	}
 
 }
