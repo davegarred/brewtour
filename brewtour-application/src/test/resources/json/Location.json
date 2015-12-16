@@ -17,7 +17,19 @@
     "category" : "niche category",
     "abv" : 6.2,
     "ibu" : 45,
-    "available" : true
+    "available" : true,
+    "reviews" : [ {
+      "userId" : "a user id",
+      "time" : [ 2015, 9, 20, 8, 50 ],
+      "stars" : 4,
+      "review" : "spicy but with a full body"
+    } ]
+  } ],
+  "reviews" : [ {
+    "userId" : "a user id",
+    "time" : [ 2015, 9, 20, 8, 50 ],
+    "stars" : 5,
+    "review" : "A nice place to hang out"
   } ],
   "identifier" : "a location id"
 }

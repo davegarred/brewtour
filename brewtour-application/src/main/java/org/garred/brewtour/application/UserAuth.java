@@ -13,23 +13,23 @@ public class UserAuth extends AbstractEntity<UserId>{
 	public static final String TEST_ROLE = "TEST";
 
 	private final String login;
-	private final Set<String> authorities;
+	private final Set<String> roles;
 
 	@JsonCreator
 	public UserAuth(@JsonProperty("identifier") UserId identifier,
 			@JsonProperty("login") String login,
-			@JsonProperty("roles") Set<String> authorities) {
+			@JsonProperty("roles") Set<String> roles) {
 		super(identifier);
 		this.login = login;
-		this.authorities = authorities;
+		this.roles = roles;
 	}
 
 	public String getLogin() {
 		return this.login;
 	}
 
-	public Set<String> getAuthorities() {
-		return this.authorities;
+	public Set<String> getRoles() {
+		return this.roles;
 	}
 
 	public static UserAuth userAuthorization(UserId userId, String login, Set<String> authorities) {
@@ -40,20 +40,20 @@ public class UserAuth extends AbstractEntity<UserId>{
 	}
 
 	public UserAuth discover(Set<String> newAuthorities) {
-		this.authorities.addAll(newAuthorities);
+		this.roles.addAll(newAuthorities);
 		return this;
 	}
 
-	public boolean hasAuthority(String authority) {
-		return this.authorities != null && this.authorities.contains(authority);
+	public boolean hasRole(String role) {
+		return this.roles != null && this.roles.contains(role);
 	}
 
-	public boolean hasAnyAuthority(Collection<String> checkAuthorities) {
-		if(this.authorities == null || this.authorities.isEmpty() || checkAuthorities == null) {
+	public boolean hasAnyRole(Collection<String> checkRoles) {
+		if(this.roles == null || this.roles.isEmpty() || checkRoles == null) {
 			return false;
 		}
-		for(final String authority : checkAuthorities) {
-			if(this.authorities.contains(authority)) {
+		for(final String role : checkRoles) {
+			if(this.roles.contains(role)) {
 				return true;
 			}
 		}
@@ -64,7 +64,7 @@ public class UserAuth extends AbstractEntity<UserId>{
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((this.authorities == null) ? 0 : this.authorities.hashCode());
+		result = prime * result + ((this.roles == null) ? 0 : this.roles.hashCode());
 		return result;
 	}
 
@@ -77,10 +77,10 @@ public class UserAuth extends AbstractEntity<UserId>{
 		if (getClass() != obj.getClass())
 			return false;
 		final UserAuth other = (UserAuth) obj;
-		if (this.authorities == null) {
-			if (other.authorities != null)
+		if (this.roles == null) {
+			if (other.roles != null)
 				return false;
-		} else if (!this.authorities.equals(other.authorities))
+		} else if (!this.roles.equals(other.roles))
 			return false;
 		return true;
 	}

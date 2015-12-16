@@ -19,7 +19,7 @@ public class SecureAspect {
 	@Before("@annotation(org.garred.brewtour.config.Secure)")
 	public void secure() {
 		final UserAuth user = UserHandler.get();
-		if(user == null || !(user.hasAnyAuthority(REQUIRED_ROLES))) {
+		if(user == null || !(user.hasAnyRole(REQUIRED_ROLES))) {
 			throw new RuntimeException("Attempt to modify an object without permission");
 		}
 	}

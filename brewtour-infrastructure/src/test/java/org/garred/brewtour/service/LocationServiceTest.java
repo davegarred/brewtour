@@ -53,8 +53,8 @@ public class LocationServiceTest {
 	private static final BigDecimal ABV_2 = new BigDecimal("5.1");
 	private static final BigDecimal IBU = new BigDecimal("76");
 	private static final BigDecimal IBU_2 = new BigDecimal("29");
-	private static final Beer BEER = new Beer(null, BEER_NAME, null, STYLE, CATEGORY, ABV, IBU, true);
-	private static final Beer BEER_2 = new Beer(null, BEER_NAME, null, STYLE_2, CATEGORY_2, ABV_2, IBU_2, true);
+	private static final Beer BEER = new Beer(null, BEER_NAME, null, STYLE, CATEGORY, ABV, IBU, true, new ArrayList<>());
+	private static final Beer BEER_2 = new Beer(null, BEER_NAME, null, STYLE_2, CATEGORY_2, ABV_2, IBU_2, true, new ArrayList<>());
 	private static final LocationId LOCATION_ID = new LocationId("a location id");
 	private static final AddBeer ADD_BEER = new AddBeer(LOCATION_ID, BEER_NAME, STYLE, CATEGORY, ABV, IBU);
 	private static final LocationId LOCATION_ID_2 = new LocationId("another location id");
@@ -62,7 +62,9 @@ public class LocationServiceTest {
 	private static final Image IMAGE_1 = new Image("image 1");
 
 	private static Location location(LocationId locationId) {
-		return new Location(locationId, null, "a location name", LOCATION_DESCRIPTION, new BigDecimal("47.614"), new BigDecimal("-122.315"), new AvailableImages(IMAGE_1, IMAGE_2, null), new ArrayList<>());
+		return new Location(locationId, null, "a location name", LOCATION_DESCRIPTION,
+				new BigDecimal("47.614"), new BigDecimal("-122.315"),
+				new AvailableImages(IMAGE_1, IMAGE_2, null), new ArrayList<>(), new ArrayList<>());
 	}
 	private LocationRepository locationRepo;
 	private LocaleRepository localeRepo;

@@ -1,5 +1,6 @@
 package org.garred.brewtour.config.flyway;
 
+import static java.util.Collections.emptyList;
 import static org.garred.brewtour.application.AvailableImages.NO_IMAGES;
 import static org.garred.brewtour.application.LocaleId.SEATTLE;
 
@@ -79,7 +80,7 @@ public class V1_1__TestLocationData implements JdbcMigration {
 			}
 		}
 		return new Location(id, brewDbLocation.id, brewDbLocation.breweryName, brewDbLocation.breweryDescription, brewDbLocation.latitude,
-				brewDbLocation.longitude, images, beers);
+				brewDbLocation.longitude, images, beers, emptyList());
 	}
 
 	private static LocalePoint convertToLocalePoint(Location location) {
@@ -103,6 +104,6 @@ public class V1_1__TestLocationData implements JdbcMigration {
 	private static Beer convert(BrewDbBeer beer) {
 		return new Beer(beer.id, beer.name, beer.status, beer.style == null ? "" : beer.style.name,
 				beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name,
-				beer.abv, beer.ibu, true);
+				beer.abv, beer.ibu, true, emptyList());
 	}
 }

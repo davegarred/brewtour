@@ -1,6 +1,7 @@
 package org.garred.brewtour.application;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,6 +12,7 @@ public class Beer extends AbstractObject {
 	private String style,category;
 	private BigDecimal abv,ibu;
 	private boolean available;
+	public final List<Review> reviews;
 
 	@JsonCreator
 	public Beer(@JsonProperty("brewDbId") String brewDbId,
@@ -20,7 +22,8 @@ public class Beer extends AbstractObject {
 			@JsonProperty("category") String category,
 			@JsonProperty("abv") BigDecimal abv,
 			@JsonProperty("ibu") BigDecimal ibu,
-			@JsonProperty("available") boolean available) {
+			@JsonProperty("available") boolean available,
+			@JsonProperty("reviews") List<Review> reviews) {
 		this.brewDbId = brewDbId;
 		this.name = name;
 		this.status = status;
@@ -29,6 +32,7 @@ public class Beer extends AbstractObject {
 		this.abv = abv;
 		this.ibu = ibu;
 		this.available = available;
+		this.reviews = reviews;
 	}
 
 	public String getStyle() {
@@ -58,6 +62,7 @@ public class Beer extends AbstractObject {
 	public boolean isAvailable() {
 		return this.available;
 	}
+
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
@@ -82,10 +87,12 @@ public class Beer extends AbstractObject {
 		result = prime * result + ((this.category == null) ? 0 : this.category.hashCode());
 		result = prime * result + ((this.ibu == null) ? 0 : this.ibu.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+		result = prime * result + ((this.reviews == null) ? 0 : this.reviews.hashCode());
 		result = prime * result + ((this.status == null) ? 0 : this.status.hashCode());
 		result = prime * result + ((this.style == null) ? 0 : this.style.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -121,6 +128,11 @@ public class Beer extends AbstractObject {
 			if (other.name != null)
 				return false;
 		} else if (!this.name.equals(other.name))
+			return false;
+		if (this.reviews == null) {
+			if (other.reviews != null)
+				return false;
+		} else if (!this.reviews.equals(other.reviews))
 			return false;
 		if (this.status == null) {
 			if (other.status != null)

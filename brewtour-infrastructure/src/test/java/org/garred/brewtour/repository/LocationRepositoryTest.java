@@ -26,8 +26,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class LocationRepositoryTest {
 
 	private static final LocationId LOCATION_ID = new LocationId("someKey");
-	private static final Location LOCATION = new Location(LOCATION_ID, "", "", "", ZERO, ZERO, NO_IMAGES, emptyList());
-	private static final Location LOCATION_2 = new Location(LOCATION_ID, "", "", "", ONE, ONE, NO_IMAGES, emptyList());
+	private static final Location LOCATION = new Location(LOCATION_ID, "", "", "", ZERO, ZERO, NO_IMAGES, emptyList(), emptyList());
+	private static final Location LOCATION_2 = new Location(LOCATION_ID, "", "", "", ONE, ONE, NO_IMAGES, emptyList(), emptyList());
 
 	@Autowired
 	private LocationRepository locationRepo;

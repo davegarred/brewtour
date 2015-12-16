@@ -1,5 +1,7 @@
 package org.garred.brewtour.application;
 
+import static java.util.Collections.emptyList;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class Location extends AbstractEntity<LocationId> {
 	public final BigDecimal longitude;
 	public final AvailableImages images;
 	public final List<Beer> beers;
+	public final List<Review> reviews;
 
 	@JsonCreator
 	public Location(@JsonProperty("locationId") LocationId locationId,
@@ -30,7 +33,8 @@ public class Location extends AbstractEntity<LocationId> {
 			@JsonProperty("latitude") BigDecimal latitude,
 			@JsonProperty("longitude") BigDecimal longitude,
 			@JsonProperty("images") AvailableImages images,
-			@JsonProperty("beers") List<Beer> beers) {
+			@JsonProperty("beers") List<Beer> beers,
+			@JsonProperty("reviews") List<Review> reviews) {
 		super(locationId);
 		this.brewDbId = brewDbId;
 		this.name = name;
@@ -39,6 +43,7 @@ public class Location extends AbstractEntity<LocationId> {
 		this.longitude = longitude;
 		this.images = images;
 		this.beers = beers;
+		this.reviews = reviews;
 	}
 
 	public void addBeer(AddBeer addBeer) {
@@ -46,7 +51,7 @@ public class Location extends AbstractEntity<LocationId> {
 			//TODO translate this exception back to the user
 			throw new RuntimeException("Can not add a beer with the same name");
 		}
-		final Beer beer = new Beer(null, addBeer.name, null, addBeer.style, addBeer.category, addBeer.abv, addBeer.ibu, true);
+		final Beer beer = new Beer(null, addBeer.name, null, addBeer.style, addBeer.category, addBeer.abv, addBeer.ibu, true, emptyList());
 		this.beers.add(beer);
 	}
 	public void modifyBeer(ModifyBeer modifyBeer) {
@@ -81,7 +86,7 @@ public class Location extends AbstractEntity<LocationId> {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result + ((this.beers == null) ? 0 : this.beers.hashCode());
 		result = prime * result + ((this.brewDbId == null) ? 0 : this.brewDbId.hashCode());
 		result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
@@ -89,6 +94,7 @@ public class Location extends AbstractEntity<LocationId> {
 		result = prime * result + ((this.latitude == null) ? 0 : this.latitude.hashCode());
 		result = prime * result + ((this.longitude == null) ? 0 : this.longitude.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+		result = prime * result + ((this.reviews == null) ? 0 : this.reviews.hashCode());
 		return result;
 	}
 
@@ -96,7 +102,7 @@ public class Location extends AbstractEntity<LocationId> {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -136,7 +142,11 @@ public class Location extends AbstractEntity<LocationId> {
 				return false;
 		} else if (!this.name.equals(other.name))
 			return false;
+		if (this.reviews == null) {
+			if (other.reviews != null)
+				return false;
+		} else if (!this.reviews.equals(other.reviews))
+			return false;
 		return true;
 	}
-
 }
