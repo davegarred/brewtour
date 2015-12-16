@@ -1,4 +1,8 @@
 <div ng-controller="MapController">
+	<div ng-if="user">
+		<button class="btn btn-xs">logout</button>
+		{{user.identifier}}, {{user.login}}
+	</div>
 	<div>
 		<span ng-if="user">
 			{{user.identifier}}, {{user.login}}

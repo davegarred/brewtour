@@ -19,6 +19,8 @@ public class AuthenticationFilter implements Filter {
 
 	public static final String USER_ATTR = "userId";
 
+//	private static final String USER_COOKIE_NAME = "user";
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
