@@ -4,6 +4,9 @@ import static org.garred.brewtour.application.LocaleId.SEATTLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import org.garred.brewtour.api.AddBeerReview;
+import org.garred.brewtour.api.AddLocationReview;
+import org.garred.brewtour.api.BeerAvailable;
 import org.garred.brewtour.api.BeerUnavailable;
 import org.garred.brewtour.application.Locale;
 import org.garred.brewtour.application.Location;
@@ -36,9 +39,28 @@ public class LocationController extends AbstractRestController {
 		return this.locationService.getLocation(new LocationId(locationId));
 	}
 
+	@RequestMapping(value = "/beerAvailable", method = POST, produces="application/json")
+	@ResponseBody
+	public void beerAvailable(@RequestBody BeerAvailable beerAvailable) {
+		this.locationService.beerAvailable(beerAvailable);
+	}
+
 	@RequestMapping(value = "/beerUnavailable", method = POST, produces="application/json")
 	@ResponseBody
-	public void addFavorite(@RequestBody BeerUnavailable beerUnavailable) {
+	public void beerUnavailable(@RequestBody BeerUnavailable beerUnavailable) {
 		this.locationService.beerUnavailable(beerUnavailable);
 	}
+
+	@RequestMapping(value = "/locationReview", method = POST, produces="application/json")
+	@ResponseBody
+	public void addLocationReview(@RequestBody AddLocationReview locationReview) {
+		this.locationService.addLocationReview(locationReview);
+	}
+
+	@RequestMapping(value = "/beerReview", method = POST, produces="application/json")
+	@ResponseBody
+	public void addBeerReview(@RequestBody AddBeerReview beerReview) {
+		this.locationService.addBeerReview(beerReview);
+	}
+
 }
