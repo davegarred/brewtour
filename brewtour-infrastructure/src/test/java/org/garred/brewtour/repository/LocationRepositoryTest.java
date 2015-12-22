@@ -46,14 +46,14 @@ public class LocationRepositoryTest {
 	public void testSave() {
 		this.locationRepo.save(LOCATION);
 		final Location result = this.locationRepo.get(LOCATION_ID);
-		assertEquals(ZERO, result.latitude);
+		assertEquals(ZERO, result.getLatitude());
 	}
 
 	@Test
 	public void testRequire() throws ObjectDoesNotExistException {
 		this.locationRepo.save(LOCATION);
 		final Location result = this.locationRepo.require(LOCATION_ID);
-		assertEquals(ZERO, result.latitude);
+		assertEquals(ZERO, result.getLatitude());
 	}
 
 	@Test(expected = ObjectDoesNotExistException.class)
@@ -80,7 +80,7 @@ public class LocationRepositoryTest {
 
 		this.locationRepo.update(LOCATION_2);
 		final Location result = this.locationRepo.get(LOCATION_ID);
-		assertEquals(ONE, result.latitude);
+		assertEquals(ONE, result.getLatitude());
 	}
 
 	@Test(expected = ObjectDoesNotExistException.class)

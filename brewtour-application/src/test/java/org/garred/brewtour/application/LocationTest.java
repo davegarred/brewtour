@@ -52,7 +52,7 @@ public class LocationTest {
 	@Test
 	public void testAddBeer() {
 		this.location.addBeer(ADD_BEER);
-		assertSingleItemInCollection(BEER, this.location.beers);
+		assertSingleItemInCollection(BEER, this.location.getBeers());
 	}
 
 	@Test
@@ -60,14 +60,14 @@ public class LocationTest {
 		this.location.addBeer(ADD_BEER);
 		final ModifyBeer modify = new ModifyBeer(LOCATION_ID, BEER_NAME, STYLE_2, CATEGORY_2, ABV_2, IBU_2);
 		this.location.modifyBeer(modify);
-		assertSingleItemInCollection(BEER_2, this.location.beers);
+		assertSingleItemInCollection(BEER_2, this.location.getBeers());
 	}
 
 	@Test
 	public void testBeerUnavailable() {
 		this.location.addBeer(ADD_BEER);
 		this.location.beerUnavailable(new BeerUnavailable(LOCATION_ID, BEER_NAME));
-		assertFalse(this.location.beers.get(0).isAvailable());
+		assertFalse(this.location.getBeers().get(0).isAvailable());
 	}
 
 	@Test
@@ -75,13 +75,13 @@ public class LocationTest {
 		this.location.addBeer(ADD_BEER);
 		this.location.beerUnavailable(new BeerUnavailable(LOCATION_ID, BEER_NAME));
 		this.location.beerAvailable(new BeerAvailable(LOCATION_ID, BEER_NAME));
-		assertTrue(this.location.beers.get(0).isAvailable());
+		assertTrue(this.location.getBeers().get(0).isAvailable());
 	}
 
 	@Test
 	public void testModifyLocationDescription() {
 		this.location.modifyLocationDescription(new ModifyLocationDescription(LOCATION_ID, LOCATION_DESCRIPTION_2));
-		assertEquals(LOCATION_DESCRIPTION_2, this.location.description);
+		assertEquals(LOCATION_DESCRIPTION_2, this.location.getDescription());
 	}
 
 

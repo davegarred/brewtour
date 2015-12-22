@@ -1,0 +1,4 @@
+{
+  "identifier" : "a user id",
+  "favoriteLocations" : [ "a location id", "another location id" ]
+}

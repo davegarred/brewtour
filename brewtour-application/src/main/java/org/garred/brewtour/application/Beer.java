@@ -1,5 +1,7 @@
 package org.garred.brewtour.application;
 
+import static java.math.RoundingMode.HALF_UP;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -10,9 +12,15 @@ public class Beer extends AbstractObject {
 
 	private final String brewDbId,name,status;
 	private String style,category;
-	private BigDecimal abv,ibu;
+	private BigDecimal abv, ibu;
 	private boolean available;
-	public final List<Review> reviews;
+	private final List<Review> reviews;
+
+	public List<Review> getReviews() {
+		return this.reviews;
+	}
+
+	private BigDecimal averageStars;
 
 	@JsonCreator
 	public Beer(@JsonProperty("brewDbId") String brewDbId,
@@ -33,39 +41,25 @@ public class Beer extends AbstractObject {
 		this.ibu = ibu;
 		this.available = available;
 		this.reviews = reviews;
+		this.updateReviewAverage();
 	}
 
 	public String getStyle() {
 		return this.style;
 	}
-	public void setStyle(String style) {
-		this.style = style;
-	}
 	public String getCategory() {
 		return this.category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
 	}
 	public BigDecimal getAbv() {
 		return this.abv;
 	}
-	public void setAbv(BigDecimal abv) {
-		this.abv = abv;
-	}
 	public BigDecimal getIbu() {
 		return this.ibu;
-	}
-	public void setIbu(BigDecimal ibu) {
-		this.ibu = ibu;
 	}
 	public boolean isAvailable() {
 		return this.available;
 	}
 
-	public void setAvailable(boolean available) {
-		this.available = available;
-	}
 	public String getBrewDbId() {
 		return this.brewDbId;
 	}
@@ -75,6 +69,40 @@ public class Beer extends AbstractObject {
 	}
 	public String getStatus() {
 		return this.status;
+	}
+
+	public BigDecimal getAverageStars() {
+		return this.averageStars;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public void setAbv(BigDecimal abv) {
+		this.abv = abv;
+	}
+
+	public void setIbu(BigDecimal ibu) {
+		this.ibu = ibu;
+	}
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+	public void updateReviewAverage() {
+		int count = 0;
+		int totalStars = 0;
+		for(final Review review : this.reviews) {
+			count ++;
+			totalStars += review.stars;
+		}
+		if(count > 0) {
+			this.averageStars = new BigDecimal(((double)totalStars) / (double)count).setScale(1, HALF_UP);
+		}
 	}
 
 	@Override

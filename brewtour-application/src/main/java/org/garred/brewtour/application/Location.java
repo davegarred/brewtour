@@ -1,29 +1,35 @@
 package org.garred.brewtour.application;
 
+import static java.math.RoundingMode.HALF_UP;
 import static java.util.Collections.emptyList;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import org.garred.brewtour.api.AddBeer;
+import org.garred.brewtour.api.AddBeerReview;
+import org.garred.brewtour.api.AddLocationReview;
 import org.garred.brewtour.api.BeerAvailable;
 import org.garred.brewtour.api.BeerUnavailable;
 import org.garred.brewtour.api.ModifyBeer;
 import org.garred.brewtour.api.ModifyLocationDescription;
+import org.garred.brewtour.service.LocationService;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Location extends AbstractEntity<LocationId> {
+public class Location extends AbstractEntity<LocationId> implements LocationService {
 
-	public final String brewDbId;
-	public final String name;
-	public String description;
-	public final BigDecimal latitude;
-	public final BigDecimal longitude;
-	public final AvailableImages images;
-	public final List<Beer> beers;
-	public final List<Review> reviews;
+	private final String brewDbId;
+	private final String name;
+	private String description;
+	private final BigDecimal latitude;
+	private final BigDecimal longitude;
+	private final AvailableImages images;
+	private final List<Beer> beers;
+	private final List<Review> reviews;
+
+	private BigDecimal averageStars;
 
 	@JsonCreator
 	public Location(@JsonProperty("locationId") LocationId locationId,
@@ -44,8 +50,10 @@ public class Location extends AbstractEntity<LocationId> {
 		this.images = images;
 		this.beers = beers;
 		this.reviews = reviews;
+		this.updateReviewAverage();
 	}
 
+	@Override
 	public void addBeer(AddBeer addBeer) {
 		if(findBeer(addBeer.name) != null) {
 			//TODO translate this exception back to the user
@@ -54,6 +62,7 @@ public class Location extends AbstractEntity<LocationId> {
 		final Beer beer = new Beer(null, addBeer.name, null, addBeer.style, addBeer.category, addBeer.abv, addBeer.ibu, true, emptyList());
 		this.beers.add(beer);
 	}
+	@Override
 	public void modifyBeer(ModifyBeer modifyBeer) {
 		final Beer beer = findBeer(modifyBeer.name);
 		beer.setStyle(modifyBeer.style);
@@ -61,17 +70,45 @@ public class Location extends AbstractEntity<LocationId> {
 		beer.setAbv(modifyBeer.abv);
 		beer.setIbu(modifyBeer.ibu);
 	}
+	@Override
 	public void beerAvailable(BeerAvailable beerAvailable) {
 		final Beer beer = findBeer(beerAvailable.name);
 		beer.setAvailable(true);
 	}
+	@Override
 	public void beerUnavailable(BeerUnavailable beerUnavailable) {
 		final Beer beer = findBeer(beerUnavailable.name);
 		beer.setAvailable(false);
 	}
 
+	@Override
 	public void modifyLocationDescription(ModifyLocationDescription modifyDescription) {
 		this.description = modifyDescription.description;
+	}
+
+	@Override
+	public void addLocationReview(AddLocationReview locationReview) {
+		this.reviews.add(locationReview.review);
+		updateReviewAverage();
+	}
+
+	@Override
+	public void addBeerReview(AddBeerReview beerReview) {
+		final Beer beer = findBeer(beerReview.name);
+		beer.getReviews().add(beerReview.review);
+		beer.updateReviewAverage();
+	}
+
+	private void updateReviewAverage() {
+		int count = 0;
+		int totalStars = 0;
+		for(final Review review : this.reviews) {
+			count ++;
+			totalStars += review.stars;
+		}
+		if(count > 0) {
+			this.averageStars = new BigDecimal(((double)totalStars) / (double)count).setScale(1, HALF_UP);
+		}
 	}
 
 	private Beer findBeer(String beername) {
@@ -81,6 +118,42 @@ public class Location extends AbstractEntity<LocationId> {
 			}
 		}
 		return null;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public BigDecimal getAverageStars() {
+		return this.averageStars;
+	}
+
+	public String getBrewDbId() {
+		return this.brewDbId;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public BigDecimal getLatitude() {
+		return this.latitude;
+	}
+
+	public BigDecimal getLongitude() {
+		return this.longitude;
+	}
+
+	public AvailableImages getImages() {
+		return this.images;
+	}
+
+	public List<Beer> getBeers() {
+		return this.beers;
+	}
+
+	public List<Review> getReviews() {
+		return this.reviews;
 	}
 
 	@Override
@@ -149,4 +222,5 @@ public class Location extends AbstractEntity<LocationId> {
 			return false;
 		return true;
 	}
+
 }

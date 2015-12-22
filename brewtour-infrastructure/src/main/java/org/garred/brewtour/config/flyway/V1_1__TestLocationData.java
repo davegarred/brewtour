@@ -84,7 +84,7 @@ public class V1_1__TestLocationData implements JdbcMigration {
 	}
 
 	private static LocalePoint convertToLocalePoint(Location location) {
-		return new LocalePoint(location.getIdentifier(), location.name, location.latitude, location.longitude, location.images);
+		return new LocalePoint(location.getIdentifier(), location.getName(), location.getLatitude(), location.getLongitude(), location.getImages());
 	}
 
 	private static void loadBeerData(ObjectMapper objectMapper) throws JsonParseException, JsonMappingException, IOException {

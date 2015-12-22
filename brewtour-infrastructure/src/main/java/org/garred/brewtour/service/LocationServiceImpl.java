@@ -5,6 +5,8 @@ import static org.garred.brewtour.application.LocaleId.SEATTLE;
 import java.util.function.Consumer;
 
 import org.garred.brewtour.api.AddBeer;
+import org.garred.brewtour.api.AddBeerReview;
+import org.garred.brewtour.api.AddLocationReview;
 import org.garred.brewtour.api.BeerAvailable;
 import org.garred.brewtour.api.BeerUnavailable;
 import org.garred.brewtour.api.LocationCommand;
@@ -18,7 +20,7 @@ import org.garred.brewtour.config.Secure;
 import org.garred.brewtour.repository.LocaleRepository;
 import org.garred.brewtour.repository.LocationRepository;
 
-public class LocationServiceImpl implements LocationService {
+public class LocationServiceImpl implements LocationService, LocationQueryService {
 
 	private final LocationRepository locationRepository;
 	private final LocaleRepository localeRepository;
@@ -55,6 +57,16 @@ public class LocationServiceImpl implements LocationService {
 	@Secure
 	public void modifyLocationDescription(ModifyLocationDescription modifyDescription) {
 		process(modifyDescription, l -> l.modifyLocationDescription(modifyDescription));
+	}
+
+	@Override
+	public void addLocationReview(AddLocationReview locationReview) {
+		process(locationReview, l -> l.addLocationReview(locationReview));
+	}
+
+	@Override
+	public void addBeerReview(AddBeerReview beerReview) {
+		process(beerReview, l -> l.addBeerReview(beerReview));
 	}
 
 	private void process(LocationCommand command, Consumer<Location> consumer) {

@@ -12,7 +12,7 @@
 		<module>brewtour-infrastructure</module>
 		<module>brewtour-webapp</module>
 	</modules>
-	
+
 	<properties>
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,6 +21,7 @@
 		<object-store.version>0.2.0-RELEASE</object-store.version>
 		<cqrs.version>0.1.1-RELEASE</cqrs.version>
 
+		<commons-io.version>2.4</commons-io.version>
 		<commons-lang3.version>3.3.2</commons-lang3.version>
 		<easymock.version>3.2</easymock.version>
 		<flyway.version>3.2.1</flyway.version>
@@ -44,6 +45,11 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>${commons-lang3.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.guava</groupId>

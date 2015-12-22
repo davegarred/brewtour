@@ -1,0 +1,10 @@
+{
+  "locationId" : "a location id",
+  "name" : "a beer name",
+  "review" : {
+    "userId" : "a user id",
+    "time" : [ 2015, 9, 20, 8, 50 ],
+    "stars" : 4,
+    "review" : "spicy but with a full body"
+  }
+}

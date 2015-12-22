@@ -12,5 +12,6 @@
     "time" : [ 2015, 9, 20, 8, 50 ],
     "stars" : 4,
     "review" : "spicy but with a full body"
-  } ]
+  } ],
+  "averageStars" : 4.0
 }
