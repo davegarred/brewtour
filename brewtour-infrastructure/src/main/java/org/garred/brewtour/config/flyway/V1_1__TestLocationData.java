@@ -69,7 +69,7 @@ public class V1_1__TestLocationData implements JdbcMigration {
 
 	private static Location convertToLocation(BrewDbLocation brewDbLocation) {
 		final LocationId id = new LocationId(String.format("LOCA%4d", new Integer(i++)));
-		final Map<String, String> bdbImages = brewDbLocation.images;
+		final Map<String, String> bdbImages = brewDbLocation.brewery.images;
 		final AvailableImages images = bdbImages == null ? NO_IMAGES
 				: new AvailableImages(new Image(bdbImages.get("icon")), new Image(bdbImages.get("medium")),
 						new Image(bdbImages.get("large")));
@@ -79,7 +79,7 @@ public class V1_1__TestLocationData implements JdbcMigration {
 				beers.add(beerMap.get(beerId));
 			}
 		}
-		return new Location(id, brewDbLocation.id, brewDbLocation.breweryName, brewDbLocation.breweryDescription, brewDbLocation.latitude,
+		return new Location(id, brewDbLocation.id, brewDbLocation.brewery.name, brewDbLocation.brewery.description, brewDbLocation.latitude,
 				brewDbLocation.longitude, images, beers, emptyList());
 	}
 
