@@ -41,7 +41,10 @@ public class Beer extends AbstractObject {
 		this.ibu = ibu;
 		this.available = available;
 		this.reviews = reviews;
-		this.updateReviewAverage();
+	}
+
+	public void addReview(Review review) {
+		this.reviews.add(review);
 	}
 
 	public String getStyle() {
@@ -93,7 +96,7 @@ public class Beer extends AbstractObject {
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
-	public void updateReviewAverage() {
+	public BigDecimal updateReviewAverage() {
 		int count = 0;
 		int totalStars = 0;
 		for(final Review review : this.reviews) {
@@ -101,8 +104,9 @@ public class Beer extends AbstractObject {
 			totalStars += review.stars;
 		}
 		if(count > 0) {
-			this.averageStars = new BigDecimal(((double)totalStars) / (double)count).setScale(1, HALF_UP);
+			return new BigDecimal(((double)totalStars) / (double)count).setScale(1, HALF_UP);
 		}
+		return null;
 	}
 
 	@Override

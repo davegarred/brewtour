@@ -11,16 +11,18 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
 
-	<bean id="locationRepo" class="org.garred.brewtour.repository.LocationRepositoryImpl" 
+	<!-- view repositories -->
+	<bean id="locationViewRepo" class="org.garred.brewtour.repository.LocationViewRepositoryImpl" 
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper" />
-	<bean id="localeRepo" class="org.garred.brewtour.repository.LocaleRepositoryImpl" 
+	<bean id="localeViewRepo" class="org.garred.brewtour.repository.LocaleViewRepositoryImpl" 
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper" />
-	<bean id="userDetailsRepo" class="org.garred.brewtour.repository.UserDetailsRepositoryImpl"  
+		
+	<bean id="userDetailsRepo" class="org.garred.brewtour.repository.UserDetailsViewRepositoryImpl"  
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper"/>
-	<bean id="userAuthRepo" class="org.garred.brewtour.repository.UserAuthRepositoryImpl"  
+	<bean id="userAuthRepo" class="org.garred.brewtour.repository.UserAuthViewRepositoryImpl"  
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper"/>
 	
@@ -29,8 +31,9 @@
 	<bean id="userAuthService" class="org.garred.brewtour.service.UserAuthServiceImpl"
 		c:userRepo-ref="userAuthRepo" />
 	<bean id="locationService" class="org.garred.brewtour.service.LocationServiceImpl"
-		c:localeRepository-ref="localeRepo"
-		c:locationRepository-ref="locationRepo"/>
+		c:localeRepository-ref="localeViewRepo"
+		c:locationRepository-ref="locationViewRepo"
+		c:commandGateway-ref="commandGateway"/>
 	
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>

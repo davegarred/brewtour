@@ -26,7 +26,9 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class AbstractObjectRepository<I extends Identifier,T extends Entity<I>> implements Repository<I,T> {
+public abstract class AbstractObjectRepository<I extends Identifier,T extends Entity<I>> implements ViewRepository<I,T> {
+
+	private static final String SCHEMA = "brewtour";
 
 	private final PreparedStatementCreatorFactory findOne;
 	private final PreparedStatementCreatorFactory insert;
@@ -38,21 +40,21 @@ public abstract class AbstractObjectRepository<I extends Identifier,T extends En
 	protected final ObjectMapper objectMapper;
 	protected final Class<T> clazz;
 
-	public AbstractObjectRepository(String schema, String table, Class<T> clazz, DataSource datasource, ObjectMapper objectMapper) {
+	public AbstractObjectRepository(String table, Class<T> clazz, DataSource datasource, ObjectMapper objectMapper) {
 		this.clazz = clazz;
 		this.jdbcTemplate = new JdbcTemplate(datasource);
 		this.objectMapper = objectMapper;
-		this.findOne = new PreparedStatementCreatorFactory(format("SELECT * FROM %s.%s WHERE id=?",schema,table), VARCHAR);
-		this.insert = new PreparedStatementCreatorFactory(format("INSERT INTO %s.%s(id,version,data) values (?,?,?)",schema,table), VARCHAR, INTEGER, CLOB);
-		this.update = new PreparedStatementCreatorFactory(format("UPDATE %s.%s SET version=?, data=? WHERE id=? AND version=?",schema,table), INTEGER, CLOB, VARCHAR, INTEGER);
-		this.deleteOne = new PreparedStatementCreatorFactory(format("DELETE FROM %s.%s WHERE id=?",schema,table), VARCHAR);
-		this.findVersionQuery = format("SELECT version FROM %s.%s WHERE id=?",schema,table);
+		this.findOne = new PreparedStatementCreatorFactory(format("SELECT * FROM %s.%s WHERE id=?",SCHEMA,table), VARCHAR);
+		this.insert = new PreparedStatementCreatorFactory(format("INSERT INTO %s.%s(id,version,data) values (?,?,?)",SCHEMA,table), VARCHAR, INTEGER, CLOB);
+		this.update = new PreparedStatementCreatorFactory(format("UPDATE %s.%s SET version=?, data=? WHERE id=? AND version=?",SCHEMA,table), INTEGER, CLOB, VARCHAR, INTEGER);
+		this.deleteOne = new PreparedStatementCreatorFactory(format("DELETE FROM %s.%s WHERE id=?",SCHEMA,table), VARCHAR);
+		this.findVersionQuery = format("SELECT version FROM %s.%s WHERE id=?",SCHEMA,table);
 	}
 
 	@Override
 	public void save(T value) {
 		final List<Object> params = new ArrayList<>();
-		final I key = value.getIdentifier();
+		final I key = value.identifier();
 		params.add(key.getId());
 		params.add(new Integer(1));
 		params.add(serialize(value));
@@ -72,7 +74,7 @@ public abstract class AbstractObjectRepository<I extends Identifier,T extends En
 	@Override
 	public void update(T value) throws ObjectDoesNotExistException {
 		int version;
-		final I key = value.getIdentifier();
+		final I key = value.identifier();
 		try {
 			version = this.jdbcTemplate.queryForObject(this.findVersionQuery, Integer.class, key.getId()).intValue();
 		} catch(final EmptyResultDataAccessException e) {

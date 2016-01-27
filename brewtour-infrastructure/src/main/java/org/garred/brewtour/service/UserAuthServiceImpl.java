@@ -1,27 +1,20 @@
 package org.garred.brewtour.service;
 
-import static java.util.Collections.singleton;
-
-import java.util.Set;
-
-import org.garred.brewtour.application.UserAuth;
 import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.repository.UserAuthRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.garred.brewtour.repository.UserAuthViewRepository;
+import org.garred.brewtour.security.UserHolder;
+import org.garred.brewtour.view.UserAuthView;
 
 public class UserAuthServiceImpl implements UserAuthService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthServiceImpl.class);
+	private final UserAuthViewRepository userRepo;
 
-	private final UserAuthRepository userRepo;
-
-	public UserAuthServiceImpl(UserAuthRepository userRepo) {
+	public UserAuthServiceImpl(UserAuthViewRepository userRepo) {
 		this.userRepo = userRepo;
 	}
 
 	@Override
-	public UserAuth getUserAuth(UserId userId) {
+	public UserAuthView getUserAuth(UserId userId) {
 		if(userId == null) {
 			return null;
 		}
@@ -29,19 +22,9 @@ public class UserAuthServiceImpl implements UserAuthService {
 	}
 
 	@Override
-	public UserAuth discoverUser(String login, UserId userId, Set<String> roles) {
-		if(login == null) {
-			return null;
-		}
-		final UserAuth details = new UserAuth(userId, login, roles);
-		this.userRepo.save(details);
-		LOGGER.info("User {} discovered", login);
-		return details;
+	public UserAuthView getCurrentUserAuth() {
+		return getUserAuth(UserHolder.get().identifier());
 	}
 
-	@Override
-	public UserAuth discoverUser(String login, UserId userId, String role) {
-		return discoverUser(login, userId, singleton(role));
-	}
 
 }

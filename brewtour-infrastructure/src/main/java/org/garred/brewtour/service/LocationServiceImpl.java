@@ -2,87 +2,47 @@ package org.garred.brewtour.service;
 
 import static org.garred.brewtour.application.LocaleId.SEATTLE;
 
-import java.util.function.Consumer;
-
-import org.garred.brewtour.api.AddBeer;
-import org.garred.brewtour.api.AddBeerReview;
-import org.garred.brewtour.api.AddLocationReview;
-import org.garred.brewtour.api.BeerAvailable;
-import org.garred.brewtour.api.BeerUnavailable;
-import org.garred.brewtour.api.LocationCommand;
-import org.garred.brewtour.api.ModifyBeer;
-import org.garred.brewtour.api.ModifyLocationDescription;
-import org.garred.brewtour.application.Locale;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewtour.application.LocaleId;
-import org.garred.brewtour.application.Location;
 import org.garred.brewtour.application.LocationId;
-import org.garred.brewtour.config.Secure;
-import org.garred.brewtour.repository.LocaleRepository;
-import org.garred.brewtour.repository.LocationRepository;
+import org.garred.brewtour.repository.LocaleViewRepository;
+import org.garred.brewtour.repository.LocationViewRepository;
+import org.garred.brewtour.security.Secure;
+import org.garred.brewtour.view.LocaleView;
+import org.garred.brewtour.view.LocationView;
 
 public class LocationServiceImpl implements LocationService, LocationQueryService {
 
-	private final LocationRepository locationRepository;
-	private final LocaleRepository localeRepository;
+	private final LocationViewRepository locationRepository;
+	private final LocaleViewRepository localeRepository;
+	private final CommandGateway commandGateway;
 
-	public LocationServiceImpl(LocationRepository locationRepository, LocaleRepository localeRepository) {
+	public LocationServiceImpl(LocationViewRepository locationRepository, LocaleViewRepository localeRepository, CommandGateway commandGateway) {
 		this.locationRepository = locationRepository;
 		this.localeRepository = localeRepository;
+		this.commandGateway = commandGateway;
 	}
 
 	@Override
 	@Secure
-	public void addBeer(AddBeer addBeer) {
-		process(addBeer, l -> l.addBeer(addBeer));
-	}
-	@Override
-	@Secure
-	public void modifyBeer(ModifyBeer modifyBeer) {
-		process(modifyBeer, l -> l.modifyBeer(modifyBeer));
+	public void fireSecuredCommand(Object command) {
+		this.commandGateway.sendAndWait(command);
 	}
 
 	@Override
-	@Secure
-	public void beerAvailable(BeerAvailable beerAvailable) {
-		process(beerAvailable, l -> l.beerAvailable(beerAvailable));
+	public void fireCommand(Object command) {
+		this.commandGateway.sendAndWait(command);
 	}
 
 	@Override
-	@Secure
-	public void beerUnavailable(BeerUnavailable beerUnavailable) {
-		process(beerUnavailable, l -> l.beerUnavailable(beerUnavailable));
-	}
-
-	@Override
-	@Secure
-	public void modifyLocationDescription(ModifyLocationDescription modifyDescription) {
-		process(modifyDescription, l -> l.modifyLocationDescription(modifyDescription));
-	}
-
-	@Override
-	public void addLocationReview(AddLocationReview locationReview) {
-		process(locationReview, l -> l.addLocationReview(locationReview));
-	}
-
-	@Override
-	public void addBeerReview(AddBeerReview beerReview) {
-		process(beerReview, l -> l.addBeerReview(beerReview));
-	}
-
-	private void process(LocationCommand command, Consumer<Location> consumer) {
-		final Location location = this.locationRepository.require(command.locationId);
-		consumer.accept(location);
-		this.locationRepository.update(location);
-	}
-
-	@Override
-	public Location getLocation(LocationId locationId) {
+	public LocationView getLocation(LocationId locationId) {
 		return this.locationRepository.get(locationId);
 	}
 
 	@Override
-	public Locale getLocale(LocaleId seattle) {
+	public LocaleView getLocale(LocaleId seattle) {
 		return this.localeRepository.get(SEATTLE);
 	}
+
 
 }

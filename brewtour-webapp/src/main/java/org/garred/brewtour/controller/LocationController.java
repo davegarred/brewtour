@@ -4,14 +4,14 @@ import static org.garred.brewtour.application.LocaleId.SEATTLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import org.garred.brewtour.api.AddBeerReview;
-import org.garred.brewtour.api.AddLocationReview;
-import org.garred.brewtour.api.BeerAvailable;
-import org.garred.brewtour.api.BeerUnavailable;
-import org.garred.brewtour.application.Locale;
-import org.garred.brewtour.application.Location;
+import org.garred.brewtour.api.AddBeerReviewCommand;
+import org.garred.brewtour.api.AddLocationReviewCommand;
+import org.garred.brewtour.api.BeerAvailableCommand;
+import org.garred.brewtour.api.BeerUnavailableCommand;
 import org.garred.brewtour.application.LocationId;
 import org.garred.brewtour.service.LocationQueryService;
+import org.garred.brewtour.view.LocaleView;
+import org.garred.brewtour.view.LocationView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,38 +29,39 @@ public class LocationController extends AbstractRestController {
 
 	@RequestMapping(value = "/locations", method = GET, produces="application/json")
 	@ResponseBody
-	public Locale locations() {
-		return this.locationService.getLocale(SEATTLE);
+	public LocaleView locations() {
+		final LocaleView locale = this.locationService.getLocale(SEATTLE);
+		return locale;
 	}
 
 	@RequestMapping(value = "/location/{locationId}", method = GET, produces="application/json")
 	@ResponseBody
-	public Location location(@PathVariable String locationId) {
+	public LocationView location(@PathVariable String locationId) {
 		return this.locationService.getLocation(new LocationId(locationId));
 	}
 
 	@RequestMapping(value = "/beerAvailable", method = POST, produces="application/json")
 	@ResponseBody
-	public void beerAvailable(@RequestBody BeerAvailable beerAvailable) {
-		this.locationService.beerAvailable(beerAvailable);
+	public void beerAvailable(@RequestBody BeerAvailableCommand beerAvailable) {
+		this.locationService.fireSecuredCommand(beerAvailable);
 	}
 
 	@RequestMapping(value = "/beerUnavailable", method = POST, produces="application/json")
 	@ResponseBody
-	public void beerUnavailable(@RequestBody BeerUnavailable beerUnavailable) {
-		this.locationService.beerUnavailable(beerUnavailable);
+	public void beerUnavailable(@RequestBody BeerUnavailableCommand beerUnavailable) {
+		this.locationService.fireSecuredCommand(beerUnavailable);
 	}
 
 	@RequestMapping(value = "/locationReview", method = POST, produces="application/json")
 	@ResponseBody
-	public void addLocationReview(@RequestBody AddLocationReview locationReview) {
-		this.locationService.addLocationReview(locationReview);
+	public void addLocationReview(@RequestBody AddLocationReviewCommand locationReview) {
+		this.locationService.fireCommand(locationReview);
 	}
 
 	@RequestMapping(value = "/beerReview", method = POST, produces="application/json")
 	@ResponseBody
-	public void addBeerReview(@RequestBody AddBeerReview beerReview) {
-		this.locationService.addBeerReview(beerReview);
+	public void addBeerReview(@RequestBody AddBeerReviewCommand beerReview) {
+		this.locationService.fireCommand(beerReview);
 	}
 
 }

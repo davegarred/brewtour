@@ -3,12 +3,13 @@ package org.garred.brewtour.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import org.garred.brewtour.api.AddFavoriteLocation;
-import org.garred.brewtour.api.RemoveFavoriteLocation;
-import org.garred.brewtour.application.UserDetails;
-import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.config.UserHandler;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.garred.brewtour.api.AbstractUserFiredCommand;
+import org.garred.brewtour.api.AddFavoriteLocationCommand;
+import org.garred.brewtour.api.AddUserCommand;
+import org.garred.brewtour.api.RemoveFavoriteLocationCommand;
 import org.garred.brewtour.service.UserDetailsService;
+import org.garred.brewtour.view.UserDetailsView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,33 +19,42 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController extends AbstractRestController {
 
 	private final UserDetailsService userService;
+	private final CommandGateway commandGateway;
 
-	public UserController(UserDetailsService userService) {
+	public UserController(UserDetailsService userService, CommandGateway commandGateway) {
 		this.userService = userService;
+		this.commandGateway = commandGateway;
 	}
 
 	@RequestMapping(value = "/user", method = GET, produces="application/json")
 	@ResponseBody
-	public UserDetails user() {
-		final UserId userId = UserHandler.get().getIdentifier();
-		final UserDetails details = this.userService.getDetails(userId);
-		return details;
+	public UserDetailsView user() {
+		return this.userService.getCurrentUserDetails();
+	}
+
+	@RequestMapping(value = "/addUser", method = GET, produces="application/json")
+	@ResponseBody
+	public UserDetailsView addUuser() {
+		return processUserCommand(new AddUserCommand(""));
 	}
 
 
 	//TODO should be PUT
 	@RequestMapping(value = "/addFavorite", method = POST, produces="application/json")
 	@ResponseBody
-	public UserDetails addFavorite(@RequestBody AddFavoriteLocation dto) {
-		final UserId userId = UserHandler.get().getIdentifier();
-		return this.userService.addFavorite(userId,dto);
+	public UserDetailsView addFavorite(@RequestBody AddFavoriteLocationCommand command) {
+		return processUserCommand(command);
 	}
 
 	@RequestMapping(value = "/removeFavorite", method = POST, produces="application/json")
 	@ResponseBody
-	public UserDetails removeFavorite(@RequestBody RemoveFavoriteLocation dto) {
-		final UserId userId = UserHandler.get().getIdentifier();
-		return this.userService.removeFavorite(userId,dto);
+	public UserDetailsView removeFavorite(@RequestBody RemoveFavoriteLocationCommand command) {
+		return processUserCommand(command);
 	}
 
+	private UserDetailsView processUserCommand(AbstractUserFiredCommand command) {
+		this.commandGateway.sendAndWait(command);
+		UserDetailsView currentUserDetails = this.userService.getCurrentUserDetails();
+		return currentUserDetails;
+	}
 }

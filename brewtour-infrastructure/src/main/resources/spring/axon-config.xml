@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:axon="http://www.axonframework.org/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/p http://www.springframework.org/schema/c
+		http://www.axonframework.org/schema/core http://www.axonframework.org/schema/axon-core.xsd">
+
+
+	<bean id="locationViewEventHandler" class="org.garred.brewtour.view.LocationViewEventHandler"
+		c:repository-ref="locationViewRepo" />
+	<bean id="localeViewEventHandler" class="org.garred.brewtour.view.LocaleViewEventHandler"
+		c:repository-ref="localeViewRepo" />
+	<bean id="userDetailsViewEventHandler" class="org.garred.brewtour.view.UserDetailsViewEventHandler"
+		c:repository-ref="userDetailsRepo" />
+	<bean id="userAuthViewEventHandler" class="org.garred.brewtour.view.UserAuthViewEventHandler"
+		c:repository-ref="userAuthRepo" />
+
+	<bean id="initializationCommands"
+		class="org.garred.brewtour.config.command_init.CommandInitialization"
+		c:gateway-ref="commandGateway" />
+
+
+	<axon:annotation-config />
+	<bean id="locationIdentifierFactory" class="org.garred.brewtour.application.cqrs.LocationIdentifierFactoryStub"/>
+	<bean class="org.garred.brewtour.application.cqrs.LocationCommandHandler"
+		c:repository-ref="locationEventRepo"
+		c:identifierFactory-ref="locationIdentifierFactory" />
+	<bean class="org.garred.brewtour.application.cqrs.UserCommandHandler"
+		c:repository-ref="userEventRepo"/>
+
+
+	<bean id="commandGateway" class="org.axonframework.commandhandling.gateway.DefaultCommandGateway" >
+		<constructor-arg name="commandBus" ref="commandBus" />
+		<constructor-arg name="commandDispatchInterceptors">
+			<array></array>
+		</constructor-arg>
+	</bean>
+	
+	
+	<axon:command-bus id="commandBus" />
+
+	<axon:event-bus id="eventBus"/>
+	<axon:event-sourcing-repository id="locationEventRepo"
+		aggregate-type="org.garred.brewtour.application.cqrs.Location" 
+		event-bus="eventBus" event-store="eventStore"/>
+	<axon:event-sourcing-repository id="userEventRepo"
+		aggregate-type="org.garred.brewtour.application.cqrs.User" 
+		event-bus="eventBus" event-store="eventStore"/>
+
+
+	<bean id="eventStore" class="org.garred.brewtour.event_store.H2EventStore" 
+		c:datasource-ref="dataSource"
+		c:objectMapper-ref="objectMapper"/>
+</beans>

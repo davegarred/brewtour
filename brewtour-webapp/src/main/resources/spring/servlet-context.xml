@@ -24,20 +24,15 @@
 	<annotation-driven />
 
 	<resources mapping="/resources/**" location="/resources/" />
-<!-- 
-	<security:http create-session="ifRequired">
-		<security:session-management>
-			<security:concurrency-control max-sessions="1"/>
-		</security:session-management>
-	</security:http>
- -->
 	
 	<beans:bean class="org.garred.brewtour.controller.UserController"
-		c:userService-ref="userDetailsService" />
+		c:userService-ref="userDetailsService"
+		c:commandGateway-ref="commandGateway" />
 	<beans:bean class="org.garred.brewtour.controller.AdminController"
-		c:userService-ref="userAuthService" />
+		c:userService-ref="userAuthService" 
+		c:commandGateway-ref="commandGateway" />
 	<beans:bean class="org.garred.brewtour.controller.LocationController"
-		c:locationService-ref="locationService"/>
+		c:locationService-ref="locationService" />
 	
 	<beans:bean class="org.garred.brewtour.controller.ApplicationStatusController"/>
 

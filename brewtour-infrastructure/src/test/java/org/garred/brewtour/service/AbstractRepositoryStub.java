@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.garred.brewtour.application.Entity;
 import org.garred.brewtour.application.Identifier;
-import org.garred.brewtour.application.UserDetails;
 import org.garred.brewtour.repository.ObjectDoesNotExistException;
-import org.garred.brewtour.repository.Repository;
+import org.garred.brewtour.repository.ViewRepository;
 
-public abstract class AbstractRepositoryStub<I extends Identifier,T extends Entity<I>> implements Repository<I,T> {
+public abstract class AbstractRepositoryStub<I extends Identifier,T extends Entity<I>> implements ViewRepository<I,T> {
 
 	private final Map<I,T> objectMap = new HashMap<>();
+
+	protected abstract Class<T> objectClass();
 
 	@Override
 	public boolean exists(I key) {
@@ -24,7 +25,7 @@ public abstract class AbstractRepositoryStub<I extends Identifier,T extends Enti
 
 	@Override
 	public void save(T value) {
-		final I key = value.getIdentifier();
+		final I key = value.identifier();
 		if(exists(key)) {
 			throw new IllegalStateException();
 		}
@@ -33,7 +34,7 @@ public abstract class AbstractRepositoryStub<I extends Identifier,T extends Enti
 
 	@Override
 	public void update(T value) {
-		final I key = value.getIdentifier();
+		final I key = value.identifier();
 		if(!exists(key)) {
 			throw new IllegalStateException();
 		}
@@ -48,7 +49,7 @@ public abstract class AbstractRepositoryStub<I extends Identifier,T extends Enti
 	@Override
 	public T require(I key) throws ObjectDoesNotExistException {
 		if(!exists(key)) {
-			throw new ObjectDoesNotExistException(UserDetails.class, key.getId());
+			throw new ObjectDoesNotExistException(objectClass(), key.getId());
 		}
 		return get(key);
 	}

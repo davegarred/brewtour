@@ -9,7 +9,7 @@ public abstract class AbstractEntity<I> extends AbstractObject implements Entity
 	}
 
 	@Override
-	public I getIdentifier() {
+	public I identifier() {
 		return this.identifier;
 	}
 

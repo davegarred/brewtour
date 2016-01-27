@@ -11,12 +11,15 @@
 	<beans profile="default">
 		<bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
 			<property name="dataSource" ref="dataSource" />
-			<property name="locations" value="classpath:db/migration/h2,classpath:org/garred/brewtour/config/flyway" />
+			<property name="locations" value="classpath:db/migration/h2" />
 		</bean>
 		<bean id="dataSource"
 			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 			<property name="driverClassName" value="org.h2.Driver" />
 			<property name="url" value="jdbc:h2:mem:brewtour;DB_CLOSE_DELAY=-1" />
+<!-- 
+			<property name="url" value="jdbc:h2:file:~/brewtour;DB_CLOSE_DELAY=-1" />
+ -->
 			<property name="username" value="sa" />
 			<property name="password" value="" />
 		</bean>

@@ -1,11 +1,11 @@
 <div ng-controller="MapController">
 	<div ng-if="user">
 		<button class="btn btn-xs">logout</button>
-		{{user.identifier}}, {{user.login}}
+		{{user.userId}}, {{user.login}}
 	</div>
 	<div>
 		<span ng-if="user">
-			{{user.identifier}}, {{user.login}}
+			{{user.userId}}, {{user.login}}
 		</span>
 		<span ng-if="!user.admin">
 			<button class="btn btn-xs">login</button>
@@ -30,12 +30,12 @@
 				{{locationDetails.name}} 
 				<span class="glyphicon glyphicon-star"
 					aria-hidden="true" style="float: right; color: gold;"
-					ng-if="isFavorite(locationDetails.identifier)" 
-					ng-click="removeFavorite(locationDetails.identifier)"></span>
+					ng-if="isFavorite(locationDetails.locationId)" 
+					ng-click="removeFavorite(locationDetails.locationId)"></span>
 				<span class="glyphicon glyphicon-star-empty" aria-hidden="true"
 					style="float: right" 
-					ng-if="!isFavorite(locationDetails.identifier)"
-					ng-click="addFavorite(locationDetails.identifier)"></span>
+					ng-if="!isFavorite(locationDetails.locationId)"
+					ng-click="addFavorite(locationDetails.locationId)"></span>
 				<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="float: right; color: #0000A5; margin-right: 10px;"
 					data-toggle="modal" data-target="#editLocationModal"></span>
 			</h3>
