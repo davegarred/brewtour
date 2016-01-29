@@ -1,5 +1,7 @@
 CREATE SCHEMA brewtour;
 
+CREATE SEQUENCE locationSequence START WITH 100001; -- INCREMENT BY 10;
+
 CREATE TABLE brewtour.user_details_view (
   id varchar(36) NOT NULL,
   version integer NOT NULL,

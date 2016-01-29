@@ -9,7 +9,10 @@ register brewery owner
 
 
 TECHNICAL DEBT
-- persist identifier factory!!!!!
-- add real persistence and test (turn off CommandInitialization after one use)
+- add real persistence and test
+ - eventstore
+ - view repositories
+ - sequence
+ - turn off CommandInitialization after one use
 - update command and event serialization tests
 - add view serialization tests
