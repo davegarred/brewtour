@@ -1,14 +1,14 @@
 package org.garred.brewtour.controller;
 
-import static org.garred.brewtour.application.LocaleId.SEATTLE;
+import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import org.garred.brewtour.api.AddBeerReviewCommand;
-import org.garred.brewtour.api.AddLocationReviewCommand;
-import org.garred.brewtour.api.BeerAvailableCommand;
-import org.garred.brewtour.api.BeerUnavailableCommand;
-import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
+import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
+import org.garred.brewtour.application.command.location.BeerAvailableCommand;
+import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
+import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.service.LocationQueryService;
 import org.garred.brewtour.view.LocaleView;
 import org.garred.brewtour.view.LocationView;

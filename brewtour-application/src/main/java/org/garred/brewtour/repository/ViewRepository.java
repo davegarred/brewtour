@@ -1,7 +1,7 @@
 package org.garred.brewtour.repository;
 
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.Identifier;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.Identifier;
 
 public interface ViewRepository<I extends Identifier, T extends Entity<I>> {
 

@@ -1,6 +1,15 @@
 package org.garred.brewtour.api;
 
 import org.garred.brewtour.AbstractSerializationTest;
+import org.garred.brewtour.application.command.location.AddBeerCommand;
+import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
+import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
+import org.garred.brewtour.application.command.location.BeerAvailableCommand;
+import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
+import org.garred.brewtour.application.command.location.ModifyBeerCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
+import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
+import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
 import org.junit.Test;
 
 public class CommandSerializationTest extends AbstractSerializationTest {
@@ -46,7 +55,7 @@ public class CommandSerializationTest extends AbstractSerializationTest {
 
 	@Test
 	public void testModifyLocationDescription() {
-		reflectionValidate(new ModifyLocationDescriptionCommand(LOCATION_ID, "a location description"));
+		reflectionValidate(new UpdateLocationDescriptionCommand(LOCATION_ID, "a location description"));
 	}
 
 	@Test

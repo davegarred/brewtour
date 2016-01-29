@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.garred.brewtour.application.AvailableImages;
-import org.garred.brewtour.application.Beer;
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.LocationId;
-import org.garred.brewtour.application.Review;
-import org.garred.brewtour.application.event.AbstractLocationAddedEvent;
-import org.garred.brewtour.application.event.LocationAddedEvent;
-import org.garred.brewtour.application.event.PopulatedLocationAddedEvent;
+import org.garred.brewtour.application.event.location.AbstractLocationAddedEvent;
+import org.garred.brewtour.application.event.location.LocationAddedEvent;
+import org.garred.brewtour.application.event.location.PopulatedLocationAddedEvent;
+import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.Beer;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.Review;
 
 public class LocationView implements Entity<LocationId> {
 
@@ -19,8 +19,16 @@ public class LocationView implements Entity<LocationId> {
 	public String brewDbId;
 	public String name;
 	public String description;
+	public String streetAddress;
+	public String streetAddress2;
+    public String city;
+    public String state;
+    public String postalCode;
 	public BigDecimal latitude;
 	public BigDecimal longitude;
+	public String hoursOfOperation;
+	public String phoneNumber;
+	public String website;
 	public AvailableImages images;
 	public List<Beer> beers;
 	public List<Review> reviews;
@@ -35,10 +43,6 @@ public class LocationView implements Entity<LocationId> {
 		view.locationId = event.locationId;
 		view.brewDbId = event.brewDbId;
 		view.name = event.name;
-		view.description = event.description;
-		view.latitude = event.latitude;
-		view.longitude = event.longitude;
-		view.images = event.images;
 		view.beers = new ArrayList<>();
 		view.reviews = new ArrayList<>();
 		return view;
@@ -48,6 +52,10 @@ public class LocationView implements Entity<LocationId> {
 	}
 	public static LocationView fromEvent(PopulatedLocationAddedEvent event) {
 		final LocationView view = initialize(event);
+		view.description = event.description;
+		view.latitude = event.latitude;
+		view.longitude = event.longitude;
+		view.images = event.images;
 		view.beers = event.beers;
 		return view;
 	}

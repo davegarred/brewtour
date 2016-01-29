@@ -2,7 +2,7 @@ package org.garred.brewtour.repository;
 
 import javax.sql.DataSource;
 
-import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.view.LocationView;
 import org.springframework.beans.factory.annotation.Autowired;
 

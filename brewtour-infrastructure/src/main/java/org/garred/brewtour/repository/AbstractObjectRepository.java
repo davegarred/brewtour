@@ -15,8 +15,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.Identifier;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.Identifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

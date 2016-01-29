@@ -2,7 +2,7 @@ package org.garred.brewtour.security;
 
 import java.util.UUID;
 
-import org.garred.brewtour.application.UserId;
+import org.garred.brewtour.domain.UserId;
 
 public class GuestUserAuth implements UserAuth {
 

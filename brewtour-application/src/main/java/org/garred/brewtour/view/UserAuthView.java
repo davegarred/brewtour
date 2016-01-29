@@ -2,9 +2,9 @@ package org.garred.brewtour.view;
 
 import java.util.Set;
 
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.application.event.UserAddedEvent;
+import org.garred.brewtour.application.event.user.UserAddedEvent;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.UserAuth;
 
 public class UserAuthView implements Entity<UserId>,UserAuth {

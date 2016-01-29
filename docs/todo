@@ -6,3 +6,9 @@ comment
 
 register account
 register brewery owner
+
+
+TECHNICAL DEBT
+- persist identifier factory!!!!!
+- update command and event serialization tests
+- add view serialization tests

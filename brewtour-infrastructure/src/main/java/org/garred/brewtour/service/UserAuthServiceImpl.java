@@ -1,6 +1,6 @@
 package org.garred.brewtour.service;
 
-import org.garred.brewtour.application.UserId;
+import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.repository.UserAuthViewRepository;
 import org.garred.brewtour.security.UserHolder;
 import org.garred.brewtour.view.UserAuthView;

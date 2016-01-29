@@ -1,7 +1,7 @@
 package org.garred.brewtour.config.command_init;
 
 import static java.util.Collections.emptyList;
-import static org.garred.brewtour.application.AvailableImages.NO_IMAGES;
+import static org.garred.brewtour.domain.AvailableImages.NO_IMAGES;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,15 +13,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.garred.brewtour.api.AddPopulatedLocationCommand;
-import org.garred.brewtour.application.AvailableImages;
-import org.garred.brewtour.application.Beer;
-import org.garred.brewtour.application.Image;
+import org.garred.brewtour.application.command.location.AddPopulatedLocationCommand;
 import org.garred.brewtour.brewdb.BrewDbBeer;
 import org.garred.brewtour.brewdb.BrewDbBeer.BrewDbBeerList;
 import org.garred.brewtour.brewdb.BrewDbBeer.Style;
 import org.garred.brewtour.brewdb.BrewDbLocation;
 import org.garred.brewtour.brewdb.BrewDbLocation.BrewDbLocationList;
+import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.Beer;
+import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;

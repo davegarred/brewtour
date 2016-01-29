@@ -4,10 +4,10 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.garred.brewtour.api.AbstractUserFiredCommand;
-import org.garred.brewtour.api.AddFavoriteLocationCommand;
-import org.garred.brewtour.api.AddUserCommand;
-import org.garred.brewtour.api.RemoveFavoriteLocationCommand;
+import org.garred.brewtour.application.command.user.AbstractUserFiredCommand;
+import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
+import org.garred.brewtour.application.command.user.AddUserCommand;
+import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
 import org.garred.brewtour.service.UserDetailsService;
 import org.garred.brewtour.view.UserDetailsView;
 import org.springframework.stereotype.Controller;

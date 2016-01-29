@@ -2,8 +2,8 @@ package org.garred.brewtour.view;
 
 import java.util.function.Consumer;
 
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.Identifier;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.Identifier;
 import org.garred.brewtour.repository.ViewRepository;
 
 public abstract class AbstractViewEventHandler<I extends Identifier, T extends Entity<I>> {

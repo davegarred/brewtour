@@ -1,6 +1,6 @@
 package org.garred.brewtour.service;
 
-import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.repository.LocationViewRepository;
 import org.garred.brewtour.view.LocationView;
 

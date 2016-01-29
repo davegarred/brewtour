@@ -8,7 +8,7 @@
 		http://www.springframework.org/schema/p http://www.springframework.org/schema/c
 		http://www.axonframework.org/schema/core http://www.axonframework.org/schema/axon-core.xsd">
 
-
+	<!-- View Event Handlers -->
 	<bean id="locationViewEventHandler" class="org.garred.brewtour.view.LocationViewEventHandler"
 		c:repository-ref="locationViewRepo" />
 	<bean id="localeViewEventHandler" class="org.garred.brewtour.view.LocaleViewEventHandler"
@@ -18,17 +18,22 @@
 	<bean id="userAuthViewEventHandler" class="org.garred.brewtour.view.UserAuthViewEventHandler"
 		c:repository-ref="userAuthRepo" />
 
+	<!-- Initial command to populate test database -->
 	<bean id="initializationCommands"
 		class="org.garred.brewtour.config.command_init.CommandInitialization"
 		c:gateway-ref="commandGateway" />
 
 
+	<!-- Identifier factories -->
+	<bean id="locationIdentifierFactory" class="org.garred.brewtour.application.LocationIdentifierFactoryStub"/>
+	
+	<!-- Command Handlers -->
 	<axon:annotation-config />
-	<bean id="locationIdentifierFactory" class="org.garred.brewtour.application.cqrs.LocationIdentifierFactoryStub"/>
-	<bean class="org.garred.brewtour.application.cqrs.LocationCommandHandler"
+	
+	<bean class="org.garred.brewtour.application.LocationCommandHandler"
 		c:repository-ref="locationEventRepo"
 		c:identifierFactory-ref="locationIdentifierFactory" />
-	<bean class="org.garred.brewtour.application.cqrs.UserCommandHandler"
+	<bean class="org.garred.brewtour.application.UserCommandHandler"
 		c:repository-ref="userEventRepo"/>
 
 
@@ -44,10 +49,10 @@
 
 	<axon:event-bus id="eventBus"/>
 	<axon:event-sourcing-repository id="locationEventRepo"
-		aggregate-type="org.garred.brewtour.application.cqrs.Location" 
+		aggregate-type="org.garred.brewtour.application.Location" 
 		event-bus="eventBus" event-store="eventStore"/>
 	<axon:event-sourcing-repository id="userEventRepo"
-		aggregate-type="org.garred.brewtour.application.cqrs.User" 
+		aggregate-type="org.garred.brewtour.application.User" 
 		event-bus="eventBus" event-store="eventStore"/>
 
 

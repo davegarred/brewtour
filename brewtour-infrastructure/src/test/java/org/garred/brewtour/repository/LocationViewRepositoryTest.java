@@ -3,7 +3,7 @@ package org.garred.brewtour.repository;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 import static java.util.Collections.emptyList;
-import static org.garred.brewtour.application.AvailableImages.NO_IMAGES;
+import static org.garred.brewtour.domain.AvailableImages.NO_IMAGES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.sql.DataSource;
 
-import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.view.LocationView;
 import org.junit.Before;
 import org.junit.Test;

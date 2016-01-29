@@ -1,10 +1,10 @@
 package org.garred.brewtour.service;
 
-import static org.garred.brewtour.application.LocaleId.SEATTLE;
+import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.garred.brewtour.application.LocaleId;
-import org.garred.brewtour.application.LocationId;
+import org.garred.brewtour.domain.LocaleId;
+import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.repository.LocaleViewRepository;
 import org.garred.brewtour.repository.LocationViewRepository;
 import org.garred.brewtour.security.Secure;

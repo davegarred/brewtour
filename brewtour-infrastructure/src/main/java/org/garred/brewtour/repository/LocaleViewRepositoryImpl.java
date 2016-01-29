@@ -2,7 +2,7 @@ package org.garred.brewtour.repository;
 
 import javax.sql.DataSource;
 
-import org.garred.brewtour.application.LocaleId;
+import org.garred.brewtour.domain.LocaleId;
 import org.garred.brewtour.view.LocaleView;
 import org.springframework.beans.factory.annotation.Autowired;
 

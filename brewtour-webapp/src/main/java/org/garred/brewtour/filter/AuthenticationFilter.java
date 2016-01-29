@@ -14,11 +14,10 @@ import javax.servlet.http.HttpSession;
 import org.garred.brewtour.security.GuestUserAuth;
 import org.garred.brewtour.security.UserAuth;
 import org.garred.brewtour.security.UserHolder;
-import org.garred.brewtour.view.UserAuthView;
 
 public class AuthenticationFilter implements Filter {
 
-	public static final String USER_ATTR = "userId";
+	public static final String USER_ATTR = "user";
 
 //	private static final String USER_COOKIE_NAME = "user";
 
@@ -26,7 +25,8 @@ public class AuthenticationFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		final HttpSession session = ((HttpServletRequest) request).getSession();
-		UserAuth user = (UserAuthView) session.getAttribute(USER_ATTR);
+		UserAuth user = (UserAuth) session.getAttribute(USER_ATTR);
+		// TODO add/check for cookie here first
 		if(user == null) {
 			user = GuestUserAuth.randomGuestAuth();
 			session.setAttribute(USER_ATTR, user);
@@ -35,7 +35,10 @@ public class AuthenticationFilter implements Filter {
 			UserHolder.set(user);
 			chain.doFilter(request, response);
 		} finally {
-			UserHolder.clear();
+			final UserAuth updatedAuth = UserHolder.clear();
+			if(updatedAuth != null) {
+				session.setAttribute(USER_ATTR, updatedAuth);
+			}
 		}
 	}
 

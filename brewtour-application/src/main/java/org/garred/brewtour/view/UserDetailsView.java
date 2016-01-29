@@ -3,10 +3,10 @@ package org.garred.brewtour.view;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.LocationId;
-import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.application.event.UserAddedEvent;
+import org.garred.brewtour.application.event.user.UserAddedEvent;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.UserId;
 
 public class UserDetailsView implements Entity<UserId> {
 

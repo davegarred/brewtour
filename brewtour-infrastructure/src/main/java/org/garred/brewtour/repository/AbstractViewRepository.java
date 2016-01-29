@@ -2,8 +2,8 @@ package org.garred.brewtour.repository;
 
 import javax.sql.DataSource;
 
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.Identifier;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.Identifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

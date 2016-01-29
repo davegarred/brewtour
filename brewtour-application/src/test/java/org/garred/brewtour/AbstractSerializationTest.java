@@ -13,13 +13,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.apache.commons.io.IOUtils;
-import org.garred.brewtour.application.AvailableImages;
-import org.garred.brewtour.application.Beer;
-import org.garred.brewtour.application.Image;
-import org.garred.brewtour.application.LocalePoint;
-import org.garred.brewtour.application.LocationId;
-import org.garred.brewtour.application.Review;
-import org.garred.brewtour.application.UserId;
+import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.Beer;
+import org.garred.brewtour.domain.Image;
+import org.garred.brewtour.domain.LocalePoint;
+import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.Review;
+import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.junit.Assert;
 

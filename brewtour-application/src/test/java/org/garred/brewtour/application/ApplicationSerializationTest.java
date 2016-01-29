@@ -1,8 +1,10 @@
 package org.garred.brewtour.application;
 
-import static org.garred.brewtour.application.LocaleId.SEATTLE;
+import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 
 import org.garred.brewtour.AbstractSerializationTest;
+import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.Image;
 import org.junit.Test;
 
 public class ApplicationSerializationTest extends AbstractSerializationTest {

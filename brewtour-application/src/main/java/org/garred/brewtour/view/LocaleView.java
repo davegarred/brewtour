@@ -2,10 +2,10 @@ package org.garred.brewtour.view;
 
 import java.util.List;
 
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.GoogleMapsParameters;
-import org.garred.brewtour.application.LocaleId;
-import org.garred.brewtour.application.LocalePoint;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.GoogleMapsParameters;
+import org.garred.brewtour.domain.LocaleId;
+import org.garred.brewtour.domain.LocalePoint;
 
 public class LocaleView implements Entity<LocaleId> {
 

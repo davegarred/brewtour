@@ -3,8 +3,8 @@ package org.garred.brewtour.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.garred.brewtour.application.Entity;
-import org.garred.brewtour.application.Identifier;
+import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.Identifier;
 import org.garred.brewtour.repository.ObjectDoesNotExistException;
 import org.garred.brewtour.repository.ViewRepository;
 

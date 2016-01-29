@@ -1,9 +1,9 @@
 package org.garred.brewtour.view;
 
 import org.axonframework.eventhandling.annotation.EventHandler;
-import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.application.event.FavoriteLocationsUpdatedEvent;
-import org.garred.brewtour.application.event.UserAddedEvent;
+import org.garred.brewtour.application.event.user.FavoriteLocationsUpdatedEvent;
+import org.garred.brewtour.application.event.user.UserAddedEvent;
+import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.repository.UserDetailsViewRepository;
 
 public class UserDetailsViewEventHandler extends AbstractViewEventHandler<UserId, UserDetailsView> {

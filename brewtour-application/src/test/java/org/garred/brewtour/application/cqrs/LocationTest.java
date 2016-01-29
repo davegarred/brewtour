@@ -7,44 +7,63 @@ import java.time.LocalDateTime;
 
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
-import org.garred.brewtour.api.AddBeerCommand;
-import org.garred.brewtour.api.AddBeerReviewCommand;
-import org.garred.brewtour.api.AddFavoriteLocationCommand;
-import org.garred.brewtour.api.AddLocationCommand;
-import org.garred.brewtour.api.AddLocationReviewCommand;
-import org.garred.brewtour.api.AddPopulatedLocationCommand;
-import org.garred.brewtour.api.BeerAvailableCommand;
-import org.garred.brewtour.api.BeerUnavailableCommand;
-import org.garred.brewtour.api.ModifyBeerCommand;
-import org.garred.brewtour.api.ModifyLocationDescriptionCommand;
-import org.garred.brewtour.api.RemoveFavoriteLocationCommand;
-import org.garred.brewtour.application.AvailableImages;
-import org.garred.brewtour.application.Beer;
-import org.garred.brewtour.application.Image;
-import org.garred.brewtour.application.LocationId;
-import org.garred.brewtour.application.Review;
-import org.garred.brewtour.application.UserId;
-import org.garred.brewtour.application.event.BeerAddedEvent;
-import org.garred.brewtour.application.event.BeerAvailableEvent;
-import org.garred.brewtour.application.event.BeerModifiedEvent;
-import org.garred.brewtour.application.event.BeerRatingUpdatedEvent;
-import org.garred.brewtour.application.event.BeerReviewAddedEvent;
-import org.garred.brewtour.application.event.BeerUnavailableEvent;
-import org.garred.brewtour.application.event.LocationAddedEvent;
-import org.garred.brewtour.application.event.LocationRatingUpdatedEvent;
-import org.garred.brewtour.application.event.LocationReviewAddedEvent;
-import org.garred.brewtour.application.event.PopulatedLocationAddedEvent;
+import org.garred.brewtour.application.Location;
+import org.garred.brewtour.application.LocationCommandHandler;
+import org.garred.brewtour.application.LocationIdentifierFactoryStub;
+import org.garred.brewtour.application.command.location.AddBeerCommand;
+import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
+import org.garred.brewtour.application.command.location.AddLocationCommand;
+import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
+import org.garred.brewtour.application.command.location.AddPopulatedLocationCommand;
+import org.garred.brewtour.application.command.location.BeerAvailableCommand;
+import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
+import org.garred.brewtour.application.command.location.ModifyBeerCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationAddressCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationHoursOfOperationCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationImagesCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationPhoneCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationPositionCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationWebsiteCommand;
+import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
+import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
+import org.garred.brewtour.application.event.location.BeerAddedEvent;
+import org.garred.brewtour.application.event.location.BeerAvailableEvent;
+import org.garred.brewtour.application.event.location.BeerModifiedEvent;
+import org.garred.brewtour.application.event.location.BeerRatingUpdatedEvent;
+import org.garred.brewtour.application.event.location.BeerReviewAddedEvent;
+import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
+import org.garred.brewtour.application.event.location.LocationAddedEvent;
+import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationDescriptionUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationHoursOfOperationUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationPhoneUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationPositionUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationRatingUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationReviewAddedEvent;
+import org.garred.brewtour.application.event.location.LocationWebsiteUpdatedEvent;
+import org.garred.brewtour.application.event.location.PopulatedLocationAddedEvent;
+import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.Beer;
+import org.garred.brewtour.domain.Image;
+import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.Review;
+import org.garred.brewtour.domain.UserId;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LocationTest {
 
+	private static final BigDecimal LONGITUDE = new BigDecimal("-122.315");
+	private static final BigDecimal LATITUDE = new BigDecimal("47.614");
 	private static final LocationId LOCATION_ID = new LocationId("LOCA10001");
 	private static final String LOCATION_DESCRIPTION = "some interesting description";
 	private static final String LOCATION_DESCRIPTION_2 = "a less interesting description of some (or another) location";
-	private static final ModifyLocationDescriptionCommand MODIFY_LOCATION_DESCRIPTION = new ModifyLocationDescriptionCommand(LOCATION_ID, LOCATION_DESCRIPTION_2);
+	private static final UpdateLocationDescriptionCommand UPDATE_LOCATION_DESCRIPTION = new UpdateLocationDescriptionCommand(LOCATION_ID, LOCATION_DESCRIPTION_2);
 	private static final Image IMAGE_1 = new Image("image 1");
 	private static final Image IMAGE_2 = new Image("image 2");
+	private static final AvailableImages AVAILABLE_IMAGES = new AvailableImages(IMAGE_1, IMAGE_2, null);
 	private static final String BEER_NAME = "A beer name";
 	private static final BeerAvailableCommand BEER_AVAILABLE_COMMAND = new BeerAvailableCommand(LOCATION_ID, BEER_NAME);
 	private static final BeerUnavailableCommand BEER_UNAVAILABLE_COMMAND = new BeerUnavailableCommand(LOCATION_ID, BEER_NAME);
@@ -65,12 +84,10 @@ public class LocationTest {
 	private static final AddLocationReviewCommand ADD_LOCATION_REVIEW_COMMAND = new AddLocationReviewCommand(LOCATION_ID, LOCATION_REVIEW);
 
 	private static final ModifyBeerCommand MODIFY_BEER_COMMAND = new ModifyBeerCommand(LOCATION_ID, BEER_NAME, STYLE_2, CATEGORY_2, ABV_2, IBU_2);
-	private static final AddLocationCommand ADD_LOCATION_COMMAND = new AddLocationCommand(null, "a location name", LOCATION_DESCRIPTION,
-			new BigDecimal("47.614"), new BigDecimal("-122.315"),
-			new AvailableImages(IMAGE_1, IMAGE_2, null));
+	private static final AddLocationCommand ADD_LOCATION_COMMAND = new AddLocationCommand(null, "a location name");
 	private static final AddPopulatedLocationCommand ADD_POPULATED_LOCATION_COMMAND = new AddPopulatedLocationCommand(null, "a location name", LOCATION_DESCRIPTION,
-			new BigDecimal("47.614"), new BigDecimal("-122.315"),
-			new AvailableImages(IMAGE_1, IMAGE_2, null), asList(new Beer("beer id", BEER_NAME, "someStatus", "awesome style", "niche category",
+			LATITUDE, LONGITUDE,
+			AVAILABLE_IMAGES, asList(new Beer("beer id", BEER_NAME, "someStatus", "awesome style", "niche category",
 					new BigDecimal("6.2"), new BigDecimal("45"), true, asList(BEER_REVIEW))));
 	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(LOCATION_ID, BEER_NAME, STYLE, CATEGORY, ABV, IBU);
 
@@ -95,6 +112,50 @@ public class LocationTest {
 			.when(ADD_POPULATED_LOCATION_COMMAND)
 			.expectEvents(PopulatedLocationAddedEvent.fromCommand(LOCATION_ID, ADD_POPULATED_LOCATION_COMMAND));
 	}
+
+	@Test
+	public void testUpdateLocationDescription() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+			.when(UPDATE_LOCATION_DESCRIPTION)
+			.expectEvents(new LocationDescriptionUpdatedEvent(LOCATION_ID, LOCATION_DESCRIPTION_2));
+	}
+	@Test
+	public void testUpdateLocationAddress() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+			.when(new UpdateLocationAddressCommand(LOCATION_ID, "1013 3rd Street", "3rd floor", "Seattle", "WA", "98102"))
+			.expectEvents(new LocationAddressUpdatedEvent(LOCATION_ID, "1013 3rd Street", "3rd floor", "Seattle", "WA", "98102"));
+	}
+	@Test
+	public void testUpdateLocationHoursOfOperation() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+			.when(new UpdateLocationHoursOfOperationCommand(LOCATION_ID, "some text hours of operation"))
+			.expectEvents(new LocationHoursOfOperationUpdatedEvent(LOCATION_ID, "some text hours of operation"));
+	}
+	@Test
+	public void testUpdateLocationImages() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+		.when(new UpdateLocationImagesCommand(LOCATION_ID, AVAILABLE_IMAGES))
+		.expectEvents(new LocationImagesUpdatedEvent(LOCATION_ID, AVAILABLE_IMAGES));
+	}
+	@Test
+	public void testUpdateLocationPosition() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+			.when(new UpdateLocationPositionCommand(LOCATION_ID, LATITUDE, LONGITUDE))
+			.expectEvents(new LocationPositionUpdatedEvent(LOCATION_ID, LATITUDE, LONGITUDE));
+	}
+	@Test
+	public void testUpdateLocationPhone() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+			.when(new UpdateLocationPhoneCommand(LOCATION_ID, "206-867-5309"))
+			.expectEvents(new LocationPhoneUpdatedEvent(LOCATION_ID, "206-867-5309"));
+	}
+	@Test
+	public void testUpdateLocationWebsite() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+			.when(new UpdateLocationWebsiteCommand(LOCATION_ID, "http://some.brewery.com"))
+			.expectEvents(new LocationWebsiteUpdatedEvent(LOCATION_ID, "http://some.brewery.com"));
+	}
+
 	@Test
 	public void testAddBeer() {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND)
@@ -132,13 +193,6 @@ public class LocationTest {
 	public void testBeerAvailable_idempotent() {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
 			.when(BEER_AVAILABLE_COMMAND)
-			.expectEvents();
-	}
-
-	@Test
-	public void testModifyLocationDescription() {
-		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
-			.when(MODIFY_LOCATION_DESCRIPTION)
 			.expectEvents();
 	}
 
