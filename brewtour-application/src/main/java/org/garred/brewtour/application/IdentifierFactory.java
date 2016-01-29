@@ -5,5 +5,6 @@ import org.garred.brewtour.domain.AbstractIdentifier;
 public interface IdentifierFactory<T extends AbstractIdentifier> {
 
 	T next();
+	T last();
 
 }

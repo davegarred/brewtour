@@ -13,4 +13,9 @@ public class LocationIdentifierFactoryStub implements IdentifierFactory<Location
 		return new LocationId("LOCA" + this.count.incrementAndGet());
 	}
 
+	@Override
+	public LocationId last() {
+		return new LocationId("LOCA" + this.count.get());
+	}
+
 }
