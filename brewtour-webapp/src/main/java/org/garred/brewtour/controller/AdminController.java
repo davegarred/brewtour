@@ -33,19 +33,19 @@ public class AdminController extends AbstractRestController {
 	@RequestMapping(value = "/user/{login}", method = GET, produces="application/json")
 	@ResponseBody
 	public UserAuthView user(@PathVariable("login") String login) {
-		return addUserWithRole(login, null);
+		return addUserWithRole(login, "", null);
 	}
 
 	@RequestMapping(value = "/admin/{login}", method = GET, produces="application/json")
 	@ResponseBody
 	public UserAuthView admin(@PathVariable("login") String login) {
-		return addUserWithRole(login, ADMIN_ROLE);
+		return addUserWithRole(login, "", ADMIN_ROLE);
 	}
 
 	@RequestMapping(value = "/test/{login}", method = GET, produces="application/json")
 	@ResponseBody
 	public UserAuthView testUser(@PathVariable("login") String login) {
-		return addUserWithRole(login, TEST_ROLE);
+		return addUserWithRole(login, "", TEST_ROLE);
 	}
 
 	@RequestMapping(value = "/logout", method = GET, produces="application/json")
@@ -56,9 +56,9 @@ public class AdminController extends AbstractRestController {
 		return null;
 	}
 
-	private UserAuthView addUserWithRole(String login, String role) {
+	private UserAuthView addUserWithRole(String login, String password, String role) {
 		if(!UserHolder.isAuthenticated()) {
-			this.commandGateway.sendAndWait(new AddUserCommand(login));
+			this.commandGateway.sendAndWait(new AddUserCommand(login, password));
 		}
 		this.commandGateway.sendAndWait(new AddRoleToUserCommand(UserHolder.get().identifier(), role));
 		final UserAuthView userAuth = this.userService.getCurrentUserAuth();

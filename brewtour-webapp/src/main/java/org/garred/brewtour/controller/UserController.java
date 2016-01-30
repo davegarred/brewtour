@@ -35,7 +35,7 @@ public class UserController extends AbstractRestController {
 	@RequestMapping(value = "/addUser", method = GET, produces="application/json")
 	@ResponseBody
 	public UserDetailsView addUuser() {
-		return processUserCommand(new AddUserCommand(""));
+		return processUserCommand(new AddUserCommand("", ""));
 	}
 
 

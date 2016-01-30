@@ -1,5 +1,7 @@
 package org.garred.brewtour.application;
 
+import static org.garred.brewtour.domain.Hash.NO_HASH;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ import org.garred.brewtour.application.command.user.RemoveRoleFromUserCommand;
 import org.garred.brewtour.application.event.user.FavoriteLocationsUpdatedEvent;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.application.event.user.UserRolesUpdatedEvent;
+import org.garred.brewtour.domain.Hash;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
 
@@ -23,6 +26,7 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
     @AggregateIdentifier
     private UserId userId;
     private String login;
+    private Hash hash;
     private Set<String> roles = new HashSet<>();
     private Set<LocationId> favoriteLocations = new HashSet<>();
 
@@ -30,7 +34,7 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
 
     public static User addUser(UserId userId) {
     	final User user = new User();
-    	user.apply(new UserAddedEvent(userId, ""));
+    	user.apply(new UserAddedEvent(userId, "", NO_HASH));
     	return user;
     }
     public static User addUser(AddUserCommand command) {

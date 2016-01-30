@@ -21,6 +21,7 @@ import org.axonframework.domain.SimpleDomainEventStream;
 import org.axonframework.eventstore.EventStore;
 import org.garred.brewtour.application.event.user.FavoriteLocationsUpdatedEvent;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
+import org.garred.brewtour.domain.Hash;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
@@ -45,7 +46,7 @@ public class H2EventStoreTest {
 	private static final UserId USER_ID = new UserId("a user id");
 	private static final FavoriteLocationsUpdatedEvent FAVORITE_LOCATIONS_UPDATED_EVENT = new FavoriteLocationsUpdatedEvent(USER_ID, FAVORITE_LOCATIONS);
 
-	private static final UserAddedEvent USER_ADDED_EVENT = new UserAddedEvent(USER_ID, "login");
+	private static final UserAddedEvent USER_ADDED_EVENT = new UserAddedEvent(USER_ID, "login", new Hash("hash"));
 
 
 	private final ObjectMapper objectMapper = ObjectMapperFactory.objectMapper();

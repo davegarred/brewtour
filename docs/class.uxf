@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>90</x>
+      <y>10</y>
+      <w>340</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>Locale
+--
+name : String
+locationParameters : GoogleMapsParameters
+locations : List&lt;LocalePoint&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>250</y>
+      <w>210</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>LocalePoint
+--
+name : String
+latitude : BigDecimal
+longitude : BigDecimal
+images : AvailableImages
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>150</x>
+      <y>130</y>
+      <w>30</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>290</x>
+      <y>250</y>
+      <w>200</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>GoogleMapsParameters
+--
+latitude : BigDecimal
+longitude : BigDecimal
+zoom : int
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>130</y>
+      <w>30</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+</diagram>
