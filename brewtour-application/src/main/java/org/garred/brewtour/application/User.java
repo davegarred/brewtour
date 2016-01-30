@@ -79,6 +79,7 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
 	public void on(UserAddedEvent event) {
 		this.userId = event.userId;
 		this.login = event.login;
+		this.hash = event.hash;
 	}
 	@EventHandler
 	public void on(FavoriteLocationsUpdatedEvent event) {

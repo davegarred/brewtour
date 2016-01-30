@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.domain.Entity;
+import org.garred.brewtour.domain.Hash;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.UserAuth;
 
@@ -14,6 +15,7 @@ public class UserAuthView implements Entity<UserId>,UserAuth {
 
 	public UserId userId;
 	public String login;
+	public Hash hash;
 	public Set<String> roles;
 
 	@Override
@@ -25,6 +27,7 @@ public class UserAuthView implements Entity<UserId>,UserAuth {
 		final UserAuthView view = new UserAuthView();
 		view.userId = event.userId;
 		view.login = event.login;
+		view.hash = event.hash;
 		return view;
 	}
 

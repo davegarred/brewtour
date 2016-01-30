@@ -40,7 +40,7 @@ public class UserTest {
 	private static final AddRoleToUserCommand ADD_ROLE_TO_USER_COMMAND_2 = new AddRoleToUserCommand(USER_ID, ROLE_2);
 	private static final UserAuth USER_AUTH = new GuestUserAuth(USER_ID);
 
-	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(LOGIN, PASSWORD);
+	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, LOGIN, PASSWORD);
 	private static final RemoveFavoriteLocationCommand REMOVE_FAV_LOCATION_COMMAND = new RemoveFavoriteLocationCommand(LOCATION_ID);
 	private static final AddFavoriteLocationCommand ADD_FAV_LOCATION_COMMAND = new AddFavoriteLocationCommand(LOCATION_ID);
 	private static final AddFavoriteLocationCommand ADD_FAV_LOCATION_COMMAND_2 = new AddFavoriteLocationCommand(LOCATION_ID_2);

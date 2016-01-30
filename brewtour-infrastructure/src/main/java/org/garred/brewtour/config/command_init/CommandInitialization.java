@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewtour.application.IdentifierFactory;
@@ -26,6 +27,7 @@ import org.garred.brewtour.application.command.location.UpdateLocationImagesComm
 import org.garred.brewtour.application.command.location.UpdateLocationPhoneCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationPositionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationWebsiteCommand;
+import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.brewdb.BrewDbBeer;
 import org.garred.brewtour.brewdb.BrewDbBeer.BrewDbBeerList;
 import org.garred.brewtour.brewdb.BrewDbBeer.Style;
@@ -35,6 +37,7 @@ import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.Beer;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -150,6 +153,7 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		this.gateway.send(new AddUserCommand(new UserId(UUID.randomUUID().toString()), "dave", "dave"));
 		try {
 			migrate();
 		} catch (final Exception e) {
