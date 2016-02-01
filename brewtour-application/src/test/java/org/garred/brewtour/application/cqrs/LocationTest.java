@@ -31,7 +31,8 @@ import org.garred.brewtour.application.event.location.BeerAddedEvent;
 import org.garred.brewtour.application.event.location.BeerAvailableEvent;
 import org.garred.brewtour.application.event.location.BeerModifiedEvent;
 import org.garred.brewtour.application.event.location.BeerRatingUpdatedEvent;
-import org.garred.brewtour.application.event.location.BeerReviewAddedEvent;
+import org.garred.brewtour.application.event.location.BeerReviewAddedByAnonymousEvent;
+import org.garred.brewtour.application.event.location.BeerReviewAddedByUserEvent;
 import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
@@ -50,6 +51,10 @@ import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.Review;
 import org.garred.brewtour.domain.UserId;
+import org.garred.brewtour.security.GuestUserAuth;
+import org.garred.brewtour.security.UserHolder;
+import org.garred.brewtour.service.LocationCommandHandlerService;
+import org.garred.brewtour.view.UserAuthView;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,7 +84,7 @@ public class LocationTest {
 	protected static final LocalDateTime DATE_TIME = LocalDateTime.of(2015, 9, 20, 8, 50);
 	private static final Review LOCATION_REVIEW = new Review(USER_ID, DATE_TIME, 4, "some review");
 	private static final Review BEER_REVIEW = new Review(USER_ID, DATE_TIME, 4, "spicy but with a full body");
-	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, BEER_REVIEW);
+	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, BEER_REVIEW.stars, BEER_REVIEW.review);
 
 	private static final AddLocationReviewCommand ADD_LOCATION_REVIEW_COMMAND = new AddLocationReviewCommand(LOCATION_ID, LOCATION_REVIEW);
 
@@ -97,7 +102,18 @@ public class LocationTest {
 	@Before
 	public void setup() {
 		this.fixture = Fixtures.newGivenWhenThenFixture(Location.class);
-		this.fixture.registerAnnotatedCommandHandler(new LocationCommandHandler(this.fixture.getRepository(), new LocationIdentifierFactoryStub()));
+		this.fixture.registerAnnotatedCommandHandler(new LocationCommandHandler(this.fixture.getRepository(), new LocationCommandHandlerService() {
+			LocationIdentifierFactoryStub identifierStub = new LocationIdentifierFactoryStub();
+			@Override
+			public LocalDateTime now() {
+				return DATE_TIME;
+			}
+			@Override
+			public LocationId nextLocationId() {
+				return this.identifierStub.next();
+			}
+		}));
+		UserHolder.set(new GuestUserAuth(USER_ID));
 	}
 
 	@Test
@@ -199,20 +215,31 @@ public class LocationTest {
 	@Test
 	public void testAddLocationReview() {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
-		.when(ADD_LOCATION_REVIEW_COMMAND)
-		.expectEvents(
+			.when(ADD_LOCATION_REVIEW_COMMAND)
+			.expectEvents(
 				LocationReviewAddedEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND),
 				new LocationRatingUpdatedEvent(LOCATION_ID, new BigDecimal("4.0")));
 	}
 	@Test
-	public void testAddBeerReview() {
+	public void testAddBeerReview_anonymous() {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
-		.when(ADD_BEER_REVIEW_COMMAND)
-		.expectEvents(
-				BeerReviewAddedEvent.fromCommand(ADD_BEER_REVIEW_COMMAND),
+			.when(ADD_BEER_REVIEW_COMMAND)
+			.expectEvents(
+				BeerReviewAddedByAnonymousEvent.fromCommand(ADD_BEER_REVIEW_COMMAND, USER_ID, DATE_TIME),
 				new BeerRatingUpdatedEvent(LOCATION_ID, BEER_NAME, new BigDecimal("4.0"))
 				);
 	}
+	@Test
+	public void testAddBeerReview_byUser() {
+		UserHolder.set(userAuth(USER_ID));
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+		.when(ADD_BEER_REVIEW_COMMAND)
+		.expectEvents(
+				BeerReviewAddedByUserEvent.fromCommand(ADD_BEER_REVIEW_COMMAND, USER_ID, DATE_TIME),
+				new BeerRatingUpdatedEvent(LOCATION_ID, BEER_NAME, new BigDecimal("4.0"))
+				);
+	}
+
 	@Test
 	public void testAddFavoriteLocation() {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
@@ -224,5 +251,12 @@ public class LocationTest {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
 		.when(new RemoveFavoriteLocationCommand(LOCATION_ID))
 		.expectEvents();
+	}
+
+
+	private static UserAuthView userAuth(UserId userId) {
+		final UserAuthView auth = new UserAuthView();
+		auth.userId = userId;
+		return auth;
 	}
 }

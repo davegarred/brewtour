@@ -28,13 +28,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractObjectRepository<I extends Identifier,T extends Entity<I>> implements ViewRepository<I,T> {
 
-	private static final String SCHEMA = "brewtour";
+	protected static final String SCHEMA = "brewtour";
 
 	private final PreparedStatementCreatorFactory findOne;
 	private final PreparedStatementCreatorFactory insert;
 	private final PreparedStatementCreatorFactory update;
 	private final PreparedStatementCreatorFactory deleteOne;
-	private final String findVersionQuery;
+	protected final String findVersionQuery;
 
 	protected final JdbcTemplate jdbcTemplate;
 	protected final ObjectMapper objectMapper;

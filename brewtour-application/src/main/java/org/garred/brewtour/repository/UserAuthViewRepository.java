@@ -5,4 +5,6 @@ import org.garred.brewtour.view.UserAuthView;
 
 public interface UserAuthViewRepository extends ViewRepository<UserId, UserAuthView> {
 
+	UserAuthView findByLogin(String login);
+
 }

@@ -6,7 +6,7 @@ import org.axonframework.eventhandling.annotation.EventHandler;
 import org.garred.brewtour.application.event.location.BeerAddedEvent;
 import org.garred.brewtour.application.event.location.BeerAvailableEvent;
 import org.garred.brewtour.application.event.location.BeerModifiedEvent;
-import org.garred.brewtour.application.event.location.BeerReviewAddedEvent;
+import org.garred.brewtour.application.event.location.AbstractBeerReviewAddedEvent;
 import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
@@ -110,7 +110,7 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
     	update(event.locationId, l -> l.reviews.add(event.review));
     }
     @EventHandler
-    public void on(BeerReviewAddedEvent event) {
+    public void on(AbstractBeerReviewAddedEvent event) {
     	update(event.locationId, l -> {
     		final Beer beer = l.requireBeer(event.name);
     		beer.addReview(event.review);

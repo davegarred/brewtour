@@ -25,7 +25,7 @@ public class CommandSerializationTest extends AbstractSerializationTest {
 
 	@Test
 	public void testAddBeerReview() {
-		reflectionValidate(new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, BEER_REVIEW));
+		reflectionValidate(new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, BEER_REVIEW.stars, BEER_REVIEW.review));
 	}
 
 	@Test

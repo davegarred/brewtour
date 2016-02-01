@@ -9,6 +9,7 @@ CREATE TABLE brewtour.user_details_view (
 );
 CREATE TABLE brewtour.user_auth_view (
   id varchar(36) NOT NULL,
+  login varchar(36) NOT NULL,
   version integer NOT NULL,
   data clob
 );

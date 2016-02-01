@@ -10,8 +10,11 @@ import org.garred.brewtour.application.command.AggregateCommand;
 import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
+import org.garred.brewtour.controller.api.UserLogin;
 import org.garred.brewtour.domain.UserId;
+import org.garred.brewtour.security.UserHolder;
 import org.garred.brewtour.service.UserDetailsService;
+import org.garred.brewtour.view.UserAuthView;
 import org.garred.brewtour.view.UserDetailsView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +35,17 @@ public class UserController extends AbstractRestController {
 	@RequestMapping(value = "/user", method = GET, produces="application/json")
 	@ResponseBody
 	public UserDetailsView user() {
+		return this.userService.getCurrentUserDetails();
+	}
+
+	@RequestMapping(value = "/user/login", method = POST, produces="application/json")
+	@ResponseBody
+	public UserDetailsView user(@RequestBody UserLogin login) {
+		final UserAuthView auth = this.userService.login(login.login, login.password);
+		if(auth == null) {
+			return null;
+		}
+		UserHolder.update(auth);
 		return this.userService.getCurrentUserDetails();
 	}
 
@@ -57,7 +71,7 @@ public class UserController extends AbstractRestController {
 
 	private UserDetailsView processUserCommand(AggregateCommand<UserId> command) {
 		this.commandGateway.sendAndWait(command);
-		UserDetailsView currentUserDetails = this.userService.getCurrentUserDetails();
+		final UserDetailsView currentUserDetails = this.userService.getCurrentUserDetails();
 		return currentUserDetails;
 	}
 }

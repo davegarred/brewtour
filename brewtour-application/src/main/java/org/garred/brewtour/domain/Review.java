@@ -33,7 +33,6 @@ public class Review {
 		result = prime * result + ((this.userId == null) ? 0 : this.userId.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

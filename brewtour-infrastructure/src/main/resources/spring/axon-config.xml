@@ -25,15 +25,12 @@
 		c:identifierFactory-ref="locationIdentifierFactory" />
 
 
-	<!-- Identifier factories -->
-	<bean id="locationIdentifierFactory" class="org.garred.brewtour.application.LocationIdentifierFactoryStub"/>
-	
 	<!-- Command Handlers -->
 	<axon:annotation-config />
 	
 	<bean class="org.garred.brewtour.application.LocationCommandHandler"
 		c:repository-ref="locationEventRepo"
-		c:identifierFactory-ref="locationIdentifierFactory" />
+		c:service-ref="locationCommandHandlerService" />
 	<bean class="org.garred.brewtour.application.UserCommandHandler"
 		c:repository-ref="userEventRepo"/>
 

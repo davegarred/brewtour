@@ -18,24 +18,27 @@ import org.garred.brewtour.application.command.location.UpdateLocationPhoneComma
 import org.garred.brewtour.application.command.location.UpdateLocationPositionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationWebsiteCommand;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.security.UserAuth;
+import org.garred.brewtour.security.UserHolder;
+import org.garred.brewtour.service.LocationCommandHandlerService;
 
 public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Location> {
 
-	private final IdentifierFactory<LocationId> identifierFactory;
+	private final LocationCommandHandlerService service;
 
-	public LocationCommandHandler(Repository<Location> repository, IdentifierFactory<LocationId> identifierFactory) {
+	public LocationCommandHandler(Repository<Location> repository, LocationCommandHandlerService service) {
 		super(repository);
-		this.identifierFactory = identifierFactory;
+		this.service = service;
 	}
 
 
 	@CommandHandler
 	public void handle(AddPopulatedLocationCommand command) {
-		this.repository.add(Location.addPopulatedLocation(this.identifierFactory.next(), command));
+		this.repository.add(Location.addPopulatedLocation(this.service.nextLocationId(), command));
 	}
 	@CommandHandler
     public void handle(AddLocationCommand command) {
-		this.repository.add(Location.addLocation(this.identifierFactory.next(), command));
+		this.repository.add(Location.addLocation(this.service.nextLocationId(), command));
     }
 
 	@CommandHandler
@@ -92,7 +95,16 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 	}
 	@CommandHandler
 	public void handle(AddBeerReviewCommand command) {
-		require(command).addBeerReview(command);
+		require(command).addBeerReview(command, user(), this.service.now());
+	}
+
+
+	private static UserAuth user() {
+		final UserAuth userAuth = UserHolder.get();
+		if(userAuth == null) {
+			throw new RuntimeException("No user!");
+		}
+		return userAuth;
 	}
 
 

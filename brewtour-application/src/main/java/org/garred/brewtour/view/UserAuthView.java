@@ -1,5 +1,6 @@
 package org.garred.brewtour.view;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.garred.brewtour.application.event.user.UserAddedEvent;
@@ -21,6 +22,16 @@ public class UserAuthView implements Entity<UserId>,UserAuth {
 	@Override
 	public UserId identifier() {
 		return this.userId;
+	}
+
+	@Override
+	public boolean identified() {
+		return true;
+	}
+
+	@Override
+	public Collection<String> roles() {
+		return this.roles;
 	}
 
 	public static UserAuthView fromEvent(UserAddedEvent event) {

@@ -27,13 +27,23 @@
 		c:objectMapper-ref="objectMapper"/>
 	
 	<bean id="userDetailsService" class="org.garred.brewtour.service.UserDetailsServiceImpl"
-		c:userRepo-ref="userDetailsRepo" />
+		c:userRepo-ref="userDetailsRepo" 
+		c:userAuthRepo-ref="userAuthRepo" />
+		
 	<bean id="userAuthService" class="org.garred.brewtour.service.UserAuthServiceImpl"
 		c:userRepo-ref="userAuthRepo" />
 	<bean id="locationService" class="org.garred.brewtour.service.LocationServiceImpl"
 		c:localeRepository-ref="localeViewRepo"
 		c:locationRepository-ref="locationViewRepo"
 		c:commandGateway-ref="commandGateway"/>
+		
+	<!-- Identifier factories -->
+	<bean id="locationIdentifierFactory" class="org.garred.brewtour.application.LocationIdentifierFactoryStub"/>
+	
+	<bean id="locationCommandHandlerService" class="org.garred.brewtour.service.LocationCommandHandlerServiceImpl"
+		c:identifierFactory-ref="locationIdentifierFactory" />
+		
+		
 	
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>
