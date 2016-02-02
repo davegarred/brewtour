@@ -9,7 +9,6 @@ import org.axonframework.eventhandling.annotation.EventHandler;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationPositionUpdatedEvent;
-import org.garred.brewtour.application.event.location.PopulatedLocationAddedEvent;
 import org.garred.brewtour.domain.GoogleMapsParameters;
 import org.garred.brewtour.domain.GoogleMapsParameters.GoogleMapsPosition;
 import org.garred.brewtour.domain.LocaleId;
@@ -22,12 +21,6 @@ public class LocaleViewEventHandler extends AbstractViewEventHandler<LocaleId, L
 		super(repository);
 	}
 
-	@EventHandler
-    public void on(PopulatedLocationAddedEvent event) {
-		final LocaleView locale = getOrInitialize();
-		locale.locations.add(new LocalePoint(event.locationId, event.name, event.latitude, event.longitude, event.images));
-		persist(locale);
-    }
 	@EventHandler
 	public void on(LocationAddedEvent event) {
 		final LocaleView locale = getOrInitialize();

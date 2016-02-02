@@ -9,7 +9,7 @@ import org.garred.brewtour.domain.Hash;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.UserAuth;
 
-public class UserAuthView implements Entity<UserId>,UserAuth {
+public class UserAuthView extends AbstractView implements Entity<UserId>,UserAuth {
 
 	public static final String ADMIN_ROLE = "org.garred.brewtour.roles.ADMIN";
 	public static final String TEST_ROLE = "org.garred.brewtour.roles.TEST";

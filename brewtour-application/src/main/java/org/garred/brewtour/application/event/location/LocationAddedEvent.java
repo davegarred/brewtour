@@ -10,13 +10,12 @@ public class LocationAddedEvent extends AbstractLocationAddedEvent {
 
 	@JsonCreator
 	public LocationAddedEvent(@JsonProperty("locationId") LocationId locationId,
-	        @JsonProperty("brewDbId") String brewDbId,
 	        @JsonProperty("name") String name) {
-		super(locationId, brewDbId, name);
+		super(locationId, name);
 	}
 
 	public static LocationAddedEvent fromCommand(LocationId locationId, AddLocationCommand command) {
-		return new LocationAddedEvent(locationId, command.brewDbId, command.name);
+		return new LocationAddedEvent(locationId, command.name);
 	}
 
 }

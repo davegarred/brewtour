@@ -1,6 +1,5 @@
 package org.garred.brewtour.event_store;
 
-import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -8,7 +7,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -19,10 +17,8 @@ import org.axonframework.domain.DomainEventStream;
 import org.axonframework.domain.GenericDomainEventMessage;
 import org.axonframework.domain.SimpleDomainEventStream;
 import org.axonframework.eventstore.EventStore;
-import org.garred.brewtour.application.event.user.FavoriteLocationsUpdatedEvent;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.domain.Hash;
-import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.joda.time.LocalDateTime;
@@ -39,12 +35,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ContextConfiguration(locations = "classpath:spring/persistence-config.xml")
 public class H2EventStoreTest {
 
-	private static final LocationId LOCATION_ID = new LocationId("a location id");
-	private static final HashSet<LocationId> FAVORITE_LOCATIONS = new HashSet<>(asList(LOCATION_ID));
 	private static final LocalDateTime LOCAL_DATE_TIME = new LocalDateTime(2013, 1, 24, 10, 44);
 	private static final String TYPE = "User";
 	private static final UserId USER_ID = new UserId("a user id");
-	private static final FavoriteLocationsUpdatedEvent FAVORITE_LOCATIONS_UPDATED_EVENT = new FavoriteLocationsUpdatedEvent(USER_ID, FAVORITE_LOCATIONS);
 
 	private static final UserAddedEvent USER_ADDED_EVENT = new UserAddedEvent(USER_ID, "login", new Hash("hash"));
 
@@ -81,16 +74,6 @@ public class H2EventStoreTest {
 		final DomainEventStream events = this.eventStore.readEvents(TYPE, USER_ID);
 		final DomainEventMessage<?> event = events.next();
 		assertReflectionEquals(USER_ADDED_EVENT, event.getPayload());
-		assertTrue(!events.hasNext());
-	}
-	@Test
-	public void testAppendEventsAgain() {
-		this.eventStore.appendEvents(TYPE, new SimpleDomainEventStream(eventList(USER_ADDED_EVENT)));
-		this.eventStore.appendEvents(TYPE, new SimpleDomainEventStream(eventList(FAVORITE_LOCATIONS_UPDATED_EVENT)));
-
-		final DomainEventStream events = this.eventStore.readEvents(TYPE, USER_ID);
-		assertReflectionEquals(USER_ADDED_EVENT, events.next().getPayload());
-		assertReflectionEquals(FAVORITE_LOCATIONS_UPDATED_EVENT, events.next().getPayload());
 		assertTrue(!events.hasNext());
 	}
 

@@ -7,7 +7,7 @@ import org.garred.brewtour.domain.GoogleMapsParameters;
 import org.garred.brewtour.domain.LocaleId;
 import org.garred.brewtour.domain.LocalePoint;
 
-public class LocaleView implements Entity<LocaleId> {
+public class LocaleView extends AbstractView implements Entity<LocaleId> {
 
 	public LocaleId id;
 	public String name;

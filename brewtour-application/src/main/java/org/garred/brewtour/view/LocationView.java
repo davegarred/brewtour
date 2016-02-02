@@ -6,17 +6,15 @@ import java.util.List;
 
 import org.garred.brewtour.application.event.location.AbstractLocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
-import org.garred.brewtour.application.event.location.PopulatedLocationAddedEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.Beer;
 import org.garred.brewtour.domain.Entity;
 import org.garred.brewtour.domain.LocationId;
-import org.garred.brewtour.domain.Review;
+import org.garred.brewtour.domain.UserReview;
 
-public class LocationView implements Entity<LocationId> {
+public class LocationView extends AbstractView implements Entity<LocationId> {
 
 	public LocationId locationId;
-	public String brewDbId;
 	public String name;
 	public String description;
 	public String streetAddress;
@@ -31,7 +29,7 @@ public class LocationView implements Entity<LocationId> {
 	public String website;
 	public AvailableImages images;
 	public List<Beer> beers;
-	public List<Review> reviews;
+	public List<UserReview> reviews;
 
 	@Override
 	public LocationId identifier() {
@@ -41,23 +39,12 @@ public class LocationView implements Entity<LocationId> {
 	private static LocationView initialize(AbstractLocationAddedEvent event) {
 		final LocationView view = new LocationView();
 		view.locationId = event.locationId;
-		view.brewDbId = event.brewDbId;
-		view.name = event.name;
 		view.beers = new ArrayList<>();
 		view.reviews = new ArrayList<>();
 		return view;
 	}
 	public static LocationView fromEvent(LocationAddedEvent event) {
 		return initialize(event);
-	}
-	public static LocationView fromEvent(PopulatedLocationAddedEvent event) {
-		final LocationView view = initialize(event);
-		view.description = event.description;
-		view.latitude = event.latitude;
-		view.longitude = event.longitude;
-		view.images = event.images;
-		view.beers = event.beers;
-		return view;
 	}
 
 	public Beer findBeer(String beername) {

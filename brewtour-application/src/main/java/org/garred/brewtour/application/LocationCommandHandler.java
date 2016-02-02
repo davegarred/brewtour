@@ -3,10 +3,11 @@ package org.garred.brewtour.application;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.Repository;
 import org.garred.brewtour.application.command.location.AddBeerCommand;
+import org.garred.brewtour.application.command.location.AddBeerRatingCommand;
 import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
+import org.garred.brewtour.application.command.location.AddLocationRatingCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
-import org.garred.brewtour.application.command.location.AddPopulatedLocationCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
 import org.garred.brewtour.application.command.location.ModifyBeerCommand;
@@ -32,10 +33,6 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 	}
 
 
-	@CommandHandler
-	public void handle(AddPopulatedLocationCommand command) {
-		this.repository.add(Location.addPopulatedLocation(this.service.nextLocationId(), command));
-	}
 	@CommandHandler
     public void handle(AddLocationCommand command) {
 		this.repository.add(Location.addLocation(this.service.nextLocationId(), command));
@@ -90,8 +87,16 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 	}
 
 	@CommandHandler
+	public void handle(AddLocationRatingCommand command) {
+		require(command).addLocationStarRating(command, user());
+	}
+	@CommandHandler
 	public void handle(AddLocationReviewCommand command) {
-		require(command).addLocationReview(command);
+		require(command).addLocationReview(command, user(), this.service.now());
+	}
+	@CommandHandler
+	public void handle(AddBeerRatingCommand command) {
+		require(command).addBeerStarRating(command, user());
 	}
 	@CommandHandler
 	public void handle(AddBeerReviewCommand command) {

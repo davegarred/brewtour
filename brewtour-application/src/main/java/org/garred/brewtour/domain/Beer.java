@@ -3,48 +3,62 @@ package org.garred.brewtour.domain;
 import static java.math.RoundingMode.HALF_UP;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Map;
 
 public class Beer extends AbstractObject {
 
-	private final String brewDbId,name,status;
+	private String brewDbId,name,status;
 	private String style,category;
 	private BigDecimal abv, ibu;
 	private boolean available;
-	private final List<Review> reviews;
+	private final List<UserReview> userReviews = new ArrayList<>();
+	private final Map<UserId,Integer> userStarRatings = new HashMap<>();
 
-	public List<Review> getReviews() {
-		return this.reviews;
+	public List<UserReview> getReviews() {
+		return this.userReviews;
 	}
 
 	private BigDecimal averageStars;
 
-	@JsonCreator
-	public Beer(@JsonProperty("brewDbId") String brewDbId,
-			@JsonProperty("name") String name,
-			@JsonProperty("status") String status,
-			@JsonProperty("style") String style,
-			@JsonProperty("category") String category,
-			@JsonProperty("abv") BigDecimal abv,
-			@JsonProperty("ibu") BigDecimal ibu,
-			@JsonProperty("available") boolean available,
-			@JsonProperty("reviews") List<Review> reviews) {
-		this.brewDbId = brewDbId;
-		this.name = name;
-		this.status = status;
-		this.style = style;
-		this.category = category;
-		this.abv = abv;
-		this.ibu = ibu;
-		this.available = available;
-		this.reviews = reviews;
-	}
+//	@JsonCreator
+//	public Beer(@JsonProperty("brewDbId") String brewDbId,
+//			@JsonProperty("name") String name,
+//			@JsonProperty("status") String status,
+//			@JsonProperty("style") String style,
+//			@JsonProperty("category") String category,
+//			@JsonProperty("abv") BigDecimal abv,
+//			@JsonProperty("ibu") BigDecimal ibu,
+//			@JsonProperty("available") boolean available,
+//			@JsonProperty("reviews") List<UserReview> reviews) {
+//		this.brewDbId = brewDbId;
+//		this.name = name;
+//		this.status = status;
+//		this.style = style;
+//		this.category = category;
+//		this.abv = abv;
+//		this.ibu = ibu;
+//		this.available = available;
+//		this.userReviews = reviews;
+//	}
 
-	public void addReview(Review review) {
-		this.reviews.add(review);
+	public static Beer fromEvent(String brewDbId, String name, String status, String style, String category,
+			BigDecimal abv, BigDecimal ibu, boolean available) {
+		final Beer beer = new Beer();
+		beer.brewDbId = brewDbId;
+		beer.name = name;
+		beer.status = status;
+		beer.style = style;
+		beer.category = category;
+		beer.abv = abv;
+		beer.ibu = ibu;
+		beer.available = available;
+		return beer;
+	}
+	public void addReview(UserReview review) {
+		this.userReviews.add(review);
 	}
 
 	public String getStyle() {
@@ -96,12 +110,17 @@ public class Beer extends AbstractObject {
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
+	public void setStarRating(UserId userId, int stars) {
+		this.userStarRatings.put(userId, new Integer(stars));
+	}
 	public BigDecimal updateReviewAverage() {
 		int count = 0;
 		int totalStars = 0;
-		for(final Review review : this.reviews) {
-			count ++;
-			totalStars += review.stars;
+		for(final Integer starRating : this.userStarRatings.values()) {
+			if(starRating != null) {
+				count ++;
+				totalStars += starRating.intValue();
+			}
 		}
 		if(count > 0) {
 			return new BigDecimal(((double)totalStars) / (double)count).setScale(1, HALF_UP);
@@ -119,7 +138,7 @@ public class Beer extends AbstractObject {
 		result = prime * result + ((this.category == null) ? 0 : this.category.hashCode());
 		result = prime * result + ((this.ibu == null) ? 0 : this.ibu.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-		result = prime * result + ((this.reviews == null) ? 0 : this.reviews.hashCode());
+		result = prime * result + ((this.userReviews == null) ? 0 : this.userReviews.hashCode());
 		result = prime * result + ((this.status == null) ? 0 : this.status.hashCode());
 		result = prime * result + ((this.style == null) ? 0 : this.style.hashCode());
 		return result;
@@ -161,10 +180,10 @@ public class Beer extends AbstractObject {
 				return false;
 		} else if (!this.name.equals(other.name))
 			return false;
-		if (this.reviews == null) {
-			if (other.reviews != null)
+		if (this.userReviews == null) {
+			if (other.userReviews != null)
 				return false;
-		} else if (!this.reviews.equals(other.reviews))
+		} else if (!this.userReviews.equals(other.userReviews))
 			return false;
 		if (this.status == null) {
 			if (other.status != null)
@@ -178,5 +197,4 @@ public class Beer extends AbstractObject {
 			return false;
 		return true;
 	}
-
 }

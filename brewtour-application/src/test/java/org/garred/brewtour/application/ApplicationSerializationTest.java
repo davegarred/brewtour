@@ -19,11 +19,6 @@ public class ApplicationSerializationTest extends AbstractSerializationTest {
 	}
 
 	@Test
-	public void testBeer() {
-		validate(BEER);
-	}
-
-	@Test
 	public void testAvailableImages() {
 		validate(new AvailableImages(IMAGE_1, IMAGE_2, null));
 	}
@@ -31,11 +26,6 @@ public class ApplicationSerializationTest extends AbstractSerializationTest {
 	@Test
 	public void testLocationId() {
 		validate(LOCATION_ID);
-	}
-
-	@Test
-	public void testReview() {
-		validate(LOCATION_REVIEW);
 	}
 
 	@Test

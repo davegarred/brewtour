@@ -2,26 +2,20 @@ package org.garred.brewtour.domain;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class Review {
+public class UserReview extends AbstractObject {
 
 	public final UserId userId;
-	public final LocalDateTime time;
 	public final int stars;
+	public final LocalDateTime time;
 	public final String review;
 
-	@JsonCreator
-	public Review(@JsonProperty("userId") UserId userId,
-			@JsonProperty("time") LocalDateTime time,
-			@JsonProperty("stars") int stars,
-			@JsonProperty("review") String review) {
+	public UserReview(UserId userId, int stars, LocalDateTime time, String review) {
 		this.userId = userId;
-		this.time = time;
 		this.stars = stars;
+		this.time = time;
 		this.review = review;
 	}
+
 
 	@Override
 	public int hashCode() {
@@ -41,7 +35,7 @@ public class Review {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final Review other = (Review) obj;
+		final UserReview other = (UserReview) obj;
 		if (this.review == null) {
 			if (other.review != null)
 				return false;

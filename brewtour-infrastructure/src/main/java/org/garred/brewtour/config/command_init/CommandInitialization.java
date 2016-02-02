@@ -1,6 +1,5 @@
 package org.garred.brewtour.config.command_init;
 
-import static java.util.Collections.emptyList;
 import static org.garred.brewtour.domain.AvailableImages.NO_IMAGES;
 
 import java.io.IOException;
@@ -102,7 +101,7 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 	}
 
 	private void populateLists(BrewDbLocation brewDbLocation) {
-		this.gateway.sendAndWait(new AddLocationCommand(brewDbLocation.id, brewDbLocation.brewery.name));
+		this.gateway.sendAndWait(new AddLocationCommand(brewDbLocation.brewery.name));
 		final LocationId locationId = this.identifierFactory.last();
 
 		this.addressUpdates.add(new UpdateLocationAddressCommand(locationId, brewDbLocation.streetAddress, "",
@@ -146,9 +145,13 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 	}
 
 	private static Beer convert(BrewDbBeer beer) {
-		return new Beer(beer.id, beer.name, beer.status, beer.style == null ? "" : beer.style.name,
+		final Beer result = Beer.fromEvent(beer.id, beer.name, beer.status, beer.style == null ? "" : beer.style.name,
 				beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name,
-				beer.abv, beer.ibu, true, emptyList());
+				beer.abv, beer.ibu, true);
+		return result;
+//		return new Beer(beer.id, beer.name, beer.status, beer.style == null ? "" : beer.style.name,
+//				beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name,
+//				beer.abv, beer.ibu, true, emptyList());
 	}
 
 	@Override

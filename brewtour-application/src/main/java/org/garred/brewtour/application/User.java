@@ -8,12 +8,9 @@ import java.util.Set;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
-import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
 import org.garred.brewtour.application.command.user.AddRoleToUserCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
-import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
 import org.garred.brewtour.application.command.user.RemoveRoleFromUserCommand;
-import org.garred.brewtour.application.event.user.FavoriteLocationsUpdatedEvent;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.application.event.user.UserRolesUpdatedEvent;
 import org.garred.brewtour.domain.Hash;
@@ -28,7 +25,7 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
     private String login;
     private Hash hash;
     private Set<String> roles = new HashSet<>();
-    private Set<LocationId> favoriteLocations = new HashSet<>();
+//    private Set<LocationId> favoriteLocations = new HashSet<>();
 
     public User() {}
 
@@ -43,21 +40,21 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
     	return user;
     }
 
-    public void addFavoriteLocation(AddFavoriteLocationCommand command) {
-    	if(!this.favoriteLocations.contains(command.locationId)) {
-    		final Set<LocationId> allLocations = new HashSet<>(this.favoriteLocations);
-    		allLocations.add(command.locationId);
-    		apply(new FavoriteLocationsUpdatedEvent(command.identifier(), allLocations));
-    	}
-    }
-
-    public void removeFavoriteLocation(RemoveFavoriteLocationCommand command) {
-    	if(this.favoriteLocations.contains(command.locationId)) {
-    		final Set<LocationId> allLocations = new HashSet<>(this.favoriteLocations);
-    		allLocations.remove(command.locationId);
-    		apply(new FavoriteLocationsUpdatedEvent(command.identifier(), allLocations));
-    	}
-    }
+//    public void addFavoriteLocation(AddFavoriteLocationCommand command) {
+//    	if(!this.favoriteLocations.contains(command.locationId)) {
+//    		final Set<LocationId> allLocations = new HashSet<>(this.favoriteLocations);
+//    		allLocations.add(command.locationId);
+//    		apply(new FavoriteLocationsUpdatedEvent(command.identifier(), allLocations));
+//    	}
+//    }
+//
+//    public void removeFavoriteLocation(RemoveFavoriteLocationCommand command) {
+//    	if(this.favoriteLocations.contains(command.locationId)) {
+//    		final Set<LocationId> allLocations = new HashSet<>(this.favoriteLocations);
+//    		allLocations.remove(command.locationId);
+//    		apply(new FavoriteLocationsUpdatedEvent(command.identifier(), allLocations));
+//    	}
+//    }
 
     public void addRole(AddRoleToUserCommand command) {
     	if(!this.roles.contains(command.role)) {
@@ -81,10 +78,10 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
 		this.login = event.login;
 		this.hash = event.hash;
 	}
-	@EventHandler
-	public void on(FavoriteLocationsUpdatedEvent event) {
-		this.favoriteLocations = event.favoriteLocations;
-	}
+//	@EventHandler
+//	public void on(FavoriteLocationsUpdatedEvent event) {
+//		this.favoriteLocations = event.favoriteLocations;
+//	}
 	@EventHandler
 	public void on(UserRolesUpdatedEvent event) {
 		this.roles = event.roles;

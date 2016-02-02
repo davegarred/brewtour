@@ -54,4 +54,7 @@ public abstract class AbstractRepositoryStub<I extends Identifier,T extends Enti
 		return get(key);
 	}
 
+	public Map<I,T> objectMap() {
+		return this.objectMap;
+	}
 }

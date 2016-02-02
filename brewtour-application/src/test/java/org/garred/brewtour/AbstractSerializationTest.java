@@ -1,7 +1,6 @@
 package org.garred.brewtour;
 
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,11 +13,9 @@ import java.time.LocalDateTime;
 
 import org.apache.commons.io.IOUtils;
 import org.garred.brewtour.domain.AvailableImages;
-import org.garred.brewtour.domain.Beer;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocalePoint;
 import org.garred.brewtour.domain.LocationId;
-import org.garred.brewtour.domain.Review;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.junit.Assert;
@@ -27,17 +24,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractSerializationTest {
 
+	protected static final String BEER_BREWDB_ID = "beer id";
+	protected static final String BEER_CATEGORY = "niche category";
+	protected static final String BEER_STYLE = "awesome style";
+	protected static final String BEER_STATUS = "someStatus";
+	protected static final BigDecimal BEER_IBU = new BigDecimal("45");
+	protected static final BigDecimal BEER_ABV = new BigDecimal("6.2");
+	protected static final String BEER_REVIEW = "spicy but with a full body";
+	protected static final String LOCATION_REVIEW = "A nice place to hang out";
 	protected static final String BEER_NAME = "a beer name";
 	protected static final LocationId LOCATION_ID = new LocationId("a location id");
 	protected static final LocationId LOCATION_ID_2 = new LocationId("another location id");
 	protected static final LocalDateTime DATE_TIME = LocalDateTime.of(2015, 9, 20, 8, 50);
 	protected static final String LOGIN = "a user login";
 	protected static final UserId USER_ID = new UserId("a user id");
-	protected static final Review LOCATION_REVIEW = new Review(USER_ID, DATE_TIME, 5, "A nice place to hang out");
-	protected static final Review BEER_REVIEW = new Review(USER_ID, DATE_TIME, 4, "spicy but with a full body");
 
-	protected static final Beer BEER = new Beer("beer id", BEER_NAME, "someStatus", "awesome style", "niche category",
-			new BigDecimal("6.2"), new BigDecimal("45"), true, asList(BEER_REVIEW));
 	protected static final Image IMAGE_2 = new Image("image 2");
 	protected static final Image IMAGE_1 = new Image("image 1");
 	protected static final LocalePoint LOCALE_POINT = new LocalePoint(LOCATION_ID, "Brewery Name",

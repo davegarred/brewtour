@@ -1,21 +1,20 @@
-package org.garred.brewtour.application.command.location;
+package org.garred.brewtour.view;
 
-import org.garred.brewtour.domain.LocationId;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AddLocationReviewCommand extends AbstractLocationCommand {
+@JsonInclude(value = NON_NULL)
+public class Review extends AbstractView {
 
 	public final int stars;
 	public final String review;
-
-
 	@JsonCreator
-	public AddLocationReviewCommand(@JsonProperty("locationId") LocationId locationId,
+	public Review(
 			@JsonProperty("stars") int stars,
 			@JsonProperty("review") String review) {
-		super(locationId);
 		this.stars = stars;
 		this.review = review;
 	}

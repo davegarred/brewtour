@@ -32,7 +32,6 @@ public class LocationViewRepositoryTest {
 	static {
 		LOCATION.locationId = LOCATION_ID;
 		LOCATION.name = "";
-		LOCATION.brewDbId = "";
 		LOCATION.description = "";
 		LOCATION.latitude = ZERO;
 		LOCATION.longitude = ZERO;
@@ -42,7 +41,6 @@ public class LocationViewRepositoryTest {
 
 		LOCATION_2.locationId = LOCATION_ID;
 		LOCATION_2.name = "";
-		LOCATION_2.brewDbId = "";
 		LOCATION_2.description = "";
 		LOCATION_2.latitude = ONE;
 		LOCATION_2.longitude = ONE;

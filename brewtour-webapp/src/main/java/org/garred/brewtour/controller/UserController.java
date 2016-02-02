@@ -7,11 +7,10 @@ import java.util.UUID;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewtour.application.command.AggregateCommand;
-import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
-import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
 import org.garred.brewtour.controller.api.UserLogin;
 import org.garred.brewtour.domain.UserId;
+import org.garred.brewtour.security.LoginNotFoundException;
 import org.garred.brewtour.security.UserHolder;
 import org.garred.brewtour.service.UserDetailsService;
 import org.garred.brewtour.view.UserAuthView;
@@ -43,7 +42,7 @@ public class UserController extends AbstractRestController {
 	public UserDetailsView user(@RequestBody UserLogin login) {
 		final UserAuthView auth = this.userService.login(login.login, login.password);
 		if(auth == null) {
-			return null;
+			throw new LoginNotFoundException();
 		}
 		UserHolder.update(auth);
 		return this.userService.getCurrentUserDetails();
@@ -51,23 +50,22 @@ public class UserController extends AbstractRestController {
 
 	@RequestMapping(value = "/addUser", method = GET, produces="application/json")
 	@ResponseBody
-	public UserDetailsView addUuser() {
+	public UserDetailsView addUser() {
 		return processUserCommand(new AddUserCommand(new UserId(UUID.randomUUID().toString()), "", ""));
 	}
 
 
-	//TODO should be PUT
-	@RequestMapping(value = "/addFavorite", method = POST, produces="application/json")
-	@ResponseBody
-	public UserDetailsView addFavorite(@RequestBody AddFavoriteLocationCommand command) {
-		return processUserCommand(command);
-	}
-
-	@RequestMapping(value = "/removeFavorite", method = POST, produces="application/json")
-	@ResponseBody
-	public UserDetailsView removeFavorite(@RequestBody RemoveFavoriteLocationCommand command) {
-		return processUserCommand(command);
-	}
+//	@RequestMapping(value = "/addFavorite", method = POST, produces="application/json")
+//	@ResponseBody
+//	public UserDetailsView addFavorite(@RequestBody AddFavoriteLocationCommand command) {
+//		return processUserCommand(command);
+//	}
+//
+//	@RequestMapping(value = "/removeFavorite", method = POST, produces="application/json")
+//	@ResponseBody
+//	public UserDetailsView removeFavorite(@RequestBody RemoveFavoriteLocationCommand command) {
+//		return processUserCommand(command);
+//	}
 
 	private UserDetailsView processUserCommand(AggregateCommand<UserId> command) {
 		this.commandGateway.sendAndWait(command);

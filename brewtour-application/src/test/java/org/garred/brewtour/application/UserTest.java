@@ -1,4 +1,4 @@
-package org.garred.brewtour.application.cqrs;
+package org.garred.brewtour.application;
 
 import static java.util.Arrays.asList;
 
@@ -7,14 +7,9 @@ import java.util.Set;
 
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
-import org.garred.brewtour.application.User;
-import org.garred.brewtour.application.UserCommandHandler;
-import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
 import org.garred.brewtour.application.command.user.AddRoleToUserCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
-import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
 import org.garred.brewtour.application.command.user.RemoveRoleFromUserCommand;
-import org.garred.brewtour.application.event.user.FavoriteLocationsUpdatedEvent;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.application.event.user.UserRolesUpdatedEvent;
 import org.garred.brewtour.domain.LocationId;
@@ -41,9 +36,6 @@ public class UserTest {
 	private static final UserAuth USER_AUTH = new GuestUserAuth(USER_ID);
 
 	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, LOGIN, PASSWORD);
-	private static final RemoveFavoriteLocationCommand REMOVE_FAV_LOCATION_COMMAND = new RemoveFavoriteLocationCommand(LOCATION_ID);
-	private static final AddFavoriteLocationCommand ADD_FAV_LOCATION_COMMAND = new AddFavoriteLocationCommand(LOCATION_ID);
-	private static final AddFavoriteLocationCommand ADD_FAV_LOCATION_COMMAND_2 = new AddFavoriteLocationCommand(LOCATION_ID_2);
 
 	private FixtureConfiguration<User> fixture;
 
@@ -64,52 +56,6 @@ public class UserTest {
 			.when(ADD_USER_COMMAND)
 			.expectEvents(UserAddedEvent.fromCommand(ADD_USER_COMMAND));
 	}
-
-	@Test
-	public void testAddFavorite() {
-		final Set<LocationId> expectedLocations = asSet(ADD_FAV_LOCATION_COMMAND.locationId);
-
-		this.fixture.givenCommands(ADD_USER_COMMAND)
-			.when(ADD_FAV_LOCATION_COMMAND)
-			.expectEvents(new FavoriteLocationsUpdatedEvent(USER_ID, expectedLocations));
-	}
-
-	@Test
-	public void testAddFavorite_idempotent() {
-		this.fixture.givenCommands(ADD_USER_COMMAND, ADD_FAV_LOCATION_COMMAND)
-			.when(ADD_FAV_LOCATION_COMMAND)
-			.expectEvents();
-	}
-
-	@Test
-	public void testRemoveFavorite() {
-		final Set<LocationId> expectedLocations = asSet();
-
-		this.fixture.givenCommands(ADD_USER_COMMAND, ADD_FAV_LOCATION_COMMAND)
-			.when(REMOVE_FAV_LOCATION_COMMAND)
-			.expectEvents(new FavoriteLocationsUpdatedEvent(USER_ID, expectedLocations));
-	}
-	@Test
-	public void testRemoveFavorite_idempotent() {
-		this.fixture.givenCommands(ADD_USER_COMMAND, ADD_FAV_LOCATION_COMMAND, REMOVE_FAV_LOCATION_COMMAND)
-			.when(REMOVE_FAV_LOCATION_COMMAND)
-			.expectEvents();
-	}
-	@Test
-	public void testRemoveFavorite_idempotentEarly() {
-		this.fixture.givenCommands(ADD_USER_COMMAND)
-			.when(REMOVE_FAV_LOCATION_COMMAND)
-			.expectEvents();
-	}
-	@Test
-	public void testRemoveFavorite_onlyAffectsCorrectLocation() {
-		final Set<LocationId> expectedLocations = asSet(ADD_FAV_LOCATION_COMMAND_2.locationId);
-
-		this.fixture.givenCommands(ADD_USER_COMMAND, ADD_FAV_LOCATION_COMMAND, ADD_FAV_LOCATION_COMMAND_2)
-			.when(REMOVE_FAV_LOCATION_COMMAND)
-			.expectEvents(new FavoriteLocationsUpdatedEvent(USER_ID, expectedLocations));
-	}
-
 
 	@Test
 	public void testAddRole() {

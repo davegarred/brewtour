@@ -1,20 +1,14 @@
-package org.garred.brewtour.application.cqrs;
-
-import static java.util.Arrays.asList;
+package org.garred.brewtour.application;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
-import org.garred.brewtour.application.Location;
-import org.garred.brewtour.application.LocationCommandHandler;
-import org.garred.brewtour.application.LocationIdentifierFactoryStub;
 import org.garred.brewtour.application.command.location.AddBeerCommand;
 import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
-import org.garred.brewtour.application.command.location.AddPopulatedLocationCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
 import org.garred.brewtour.application.command.location.ModifyBeerCommand;
@@ -25,14 +19,9 @@ import org.garred.brewtour.application.command.location.UpdateLocationImagesComm
 import org.garred.brewtour.application.command.location.UpdateLocationPhoneCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationPositionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationWebsiteCommand;
-import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
-import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
 import org.garred.brewtour.application.event.location.BeerAddedEvent;
 import org.garred.brewtour.application.event.location.BeerAvailableEvent;
 import org.garred.brewtour.application.event.location.BeerModifiedEvent;
-import org.garred.brewtour.application.event.location.BeerRatingUpdatedEvent;
-import org.garred.brewtour.application.event.location.BeerReviewAddedByAnonymousEvent;
-import org.garred.brewtour.application.event.location.BeerReviewAddedByUserEvent;
 import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
@@ -41,15 +30,16 @@ import org.garred.brewtour.application.event.location.LocationHoursOfOperationUp
 import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationPhoneUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationPositionUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationRatingUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationReviewAddedEvent;
 import org.garred.brewtour.application.event.location.LocationWebsiteUpdatedEvent;
-import org.garred.brewtour.application.event.location.PopulatedLocationAddedEvent;
+import org.garred.brewtour.application.event.location.user_fired.BeerRatingUpdatedEvent;
+import org.garred.brewtour.application.event.location.user_fired.BeerReviewAddedByAnonymousEvent;
+import org.garred.brewtour.application.event.location.user_fired.BeerReviewAddedByUserEvent;
+import org.garred.brewtour.application.event.location.user_fired.LocationRatingUpdatedEvent;
+import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByAnonymousEvent;
+import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByUserEvent;
 import org.garred.brewtour.domain.AvailableImages;
-import org.garred.brewtour.domain.Beer;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocationId;
-import org.garred.brewtour.domain.Review;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.GuestUserAuth;
 import org.garred.brewtour.security.UserHolder;
@@ -82,18 +72,14 @@ public class LocationTest {
 	private static final BigDecimal IBU_2 = new BigDecimal("29");
 	protected static final UserId USER_ID = new UserId("a user id");
 	protected static final LocalDateTime DATE_TIME = LocalDateTime.of(2015, 9, 20, 8, 50);
-	private static final Review LOCATION_REVIEW = new Review(USER_ID, DATE_TIME, 4, "some review");
-	private static final Review BEER_REVIEW = new Review(USER_ID, DATE_TIME, 4, "spicy but with a full body");
-	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, BEER_REVIEW.stars, BEER_REVIEW.review);
+	private static final String LOCATION_REVIEW = "some review";
+	private static final String BEER_REVIEW = "spicy but with a full body";
+	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, 4, BEER_REVIEW);
 
-	private static final AddLocationReviewCommand ADD_LOCATION_REVIEW_COMMAND = new AddLocationReviewCommand(LOCATION_ID, LOCATION_REVIEW);
+	private static final AddLocationReviewCommand ADD_LOCATION_REVIEW_COMMAND = new AddLocationReviewCommand(LOCATION_ID, 4, LOCATION_REVIEW);
 
 	private static final ModifyBeerCommand MODIFY_BEER_COMMAND = new ModifyBeerCommand(LOCATION_ID, BEER_NAME, STYLE_2, CATEGORY_2, ABV_2, IBU_2);
-	private static final AddLocationCommand ADD_LOCATION_COMMAND = new AddLocationCommand(null, "a location name");
-	private static final AddPopulatedLocationCommand ADD_POPULATED_LOCATION_COMMAND = new AddPopulatedLocationCommand(null, "a location name", LOCATION_DESCRIPTION,
-			LATITUDE, LONGITUDE,
-			AVAILABLE_IMAGES, asList(new Beer("beer id", BEER_NAME, "someStatus", "awesome style", "niche category",
-					new BigDecimal("6.2"), new BigDecimal("45"), true, asList(BEER_REVIEW))));
+	private static final AddLocationCommand ADD_LOCATION_COMMAND = new AddLocationCommand("a location name");
 	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(LOCATION_ID, BEER_NAME, STYLE, CATEGORY, ABV, IBU);
 
 
@@ -121,12 +107,6 @@ public class LocationTest {
 		this.fixture.givenNoPriorActivity()
 			.when(ADD_LOCATION_COMMAND)
 			.expectEvents(LocationAddedEvent.fromCommand(LOCATION_ID, ADD_LOCATION_COMMAND));
-	}
-	@Test
-	public void testAddPopulatedLocation() {
-		this.fixture.givenNoPriorActivity()
-			.when(ADD_POPULATED_LOCATION_COMMAND)
-			.expectEvents(PopulatedLocationAddedEvent.fromCommand(LOCATION_ID, ADD_POPULATED_LOCATION_COMMAND));
 	}
 
 	@Test
@@ -213,11 +193,20 @@ public class LocationTest {
 	}
 
 	@Test
-	public void testAddLocationReview() {
+	public void testAddLocationReview_anonymous() {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
 			.when(ADD_LOCATION_REVIEW_COMMAND)
 			.expectEvents(
-				LocationReviewAddedEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND),
+				LocationReviewAddedByAnonymousEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND, USER_ID, DATE_TIME),
+				new LocationRatingUpdatedEvent(LOCATION_ID, new BigDecimal("4.0")));
+	}
+	@Test
+	public void testAddLocationReview_byUser() {
+		UserHolder.set(userAuth(USER_ID));
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
+		.when(ADD_LOCATION_REVIEW_COMMAND)
+		.expectEvents(
+				LocationReviewAddedByUserEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND, USER_ID, DATE_TIME),
 				new LocationRatingUpdatedEvent(LOCATION_ID, new BigDecimal("4.0")));
 	}
 	@Test
@@ -238,19 +227,6 @@ public class LocationTest {
 				BeerReviewAddedByUserEvent.fromCommand(ADD_BEER_REVIEW_COMMAND, USER_ID, DATE_TIME),
 				new BeerRatingUpdatedEvent(LOCATION_ID, BEER_NAME, new BigDecimal("4.0"))
 				);
-	}
-
-	@Test
-	public void testAddFavoriteLocation() {
-		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
-		.when(new AddFavoriteLocationCommand(LOCATION_ID))
-		.expectEvents();
-	}
-	@Test
-	public void testRemoveFavoriteLocation() {
-		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
-		.when(new RemoveFavoriteLocationCommand(LOCATION_ID))
-		.expectEvents();
 	}
 
 
