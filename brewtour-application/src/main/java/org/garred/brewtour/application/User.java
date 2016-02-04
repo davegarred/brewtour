@@ -25,7 +25,6 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
     private String login;
     private Hash hash;
     private Set<String> roles = new HashSet<>();
-//    private Set<LocationId> favoriteLocations = new HashSet<>();
 
     public User() {}
 

@@ -24,6 +24,11 @@ CREATE TABLE brewtour.locale_view (
   version integer NOT NULL,
   data clob
 );
+CREATE TABLE brewtour.admin_view (
+  id varchar(36) NOT NULL,
+  version integer NOT NULL,
+  data clob
+);
 
 CREATE TABLE brewtour.event_store (
   agg_type varchar(36) NOT NULL,

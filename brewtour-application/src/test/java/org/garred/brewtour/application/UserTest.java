@@ -12,7 +12,6 @@ import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.application.command.user.RemoveRoleFromUserCommand;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.application.event.user.UserRolesUpdatedEvent;
-import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.GuestUserAuth;
 import org.garred.brewtour.security.UserAuth;
@@ -25,8 +24,6 @@ public class UserTest {
 
 	private static final String ROLE = "org.garred.brewtour.SomeRole";
 	private static final String ROLE_2 = "org.garred.brewtour.SomeOtherRole";
-	private static final LocationId LOCATION_ID = new LocationId("a location id");
-	private static final LocationId LOCATION_ID_2 = new LocationId("another location id");
 	private static final String LOGIN = "a user login";
 	private static final String PASSWORD = "password";
 	private static final UserId USER_ID = new UserId("a user id");

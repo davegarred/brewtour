@@ -10,13 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LocationRatingUpdatedEvent extends AbstractLocationEvent {
 
-	public final BigDecimal description;
+	public final BigDecimal rating;
 
 	@JsonCreator
 	public LocationRatingUpdatedEvent(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("rating") BigDecimal rating) {
 		super(locationId);
-		this.description = rating;
+		this.rating = rating;
 	}
 
 }

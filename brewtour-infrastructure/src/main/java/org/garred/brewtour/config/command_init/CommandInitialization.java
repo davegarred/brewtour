@@ -145,13 +145,10 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 	}
 
 	private static Beer convert(BrewDbBeer beer) {
-		final Beer result = Beer.fromEvent(beer.id, beer.name, beer.status, beer.style == null ? "" : beer.style.name,
+		final Beer result = Beer.fromEvent(beer.name, beer.status, beer.style == null ? "" : beer.style.name,
 				beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name,
 				beer.abv, beer.ibu, true);
 		return result;
-//		return new Beer(beer.id, beer.name, beer.status, beer.style == null ? "" : beer.style.name,
-//				beer.style == null ? "" : beer.style.category == null ? "" : beer.style.category.name,
-//				beer.abv, beer.ibu, true, emptyList());
 	}
 
 	@Override

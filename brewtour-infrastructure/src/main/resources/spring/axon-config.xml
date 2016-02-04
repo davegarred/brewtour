@@ -17,13 +17,8 @@
 		c:repository-ref="userDetailsRepo" />
 	<bean id="userAuthViewEventHandler" class="org.garred.brewtour.view.UserAuthViewEventHandler"
 		c:repository-ref="userAuthRepo" />
-
-	<!-- Initial command to populate test database -->
-	<bean id="initializationCommands"
-		class="org.garred.brewtour.config.command_init.CommandInitialization"
-		c:gateway-ref="commandGateway"
-		c:identifierFactory-ref="locationIdentifierFactory" />
-
+	<bean id="adminViewEventHandler" class="org.garred.brewtour.view.AdminViewEventHandler"
+		c:repository-ref="adminRepo" />
 
 	<!-- Command Handlers -->
 	<axon:annotation-config />

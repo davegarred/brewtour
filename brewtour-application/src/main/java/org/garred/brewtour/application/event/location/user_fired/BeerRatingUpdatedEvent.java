@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class BeerRatingUpdatedEvent extends AbstractLocationEvent {
 
 	public final String beerName;
-	public final BigDecimal description;
+	public final BigDecimal rating;
 
 	@JsonCreator
 	public BeerRatingUpdatedEvent(@JsonProperty("locationId") LocationId locationId,
@@ -19,7 +19,7 @@ public class BeerRatingUpdatedEvent extends AbstractLocationEvent {
 			@JsonProperty("rating") BigDecimal rating) {
 		super(locationId);
 		this.beerName = beerName;
-		this.description = rating;
+		this.rating = rating;
 	}
 
 }

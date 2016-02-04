@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Beer extends AbstractObject {
 
-	private String brewDbId,name,status;
+	private String name,status;
 	private String style,category;
 	private BigDecimal abv, ibu;
 	private boolean available;
@@ -23,31 +23,10 @@ public class Beer extends AbstractObject {
 
 	private BigDecimal averageStars;
 
-//	@JsonCreator
-//	public Beer(@JsonProperty("brewDbId") String brewDbId,
-//			@JsonProperty("name") String name,
-//			@JsonProperty("status") String status,
-//			@JsonProperty("style") String style,
-//			@JsonProperty("category") String category,
-//			@JsonProperty("abv") BigDecimal abv,
-//			@JsonProperty("ibu") BigDecimal ibu,
-//			@JsonProperty("available") boolean available,
-//			@JsonProperty("reviews") List<UserReview> reviews) {
-//		this.brewDbId = brewDbId;
-//		this.name = name;
-//		this.status = status;
-//		this.style = style;
-//		this.category = category;
-//		this.abv = abv;
-//		this.ibu = ibu;
-//		this.available = available;
-//		this.userReviews = reviews;
-//	}
 
-	public static Beer fromEvent(String brewDbId, String name, String status, String style, String category,
+	public static Beer fromEvent(String name, String status, String style, String category,
 			BigDecimal abv, BigDecimal ibu, boolean available) {
 		final Beer beer = new Beer();
-		beer.brewDbId = brewDbId;
 		beer.name = name;
 		beer.status = status;
 		beer.style = style;
@@ -75,10 +54,6 @@ public class Beer extends AbstractObject {
 	}
 	public boolean isAvailable() {
 		return this.available;
-	}
-
-	public String getBrewDbId() {
-		return this.brewDbId;
 	}
 
 	public String getName() {
@@ -134,7 +109,6 @@ public class Beer extends AbstractObject {
 		int result = 1;
 		result = prime * result + ((this.abv == null) ? 0 : this.abv.hashCode());
 		result = prime * result + (this.available ? 1231 : 1237);
-		result = prime * result + ((this.brewDbId == null) ? 0 : this.brewDbId.hashCode());
 		result = prime * result + ((this.category == null) ? 0 : this.category.hashCode());
 		result = prime * result + ((this.ibu == null) ? 0 : this.ibu.hashCode());
 		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
@@ -159,11 +133,6 @@ public class Beer extends AbstractObject {
 		} else if (!this.abv.equals(other.abv))
 			return false;
 		if (this.available != other.available)
-			return false;
-		if (this.brewDbId == null) {
-			if (other.brewDbId != null)
-				return false;
-		} else if (!this.brewDbId.equals(other.brewDbId))
 			return false;
 		if (this.category == null) {
 			if (other.category != null)

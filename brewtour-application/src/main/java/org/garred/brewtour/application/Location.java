@@ -17,6 +17,7 @@ import org.garred.brewtour.application.command.location.AddBeerCommand;
 import org.garred.brewtour.application.command.location.AddBeerRatingCommand;
 import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
+import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
 import org.garred.brewtour.application.command.location.AddLocationRatingCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
@@ -51,6 +52,7 @@ import org.garred.brewtour.application.event.location.user_fired.BeerReviewAdded
 import org.garred.brewtour.application.event.location.user_fired.BeerReviewAddedByUserEvent;
 import org.garred.brewtour.application.event.location.user_fired.BeerStarRatingAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.location.user_fired.BeerStarRatingAddedByUserEvent;
+import org.garred.brewtour.application.event.location.user_fired.LocationCommentAddedEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationRatingUpdatedEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByUserEvent;
@@ -69,7 +71,6 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     @AggregateIdentifier
     private LocationId id;
 
-	private String brewDbId;
 	private String name;
 	private String description;
 	private String streetAddress;
@@ -171,6 +172,10 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		if(beer.isAvailable()) {
 			apply(BeerUnavailableEvent.fromCommand(beerUnavailable));
 		}
+	}
+
+	public void addComment(AddLocationCommentCommand command, UserAuth user, LocalDateTime time) {
+		apply(LocationCommentAddedEvent.fromCommand(command, user.identifier(), time));
 	}
 
 	public void addLocationStarRating(AddLocationRatingCommand locationRating, UserAuth user) {
@@ -292,7 +297,7 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 
     @EventHandler
     public void on(BeerAddedEvent event) {
-    	final Beer beer = Beer.fromEvent(null, event.name, null, event.style, event.category, event.abv, event.ibu, true);
+    	final Beer beer = Beer.fromEvent(event.name, null, event.style, event.category, event.abv, event.ibu, true);
 		this.beers.add(beer);
     }
 

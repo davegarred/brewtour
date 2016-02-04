@@ -8,6 +8,7 @@ import org.axonframework.test.Fixtures;
 import org.garred.brewtour.application.command.location.AddBeerCommand;
 import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
+import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
@@ -34,6 +35,7 @@ import org.garred.brewtour.application.event.location.LocationWebsiteUpdatedEven
 import org.garred.brewtour.application.event.location.user_fired.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.location.user_fired.BeerReviewAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.location.user_fired.BeerReviewAddedByUserEvent;
+import org.garred.brewtour.application.event.location.user_fired.LocationCommentAddedEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationRatingUpdatedEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByUserEvent;
@@ -53,6 +55,7 @@ public class LocationTest {
 	private static final BigDecimal LONGITUDE = new BigDecimal("-122.315");
 	private static final BigDecimal LATITUDE = new BigDecimal("47.614");
 	private static final LocationId LOCATION_ID = new LocationId("LOCA10001");
+	private static final AddLocationCommentCommand ADD_LOCATION_COMMENT_COMMAND = new AddLocationCommentCommand(LOCATION_ID, "This place closes early on Mondays");
 	private static final String LOCATION_DESCRIPTION = "some interesting description";
 	private static final String LOCATION_DESCRIPTION_2 = "a less interesting description of some (or another) location";
 	private static final UpdateLocationDescriptionCommand UPDATE_LOCATION_DESCRIPTION = new UpdateLocationDescriptionCommand(LOCATION_ID, LOCATION_DESCRIPTION_2);
@@ -193,10 +196,17 @@ public class LocationTest {
 	}
 
 	@Test
+	public void testAddLocationComment() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND)
+			.when(ADD_LOCATION_COMMENT_COMMAND)
+			.expectEvents(LocationCommentAddedEvent.fromCommand(ADD_LOCATION_COMMENT_COMMAND, USER_ID, DATE_TIME));
+	}
+
+	@Test
 	public void testAddLocationReview_anonymous() {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
-			.when(ADD_LOCATION_REVIEW_COMMAND)
-			.expectEvents(
+		.when(ADD_LOCATION_REVIEW_COMMAND)
+		.expectEvents(
 				LocationReviewAddedByAnonymousEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND, USER_ID, DATE_TIME),
 				new LocationRatingUpdatedEvent(LOCATION_ID, new BigDecimal("4.0")));
 	}

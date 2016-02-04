@@ -6,6 +6,7 @@ import org.garred.brewtour.application.command.location.AddBeerCommand;
 import org.garred.brewtour.application.command.location.AddBeerRatingCommand;
 import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
+import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
 import org.garred.brewtour.application.command.location.AddLocationRatingCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
@@ -86,6 +87,11 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 		require(command).beerAvailable(command);
 	}
 
+	// user fired commands
+	@CommandHandler
+	public void handle(AddLocationCommentCommand command) {
+		require(command).addComment(command, user(), this.service.now());
+	}
 	@CommandHandler
 	public void handle(AddLocationRatingCommand command) {
 		require(command).addLocationStarRating(command, user());

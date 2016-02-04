@@ -14,8 +14,9 @@ import org.garred.brewtour.application.event.location.LocationPhoneUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationPositionUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationWebsiteUpdatedEvent;
 import org.garred.brewtour.application.event.location.user_fired.AbstractBeerReviewAddedEvent;
-import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByUserEvent;
-import org.garred.brewtour.domain.Beer;
+import org.garred.brewtour.application.event.location.user_fired.AbstractLocationReviewAddedEvent;
+import org.garred.brewtour.application.event.location.user_fired.BeerRatingUpdatedEvent;
+import org.garred.brewtour.application.event.location.user_fired.LocationRatingUpdatedEvent;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserReview;
 import org.garred.brewtour.repository.LocationViewRepository;
@@ -71,44 +72,53 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
 
     @EventHandler
     public void on(BeerAddedEvent event) {
-    	final Beer beer = Beer.fromEvent(null, event.name, null, event.style, event.category, event.abv, event.ibu, true);
+    	final BeerView beer = BeerView.newBeerView(event.name, event.style, event.category, event.abv, event.ibu, true);
     	update(event.locationId, l -> l.beers.add(beer));
     }
 
 	@EventHandler
     public void on(BeerModifiedEvent event) {
 		update(event.locationId, l -> {
-			final Beer beer = l.requireBeer(event.name);
-			beer.setStyle(event.style);
-			beer.setCategory(event.category);
-			beer.setAbv(event.abv);
-			beer.setIbu(event.ibu);
+			final BeerView beer = l.requireBeer(event.name);
+			beer.style = event.style;
+			beer.category = event.category;
+			beer.abv = event.abv;
+			beer.ibu = event.ibu;
 		});
 	}
     @EventHandler
     public void on(BeerAvailableEvent event) {
     	update(event.locationId, l -> {
-    		final Beer beer = l.requireBeer(event.name);
-    		beer.setAvailable(true);
+    		final BeerView beer = l.requireBeer(event.name);
+    		beer.available = true;
     	});
     }
     @EventHandler
     public void on(BeerUnavailableEvent event) {
     	update(event.locationId, l -> {
-    		final Beer beer = l.requireBeer(event.name);
-    		beer.setAvailable(false);
+    		final BeerView beer = l.requireBeer(event.name);
+    		beer.available = false;
     	});
     }
+
     @EventHandler
-    public void on(LocationReviewAddedByUserEvent event) {
-    	final UserReview review = new UserReview(event.userId, event.stars, event.time, event.review);
+    public void on(LocationRatingUpdatedEvent event) {
+    	update(event.locationId, l -> l.averageStars = event.rating);
+    }
+    @EventHandler
+    public void on(BeerRatingUpdatedEvent event) {
+    	update(event.locationId, l -> l.requireBeer(event.beerName).averageStars = event.rating);
+    }
+    @EventHandler
+    public void on(AbstractLocationReviewAddedEvent event) {
+    	final Review review = new Review(event.stars, event.review);
     	update(event.locationId, l -> l.reviews.add(review));
     }
     @EventHandler
     public void on(AbstractBeerReviewAddedEvent event) {
     	final UserReview review = new UserReview(event.userId, event.stars, event.time, event.review);
     	update(event.locationId, l -> {
-    		final Beer beer = l.requireBeer(event.name);
+    		final BeerView beer = l.requireBeer(event.name);
     		beer.addReview(review);
     	});
     }

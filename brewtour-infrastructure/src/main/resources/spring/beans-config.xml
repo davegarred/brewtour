@@ -25,7 +25,13 @@
 	<bean id="userAuthRepo" class="org.garred.brewtour.repository.UserAuthViewRepositoryImpl"  
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper"/>
+
+	<bean id="adminRepo" class="org.garred.brewtour.repository.AdminViewRepositoryImpl"  
+		c:datasource-ref="dataSource" 
+		c:objectMapper-ref="objectMapper"/>
 	
+	
+	<!--  services -->
 	<bean id="userDetailsService" class="org.garred.brewtour.service.UserDetailsServiceImpl"
 		c:userRepo-ref="userDetailsRepo" 
 		c:userAuthRepo-ref="userAuthRepo" />
