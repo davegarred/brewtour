@@ -44,5 +44,4 @@ public class LocationServiceImpl implements LocationService, LocationQueryServic
 		return this.localeRepository.get(SEATTLE);
 	}
 
-
 }

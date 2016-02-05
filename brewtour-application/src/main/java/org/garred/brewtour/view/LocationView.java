@@ -1,5 +1,7 @@
 package org.garred.brewtour.view;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +12,9 @@ import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.Entity;
 import org.garred.brewtour.domain.LocationId;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(value = NON_NULL)
 public class LocationView extends AbstractView implements Entity<LocationId> {
 
 	public LocationId locationId;

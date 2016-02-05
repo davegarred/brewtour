@@ -17,7 +17,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class AbstractRestController {
 
-	private final ObjectMapper objectMapper;
+	protected final ObjectMapper objectMapper;
 
 	public AbstractRestController() {
 		this.objectMapper = new ObjectMapper();

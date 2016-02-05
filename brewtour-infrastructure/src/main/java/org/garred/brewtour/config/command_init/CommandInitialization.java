@@ -5,6 +5,7 @@ import static java.sql.Types.CLOB;
 import static java.sql.Types.VARCHAR;
 import static org.garred.brewtour.domain.AvailableImages.NO_IMAGES;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.io.IOUtils;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewtour.application.IdentifierFactory;
 import org.garred.brewtour.application.command.location.AbstractLocationCommand;
@@ -82,7 +84,8 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 	private final List<UpdateLocationWebsiteCommand> websiteUpdates = new ArrayList<>();
 
 	private final Set<AddBeerCommand> addBeerCommands = new HashSet<>();
-//	private final Map<LocationId,Map<String,AddBeerCommand>> addBeerCommands = new HashMap<>();
+
+	private final List<String> csvLines = new ArrayList<>();
 
 	private final Map<String, Beer> beerMap = new HashMap<>();
 
@@ -96,6 +99,7 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 		this.jdbcTemplate.execute(
 				"CREATE TABLE if not exists commands(id varchar(36) NOT NULL, " +
 				"  object_type varchar(100) NOT NULL, " +
+				"  FIRE_COMMAND VARCHAR(36) DEFAULT 'no'," +
 				"  data clob)");
 		push(this.addressUpdates);
 		push(this.descriptionUpdates);
@@ -105,13 +109,10 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 		push(this.positionUpdates);
 		push(this.websiteUpdates);
 		push(this.addBeerCommands);
-	}
 
-//	private void push(Map<LocationId,Map<String, AddBeerCommand>> commands) {
-//		for(final Entry<LocationId, Map<String, AddBeerCommand>> entry : commands.entrySet()) {
-//			push(entry.getValue().values());
-//		}
-//	}
+		final FileOutputStream out = new FileOutputStream("breweries.csv");
+		IOUtils.writeLines(this.csvLines, "\n", out);
+	}
 
 	private void push(Collection<? extends AbstractLocationCommand> commands) {
 		try {
@@ -127,11 +128,17 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 		this.gateway.sendAndWait(command);
 		final LocationId locationId = this.identifierFactory.last();
 		storeInTable(locationId, command);
+		final CsvBuilder csvBuilder = CsvBuilder.init(locationId, brewDbLocation.brewery.name);
 
 		this.addressUpdates.add(new UpdateLocationAddressCommand(locationId, brewDbLocation.streetAddress, "",
 				brewDbLocation.locality, brewDbLocation.region, brewDbLocation.postalCode));
+		csvBuilder.append(brewDbLocation.streetAddress, brewDbLocation.locality, brewDbLocation.region, brewDbLocation.postalCode);
+
 		this.descriptionUpdates.add(new UpdateLocationDescriptionCommand(locationId, brewDbLocation.brewery.description));
+		csvBuilder.append(brewDbLocation.brewery.description);
+
 		this.hoursOfOperationUpdates.add(new UpdateLocationHoursOfOperationCommand(locationId, brewDbLocation.hoursOfOperation));
+		csvBuilder.append(brewDbLocation.hoursOfOperation);
 
 
 		final Map<String, String> bdbImages = brewDbLocation.brewery.images;
@@ -141,18 +148,21 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 		this.imagesUpdates.add(new UpdateLocationImagesCommand(locationId, images));
 
 		this.phoneUpdates.add(new UpdateLocationPhoneCommand(locationId, brewDbLocation.phone));
+		csvBuilder.append(brewDbLocation.phone);
+
 		this.positionUpdates.add(new UpdateLocationPositionCommand(locationId, brewDbLocation.latitude, brewDbLocation.longitude));
+		csvBuilder.append(brewDbLocation.latitude.toString(), brewDbLocation.longitude.toString());
+
 		this.websiteUpdates.add(new UpdateLocationWebsiteCommand(locationId, brewDbLocation.website));
+		csvBuilder.append(brewDbLocation.website);
 
+		this.csvLines.add(csvBuilder.toString());
 
-//		final HashMap<String, AddBeerCommand> locationBeerMap = new HashMap<>();
-//		this.addBeerCommands.put(locationId, locationBeerMap);
 		if (brewDbLocation.beerIds != null) {
 			for (final String beerId : brewDbLocation.beerIds) {
 				final Beer beer = this.beerMap.get(beerId);
 				final String beerName = beer.getName();
 				final AddBeerCommand addBeerCommand = new AddBeerCommand(locationId, beerName, beer.getStyle(), beer.getCategory(), beer.getAbv(), beer.getIbu());
-//				locationBeerMap.put(beerName.trim().toLowerCase(), addBeerCommand);
 				this.addBeerCommands.add(addBeerCommand);
 			}
 		}
@@ -197,18 +207,18 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		this.gateway.send(new AddUserCommand(new UserId(UUID.randomUUID().toString()), "dave", "dave"));
 		try {
-//			buildCommandTable();
-			fireCommandsFromTable();
+			buildCommandTable();
+//			fireCommandsFromTable();
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	private void fireCommandsFromTable() {
-		final String initCommandsQuery = "SELECT * FROM commands where object_type like '%AddLocationCommand'";
+		final String initCommandsQuery = "SELECT * FROM commands where object_type like '%AddLocationCommand' AND fire_command='yes'";
 		final List<Object> initcommands = queryCommands(initCommandsQuery);
 		initcommands.stream().forEach(c -> this.gateway.send(c));
-		final String otherCommandquery = "SELECT * FROM commands where object_type not like '%AddLocationCommand' group by id,object_type,data";
+		final String otherCommandquery = "SELECT * FROM commands where object_type not like '%AddLocationCommand' AND fire_command='yes' group by id,object_type,data";
 		final List<Object> commands = queryCommands(otherCommandquery);
 		commands.stream().forEach(c -> this.gateway.send(c));
 	}
@@ -227,5 +237,23 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 				}
 			}
 		});
+	}
+
+	public static class CsvBuilder {
+		private final StringBuilder builder = new StringBuilder();
+		public static CsvBuilder init(LocationId locationId, String breweryName) {
+			final CsvBuilder csvBuilder = new CsvBuilder();
+			csvBuilder.builder.append(locationId.id + "," + breweryName);
+			return csvBuilder;
+		}
+		public void append(String...strings) {
+			for(final String string : strings) {
+				this.builder.append("," + string);
+			}
+		}
+		@Override
+		public String toString() {
+			return this.builder.toString();
+		}
 	}
 }
