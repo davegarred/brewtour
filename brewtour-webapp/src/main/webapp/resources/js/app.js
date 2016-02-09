@@ -98,14 +98,33 @@
             	});
         	});
         }
+        
+        
+        
         $scope.sendComment = function() {
         	var dto = {
-        			locationId : $scope.locationDetails.identifier,
+        			locationId : $scope.locationDetails.locationId,
         			comment : $scope.locationDetailsComment
         	};
         	$scope.debug = dto;
         	$scope.locationDetailsComment = "";
         	$('#editLocationModal').modal('hide');
+        }
+        $scope.login = function() {
+        	var dto = $scope.loginDto;
+//        	{
+//        			login : $scope.loginModalEmail,
+//        			password : $scope.loginModalPass
+//        	};
+        	$http.post('user/login', dto)
+        	.then(function successCallback(response) {
+        		$scope.user = response.data;
+        		$scope.admin = response.data.admin;
+        	}, function errorCallback(response) {
+        		error(response);
+        	});
+        	$scope.loginDto = {};
+        	$('#loginModal').modal('hide');
         }
         $scope.beerRemoved = function(beerName) {
         	for(var i in $scope.removedBeers) {

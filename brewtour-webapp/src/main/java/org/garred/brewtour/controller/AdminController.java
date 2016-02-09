@@ -5,8 +5,6 @@ import static org.garred.brewtour.view.UserAuthView.ADMIN_ROLE;
 import static org.garred.brewtour.view.UserAuthView.TEST_ROLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -61,7 +59,8 @@ public class AdminController extends AbstractRestController {
 
 	private UserAuthView addUserWithRole(String login, String password, String role) {
 		if(!UserHolder.isAuthenticated()) {
-			this.commandGateway.sendAndWait(new AddUserCommand(new UserId(UUID.randomUUID().toString()), login, password));
+			final UserId currentId = UserHolder.get().identifier();
+			this.commandGateway.sendAndWait(new AddUserCommand(currentId, login, password));
 		}
 		this.commandGateway.sendAndWait(new AddRoleToUserCommand(UserHolder.get().identifier(), role));
 		final UserAuthView userAuth = this.userService.getCurrentUserAuth();
