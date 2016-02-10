@@ -30,7 +30,8 @@
 		c:commandGateway-ref="commandGateway" />
 	<beans:bean class="org.garred.brewtour.controller.AdminController"
 		c:userService-ref="userAuthService" 
-		c:commandGateway-ref="commandGateway" />
+		c:commandGateway-ref="commandGateway"
+		c:adminViewRepo-ref="adminRepo" />
 	<beans:bean class="org.garred.brewtour.controller.LocationController"
 		c:locationService-ref="locationService"
 		c:locationIdentifierFactory-ref="locationIdentifierFactory" />

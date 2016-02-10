@@ -23,6 +23,7 @@ import org.junit.Test;
 public class UserDetailsViewEventHandlerTest {
 
 	private static final UserId USER_ID = new UserId("a user id");
+	private static final String SCREEN_NAME = "screen name";
 	private static final String USER_NAME = "userName";
 	private static final Hash USER_HASH = hashFromPassword(USER_ID, "password");
 
@@ -54,7 +55,7 @@ public class UserDetailsViewEventHandlerTest {
 		this.repo.objectMap().clear();
 		assertTrue(this.repo.objectMap().isEmpty());
 
-		this.eventHandler.on(new UserAddedEvent(USER_ID, USER_NAME, USER_HASH));
+		this.eventHandler.on(new UserAddedEvent(USER_ID, SCREEN_NAME, USER_NAME, USER_HASH));
 		assertEquals(defaultDetailsView(), this.repo.get(USER_ID));
 	}
 
@@ -99,6 +100,7 @@ public class UserDetailsViewEventHandlerTest {
 	private static UserDetailsView defaultDetailsView() {
 		final UserDetailsView userDetailsView = new UserDetailsView();
 		userDetailsView.userId = USER_ID;
+		userDetailsView.screenName = SCREEN_NAME;
 		userDetailsView.login = USER_NAME;
 		userDetailsView.locationReviews = new HashMap<>();
 		userDetailsView.beerReviews = new HashMap<>();

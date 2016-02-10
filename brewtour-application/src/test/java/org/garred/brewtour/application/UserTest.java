@@ -24,7 +24,8 @@ public class UserTest {
 
 	private static final String ROLE = "org.garred.brewtour.SomeRole";
 	private static final String ROLE_2 = "org.garred.brewtour.SomeOtherRole";
-	private static final String LOGIN = "a user login";
+	private static final String SCREEN_NAME = "a user screen name";
+	private static final String LOGIN = "dave@gmail.com";
 	private static final String PASSWORD = "password";
 	private static final UserId USER_ID = new UserId("a user id");
 	private static final RemoveRoleFromUserCommand REMOVE_ROLE_FROM_USER_COMMAND = new RemoveRoleFromUserCommand(USER_ID, ROLE);
@@ -32,7 +33,7 @@ public class UserTest {
 	private static final AddRoleToUserCommand ADD_ROLE_TO_USER_COMMAND_2 = new AddRoleToUserCommand(USER_ID, ROLE_2);
 	private static final UserAuth USER_AUTH = new GuestUserAuth(USER_ID);
 
-	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, LOGIN, PASSWORD);
+	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, SCREEN_NAME, LOGIN, PASSWORD);
 
 	private FixtureConfiguration<User> fixture;
 

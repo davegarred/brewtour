@@ -1,7 +1,5 @@
 package org.garred.brewtour.application;
 
-import static org.garred.brewtour.domain.Hash.NO_HASH;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,17 +20,13 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
 
     @AggregateIdentifier
     private UserId userId;
+    private String screenName;
     private String login;
     private Hash hash;
     private Set<String> roles = new HashSet<>();
 
     public User() {}
 
-    public static User addUser(UserId userId) {
-    	final User user = new User();
-    	user.apply(new UserAddedEvent(userId, "", NO_HASH));
-    	return user;
-    }
     public static User addUser(AddUserCommand command) {
     	final User user = new User();
     	user.apply(UserAddedEvent.fromCommand(command));

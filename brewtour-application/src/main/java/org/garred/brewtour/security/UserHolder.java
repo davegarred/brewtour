@@ -39,6 +39,10 @@ public class UserHolder {
 		set(userAuth);
 		tlBool.set(TRUE);
 	}
+	public static void logout() {
+		set(new GuestUserAuth(tl.get().identifier()));
+		tlBool.set(TRUE);
+	}
 
 
 

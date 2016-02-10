@@ -1,41 +1,41 @@
 'use strict';
 (function (angular) {
-    var brewtour = angular.module('brewtour', [ ]);
+    var beertour = angular.module('beertour', [ ]);
 
-    brewtour.controller('MapController', ['$scope', '$http', function ($scope, $http) {
+    beertour.controller('MapController', ['$scope', '$http', function ($scope, $http) {
     	$scope.removedBeers = [];
     	
-    	var favoriteLocationIds = [];
-    	$scope.isFavorite = function(id) {
-    		for(var i in favoriteLocationIds) {
-    			if(favoriteLocationIds[i] == id) {
-    				return true;
-    			}
-    		}
-    		return false;
-    	}
-    	$scope.removeFavorite = function(id) {
-    		for(var i in favoriteLocationIds) {
-    			if(favoriteLocationIds[i] == id) {
-    				favoriteLocationIds.splice(i,1);
-    			}
-    		}
-    		$http.post('removeFavorite', { locationId : id })
-            .then(function successCallback(response) {
-            	favoriteLocationIds = response.data.favoriteLocations;
-            }, function errorCallback(response) {
-            	error(response);
-            });
-    	}
-    	$scope.addFavorite = function(id) {
-    		favoriteLocationIds.push(id);
-    		$http.post('addFavorite', { locationId : id } )
-            .then(function successCallback(response) {
-            	favoriteLocationIds = response.data.favoriteLocations;
-            }, function errorCallback(response) {
-            	error(response);
-            });
-    	}
+//    	var favoriteLocationIds = [];
+//    	$scope.isFavorite = function(id) {
+//    		for(var i in favoriteLocationIds) {
+//    			if(favoriteLocationIds[i] == id) {
+//    				return true;
+//    			}
+//    		}
+//    		return false;
+//    	}
+//    	$scope.removeFavorite = function(id) {
+//    		for(var i in favoriteLocationIds) {
+//    			if(favoriteLocationIds[i] == id) {
+//    				favoriteLocationIds.splice(i,1);
+//    			}
+//    		}
+//    		$http.post('removeFavorite', { locationId : id })
+//            .then(function successCallback(response) {
+//            	favoriteLocationIds = response.data.favoriteLocations;
+//            }, function errorCallback(response) {
+//            	error(response);
+//            });
+//    	}
+//    	$scope.addFavorite = function(id) {
+//    		favoriteLocationIds.push(id);
+//    		$http.post('addFavorite', { locationId : id } )
+//            .then(function successCallback(response) {
+//            	favoriteLocationIds = response.data.favoriteLocations;
+//            }, function errorCallback(response) {
+//            	error(response);
+//            });
+//    	}
     	function setLocationDetails(details) {
     		$scope.locationDetails = details;
     		$scope.hasIbu = hasIbu(details.beers);
@@ -100,31 +100,38 @@
         }
         
         
-        
         $scope.sendComment = function() {
         	var dto = {
         			locationId : $scope.locationDetails.locationId,
-        			comment : $scope.locationDetailsComment
+        			comment : this.locationDetailsComment
         	};
-        	$scope.debug = dto;
-        	$scope.locationDetailsComment = "";
-        	$('#editLocationModal').modal('hide');
+        	$http.post('location/AddLocationComment', dto)
+        	.then(function successCallback(response) {
+        		$scope.user = response.data;
+        	}, function errorCallback(response) {
+        		error(response);
+        	})
+        	this.locationDetailsComment = "";
+        	$('#locationCommentModal').modal('hide');
         }
         $scope.login = function() {
-        	var dto = $scope.loginDto;
-//        	{
-//        			login : $scope.loginModalEmail,
-//        			password : $scope.loginModalPass
-//        	};
+        	var dto = this.loginDto;
         	$http.post('user/login', dto)
         	.then(function successCallback(response) {
         		$scope.user = response.data;
-        		$scope.admin = response.data.admin;
         	}, function errorCallback(response) {
         		error(response);
         	});
-        	$scope.loginDto = {};
+        	this.loginDto = {};
         	$('#loginModal').modal('hide');
+        }
+        $scope.logout = function() {
+        	$scope.user = null;
+        	$http.get('user/logout')
+        	.then(function successCallback(response) {
+        	}, function errorCallback(response) {
+        		error(response);
+        	});
         }
         $scope.beerRemoved = function(beerName) {
         	for(var i in $scope.removedBeers) {
@@ -162,13 +169,11 @@
         $http.get('user')
     	.then(function successCallback(response) {
     		$scope.user = response.data;
-    		$scope.admin = response.data.admin;
-    		favoriteLocationIds = response.data ? response.data.favoriteLocations : [];
     	}, function errorCallback(response) {
     		error(response);
     	});
         
-        $http.get('locations')
+        $http.get('location/locations')
         .then(function successCallback(response) {
         	$scope.locale = response.data;
         	initMap();
@@ -178,6 +183,10 @@
         
         function error(error) {
         	console.log(error);
+        	debugger;
         }
     }]);
+    beertour.controller('LocationCommentController', ['$scope', '$http', function ($scope, $http) {
+    }]);
+    
 })(window.angular, window.jQuery)

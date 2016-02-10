@@ -11,6 +11,7 @@ import org.garred.brewtour.application.LocationIdentifierFactoryStub;
 import org.garred.brewtour.application.command.location.AbstractLocationCommand;
 import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
+import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 @Controller
+@RequestMapping(value = "location")
 public class LocationController extends AbstractRestController {
 
 	private final LocationQueryService locationService;
@@ -45,7 +47,7 @@ public class LocationController extends AbstractRestController {
 		return locale;
 	}
 
-	@RequestMapping(value = "/location/{locationId}", method = GET, produces="application/json")
+	@RequestMapping(value = "{locationId}", method = GET, produces="application/json")
 	@ResponseBody
 	public LocationView location(@PathVariable String locationId) {
 		return this.locationService.getLocation(new LocationId(locationId));
@@ -61,6 +63,12 @@ public class LocationController extends AbstractRestController {
 	@ResponseBody
 	public void beerUnavailable(@RequestBody BeerUnavailableCommand beerUnavailable) {
 		this.locationService.fireSecuredCommand(beerUnavailable);
+	}
+
+	@RequestMapping(value = "AddLocationComment", method = POST, produces="application/json")
+	@ResponseBody
+	public void addLocationComment(@RequestBody AddLocationCommentCommand locationComment) {
+		this.locationService.fireCommand(locationComment);
 	}
 
 	@RequestMapping(value = "/locationReview", method = POST, produces="application/json")

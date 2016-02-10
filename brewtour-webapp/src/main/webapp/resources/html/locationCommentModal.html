@@ -1,0 +1,24 @@
+<div class="modal fade" id="locationCommentModal" >
+	<!-- 
+	<div class="modal fade" id="locationCommentModal" ng-controller="MapController">
+ -->
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">Tell us about this place</h4>
+			</div>
+			<div class="modal-body">
+				<p>Have details or corrections about this brewery? Seattle Beer Tour is a user driven site, let us know what you know!</p>
+				<h3>{{locationDetails.name}}</h3>
+				<textarea rows="4" cols="50" ng-model="locationDetailsComment"></textarea>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" ng-click="sendComment()" >Send details</button>
+			</div>
+		</div>
+	</div>
+</div>

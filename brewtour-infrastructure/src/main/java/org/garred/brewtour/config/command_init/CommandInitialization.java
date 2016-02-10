@@ -59,6 +59,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CommandInitialization implements ApplicationListener<ContextRefreshedEvent> {
 
+	private static boolean completed = false;
+
 	private final CommandGateway gateway;
 	private final IdentifierFactory<LocationId> identifierFactory;
 	private final JdbcTemplate jdbcTemplate;
@@ -195,8 +197,13 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 	}
 
 	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
-		this.gateway.send(new AddUserCommand(new UserId(UUID.randomUUID().toString()), "dave", "dave"));
+	public synchronized void onApplicationEvent(ContextRefreshedEvent event) {
+		if(completed) {
+			return;
+		}
+		completed = true;
+		this.gateway.send(new AddUserCommand(new UserId(UUID.randomUUID().toString()), "FBS", "dave", "password"));
+//		this.gateway.send(new AddUserCommand(new UserId(UUID.randomUUID().toString()), "dave", "dave@gmail.com", "password"));
 		try {
 //			buildCommandTable();
 			fireCommandsFromTable();
@@ -209,7 +216,7 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 		final String initCommandsQuery = "SELECT * FROM commands where object_type like '%AddLocationCommand' AND fire_command='yes'";
 		final List<Object> initcommands = queryCommands(initCommandsQuery);
 		initcommands.stream().forEach(c -> this.gateway.send(c));
-		final String otherCommandquery = "SELECT * FROM commands where object_type not like '%AddLocationCommand' AND fire_command='yes' group by id,object_type,data";
+		final String otherCommandquery = "SELECT * FROM commands where object_type not like '%AddLocationCommand' AND fire_command='yes' group by id,FIRE_COMMAND,object_type,data";
 		final List<Object> commands = queryCommands(otherCommandquery);
 		commands.stream().forEach(c -> this.gateway.send(c));
 	}

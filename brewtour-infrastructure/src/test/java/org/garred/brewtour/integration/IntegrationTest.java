@@ -47,6 +47,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 })
 public class IntegrationTest {
 
+	private static final String SCREEN_NAME = "screen name";
 	private static final String LOCATION_COMMENT = "Some very important comment on this location";
 	private static final String LOCATION_NAME = "a location name";
 	private static final BigDecimal LONGITUDE = new BigDecimal("-122.315");
@@ -69,7 +70,7 @@ public class IntegrationTest {
 	private static final String PASSWORD = "password";
 	private static final UserId USER_ID = new UserId("a user id");
 
-	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, LOGIN, PASSWORD);
+	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, SCREEN_NAME, LOGIN, PASSWORD);
 
 	private static final AddLocationCommand ADD_LOCATION_COMMAND = new AddLocationCommand(LOCATION_NAME);
 

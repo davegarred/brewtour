@@ -11,6 +11,7 @@ import org.garred.brewtour.domain.UserId;
 public class UserDetailsView extends AbstractView implements Entity<UserId> {
 
 	public UserId userId;
+	public String screenName;
 	public String login;
 	public Map<LocationId,Review> locationReviews;
 	public Map<LocationId,Map<String,Review>> beerReviews;
@@ -35,6 +36,7 @@ public class UserDetailsView extends AbstractView implements Entity<UserId> {
 	public static UserDetailsView fromEvent(UserAddedEvent event) {
 		final UserDetailsView view = new UserDetailsView();
 		view.userId = event.userId;
+		view.screenName = event.screenName;
 		view.login = event.login;
 		view.locationReviews = new HashMap<>();
 		view.beerReviews = new HashMap<>();

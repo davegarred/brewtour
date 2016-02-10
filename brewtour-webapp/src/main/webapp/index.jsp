@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Seattle Brewery Tour</title>
+<title>Seattle Beer Tour</title>
 <script type="text/javascript" src="resources/lib/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="resources/lib/angular/angular.min.js"></script>
 <script type="text/javascript" src="resources/lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -23,7 +23,7 @@ html, body {
 </style>
 
 </head>
-<body ng-app="brewtour">
+<body ng-app="beertour">
 	<ng-include src="'resources/html/main.html'"></ng-include>
 </body>
 </html>

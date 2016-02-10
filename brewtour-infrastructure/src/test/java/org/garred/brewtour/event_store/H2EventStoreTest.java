@@ -39,7 +39,7 @@ public class H2EventStoreTest {
 	private static final String TYPE = "User";
 	private static final UserId USER_ID = new UserId("a user id");
 
-	private static final UserAddedEvent USER_ADDED_EVENT = new UserAddedEvent(USER_ID, "login", new Hash("hash"));
+	private static final UserAddedEvent USER_ADDED_EVENT = new UserAddedEvent(USER_ID, "screen name", "login", new Hash("hash"));
 
 
 	private final ObjectMapper objectMapper = ObjectMapperFactory.objectMapper();
