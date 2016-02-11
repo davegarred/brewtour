@@ -9,6 +9,7 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByxWmpMEVn7YBBNR4XU22VI8NqxsW_RGc"></script>
 <script type="text/javascript" src="resources/js/app.js"></script>
+<script type="text/javascript" src="resources/js/service.js"></script>
 
 <style type="text/css">
 html, body {

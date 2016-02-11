@@ -1,45 +1,19 @@
 'use strict';
 (function (angular) {
-    var beertour = angular.module('beertour', [ ]);
+    var beertour = angular.module('beertour', ['services' ]);
 
-    beertour.controller('MapController', ['$scope', '$http', function ($scope, $http) {
+    beertour.controller('MapController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
     	$scope.removedBeers = [];
+   		$scope.user = {};
+   		$scope.$watch(function(){ return UserService.user() }, function(newVal,oldVal) {
+   			return $scope.user = newVal
+   		}, true);
     	
-//    	var favoriteLocationIds = [];
-//    	$scope.isFavorite = function(id) {
-//    		for(var i in favoriteLocationIds) {
-//    			if(favoriteLocationIds[i] == id) {
-//    				return true;
-//    			}
-//    		}
-//    		return false;
-//    	}
-//    	$scope.removeFavorite = function(id) {
-//    		for(var i in favoriteLocationIds) {
-//    			if(favoriteLocationIds[i] == id) {
-//    				favoriteLocationIds.splice(i,1);
-//    			}
-//    		}
-//    		$http.post('removeFavorite', { locationId : id })
-//            .then(function successCallback(response) {
-//            	favoriteLocationIds = response.data.favoriteLocations;
-//            }, function errorCallback(response) {
-//            	error(response);
-//            });
-//    	}
-//    	$scope.addFavorite = function(id) {
-//    		favoriteLocationIds.push(id);
-//    		$http.post('addFavorite', { locationId : id } )
-//            .then(function successCallback(response) {
-//            	favoriteLocationIds = response.data.favoriteLocations;
-//            }, function errorCallback(response) {
-//            	error(response);
-//            });
-//    	}
     	function setLocationDetails(details) {
     		$scope.locationDetails = details;
     		$scope.hasIbu = hasIbu(details.beers);
     		$scope.hasAbv = hasAbv(details.beers);
+    		LocationService.set(details.locationId);
     	}
     	function hasIbu(beerList) {
     		for(var i in beerList) {
@@ -100,25 +74,12 @@
         }
         
         
-        $scope.sendComment = function() {
-        	var dto = {
-        			locationId : $scope.locationDetails.locationId,
-        			comment : this.locationDetailsComment
-        	};
-        	$http.post('location/AddLocationComment', dto)
-        	.then(function successCallback(response) {
-        		$scope.user = response.data;
-        	}, function errorCallback(response) {
-        		error(response);
-        	})
-        	this.locationDetailsComment = "";
-        	$('#locationCommentModal').modal('hide');
-        }
         $scope.login = function() {
         	var dto = this.loginDto;
         	$http.post('user/login', dto)
         	.then(function successCallback(response) {
-        		$scope.user = response.data;
+        		UserService.set(response.data);
+//        		$scope.user = response.data;
         	}, function errorCallback(response) {
         		error(response);
         	});
@@ -126,7 +87,8 @@
         	$('#loginModal').modal('hide');
         }
         $scope.logout = function() {
-        	$scope.user = null;
+        	UserService.set(null);
+//        	$scope.user = null;
         	$http.get('user/logout')
         	.then(function successCallback(response) {
         	}, function errorCallback(response) {
@@ -168,7 +130,8 @@
         
         $http.get('user')
     	.then(function successCallback(response) {
-    		$scope.user = response.data;
+//    		$scope.user = response.data;
+    		UserService.set(response.data);
     	}, function errorCallback(response) {
     		error(response);
     	});
@@ -181,12 +144,30 @@
         	error(response);
         });
         
-        function error(error) {
-        	console.log(error);
-        	debugger;
-        }
-    }]);
-    beertour.controller('LocationCommentController', ['$scope', '$http', function ($scope, $http) {
+
     }]);
     
+    beertour.controller('LocationCommentController', ['$scope', '$http', 'LocationService', function ($scope, $http, LocationService) {
+        $scope.sendComment = function() {
+        	var dto = {
+        			locationId : LocationService.get(),
+        			comment : this.locationDetailsComment
+        	};
+        	$http.post('location/AddLocationComment', dto)
+        	.then(function successCallback(response) {
+        		UserService.set(response.data);
+//        		$scope.user = response.data;
+        	}, function errorCallback(response) {
+        		error(response);
+        	})
+        	this.locationDetailsComment = "";
+        	$('#locationCommentModal').modal('hide');
+        }
+
+    }]);
+    
+    function error(error) {
+    	console.log(error);
+    	debugger;
+    }
 })(window.angular, window.jQuery)
