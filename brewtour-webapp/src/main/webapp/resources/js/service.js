@@ -11,7 +11,7 @@
     		find : function() {
     	        $http.get('user')
     	    	.then(function successCallback(response) {
-    	    		currentUser = updatedUser;
+    	    		currentUser = response.data;
     	    	}, function errorCallback(response) {
     	    		error(response);
     	    	});
@@ -41,6 +41,7 @@
     	}
     	
     }]);
+    
     services.factory('LocationService', ['$http', function ($http) {
     	var locationId = null;
     	return {

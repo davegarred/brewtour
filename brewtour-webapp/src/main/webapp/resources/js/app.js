@@ -75,10 +75,10 @@
         }
         
         
-        $scope.login = function() {
-        	UserService.login(this.loginDto);
-        	this.loginDto = {};
-        }
+//        $scope.login = function() {
+//        	UserService.login(this.loginDto);
+//        	this.loginDto = {};
+//        }
         $scope.logout = function() {
         	UserService.logout();
         }
@@ -126,22 +126,28 @@
 
     }]);
     
-    beertour.controller('LocationCommentController', ['$scope', '$http', 'LocationService', function ($scope, $http, LocationService) {
-        $scope.sendComment = function() {
-        	var dto = {
-        			locationId : LocationService.get(),
-        			comment : this.locationDetailsComment
-        	};
-        	$http.post('location/AddLocationComment', dto)
-        	.then(function successCallback(response) {
-        		UserService.set(response.data);
-        	}, function errorCallback(response) {
-        		error(response);
-        	})
-        	this.locationDetailsComment = "";
-        	$('#locationCommentModal').modal('hide');
+    beertour.controller('LoginController', ['$scope', '$http', 'UserService', function ($scope, $http, UserService) {
+        $scope.login = function() {
+        	UserService.login(this.loginDto);
+        	this.loginDto = {};
         }
-
+    }]);
+    
+    beertour.controller('LocationCommentController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
+    	$scope.sendComment = function() {
+    		var dto = {
+    				locationId : LocationService.get(),
+    				comment : this.locationDetailsComment
+    		};
+    		$http.post('location/AddLocationComment', dto)
+    		.then(function successCallback(response) {
+    			$('#locationCommentModal').modal('hide');
+    			this.locationDetailsComment = "";
+    		}, function errorCallback(response) {
+    			error(response);
+    		})
+    	}
+    	
     }]);
     
     function error(error) {
