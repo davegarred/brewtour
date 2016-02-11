@@ -8,6 +8,7 @@
    		$scope.$watch(function(){ return UserService.user() }, function(newVal,oldVal) {
    			return $scope.user = newVal
    		}, true);
+   		UserService.find();
     	
     	function setLocationDetails(details) {
     		$scope.locationDetails = details;
@@ -75,25 +76,11 @@
         
         
         $scope.login = function() {
-        	var dto = this.loginDto;
-        	$http.post('user/login', dto)
-        	.then(function successCallback(response) {
-        		UserService.set(response.data);
-//        		$scope.user = response.data;
-        	}, function errorCallback(response) {
-        		error(response);
-        	});
+        	UserService.login(this.loginDto);
         	this.loginDto = {};
-        	$('#loginModal').modal('hide');
         }
         $scope.logout = function() {
-        	UserService.set(null);
-//        	$scope.user = null;
-        	$http.get('user/logout')
-        	.then(function successCallback(response) {
-        	}, function errorCallback(response) {
-        		error(response);
-        	});
+        	UserService.logout();
         }
         $scope.beerRemoved = function(beerName) {
         	for(var i in $scope.removedBeers) {
@@ -128,14 +115,6 @@
         	$scope.debug = dto;
         }
         
-        $http.get('user')
-    	.then(function successCallback(response) {
-//    		$scope.user = response.data;
-    		UserService.set(response.data);
-    	}, function errorCallback(response) {
-    		error(response);
-    	});
-        
         $http.get('location/locations')
         .then(function successCallback(response) {
         	$scope.locale = response.data;
@@ -156,7 +135,6 @@
         	$http.post('location/AddLocationComment', dto)
         	.then(function successCallback(response) {
         		UserService.set(response.data);
-//        		$scope.user = response.data;
         	}, function errorCallback(response) {
         		error(response);
         	})
