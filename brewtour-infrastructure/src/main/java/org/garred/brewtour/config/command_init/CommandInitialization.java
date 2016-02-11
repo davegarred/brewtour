@@ -8,6 +8,7 @@ import static org.garred.brewtour.domain.AvailableImages.NO_IMAGES;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -59,6 +60,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CommandInitialization implements ApplicationListener<ContextRefreshedEvent> {
 
+	private static final BigDecimal LONG_MAX = new BigDecimal("-122.3");
+
+	private static final BigDecimal LONG_MIN = new BigDecimal("-122.36");
+
+	private static final BigDecimal LAT_MAX = new BigDecimal(47.65);
+
+	private static final BigDecimal LAT_MIN = new BigDecimal(47.53);
+
 	private static volatile boolean completed = false;
 
 	private final CommandGateway gateway;
@@ -92,9 +101,7 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 		final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("json/test_locations.json");
 		final BrewDbLocationList locations = this.objectMapper.readValue(in, BrewDbLocationList.class);
 		for (final BrewDbLocation brewDbLocation : locations) {
-			if(brewDbLocation.locality.equalsIgnoreCase("seattle")) {
-				populateLists(brewDbLocation);
-			}
+			populateLists(brewDbLocation);
 		}
 		this.jdbcTemplate.execute(
 				"CREATE TABLE if not exists commands(id varchar(36) NOT NULL, " +
@@ -122,6 +129,9 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 	}
 
 	private void populateLists(BrewDbLocation brewDbLocation) {
+		if(skipThisLocation(brewDbLocation)) {
+			return;
+		}
 		final AddLocationCommand command = new AddLocationCommand(brewDbLocation.brewery.name);
 		this.gateway.sendAndWait(command);
 		final LocationId locationId = this.identifierFactory.last();
@@ -159,6 +169,18 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 				this.addBeerCommands.add(addBeerCommand);
 			}
 		}
+	}
+
+	private static boolean skipThisLocation(BrewDbLocation brewDbLocation) {
+		if(
+				brewDbLocation.latitude.compareTo(LAT_MIN) < 1 ||
+				brewDbLocation.latitude.compareTo(LAT_MAX) > 1 ||
+				brewDbLocation.longitude.compareTo(LONG_MIN) < 1 ||
+				brewDbLocation.longitude.compareTo(LONG_MAX) > 1
+				) {
+			return true;
+		}
+		return false;
 	}
 
 	private void loadBeerData() throws JsonParseException, JsonMappingException, IOException {

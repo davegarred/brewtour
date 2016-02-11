@@ -13,13 +13,14 @@ public class BeerStarRatingAddedByUserEvent extends AbstractBeerStarRatingAddedE
 	@JsonCreator
 	public BeerStarRatingAddedByUserEvent(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("userId") UserId userId,
-			@JsonProperty("name") String name,
+			@JsonProperty("userScreenName") String userScreenName,
+			@JsonProperty("beerName") String beerName,
 			@JsonProperty("medal") ReviewMedal medal) {
-		super(locationId, userId, name, medal);
+		super(locationId, userId, userScreenName, beerName, medal);
 	}
 
-	public static BeerStarRatingAddedByUserEvent fromCommand(AddBeerRatingCommand command, UserId userId) {
-		return new BeerStarRatingAddedByUserEvent(command.locationId, userId, command.name, command.medal);
+	public static BeerStarRatingAddedByUserEvent fromCommand(AddBeerRatingCommand command, UserId userId, String userScreenName) {
+		return new BeerStarRatingAddedByUserEvent(command.locationId, userId, userScreenName, command.beerName, command.medal);
 	}
 
 }

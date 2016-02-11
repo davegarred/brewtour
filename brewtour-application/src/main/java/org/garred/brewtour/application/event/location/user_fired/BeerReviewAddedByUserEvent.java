@@ -15,15 +15,16 @@ public class BeerReviewAddedByUserEvent extends AbstractBeerReviewAddedEvent {
 	@JsonCreator
 	public BeerReviewAddedByUserEvent(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("userId") UserId userId,
-			@JsonProperty("name") String name,
+			@JsonProperty("userScreenName") String userScreenName,
+			@JsonProperty("beerName") String beerName,
 			@JsonProperty("medal") ReviewMedal medal,
 			@JsonProperty("time") LocalDateTime time,
 			@JsonProperty("review") String review) {
-		super(locationId, userId, name, medal, time, review);
+		super(locationId, userId, userScreenName, beerName, medal, time, review);
 	}
 
-	public static BeerReviewAddedByUserEvent fromCommand(AddBeerReviewCommand command, UserId userId, LocalDateTime time) {
-		return new BeerReviewAddedByUserEvent(command.locationId, userId, command.name, command.medal, time, command.review);
+	public static BeerReviewAddedByUserEvent fromCommand(AddBeerReviewCommand command, UserId userId, String userScreenName, LocalDateTime time) {
+		return new BeerReviewAddedByUserEvent(command.locationId, userId, userScreenName, command.beerName, command.medal, time, command.review);
 	}
 
 }

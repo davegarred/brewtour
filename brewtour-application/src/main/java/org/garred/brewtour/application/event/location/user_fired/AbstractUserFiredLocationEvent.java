@@ -7,10 +7,12 @@ import org.garred.brewtour.domain.UserId;
 public abstract class AbstractUserFiredLocationEvent extends AbstractLocationEvent {
 
 	public final UserId userId;
+	public final String userScreenName;
 
-	public AbstractUserFiredLocationEvent(LocationId locationId, UserId userId) {
+	public AbstractUserFiredLocationEvent(LocationId locationId, UserId userId, String userScreenName) {
 		super(locationId);
 		this.userId = userId;
+		this.userScreenName = userScreenName;
 	}
 
 }

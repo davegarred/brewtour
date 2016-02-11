@@ -11,8 +11,8 @@ public abstract class AbstractLocationReviewAddedEvent extends AbstractLocationS
 	public final LocalDateTime time;
 	public final String review;
 
-	public AbstractLocationReviewAddedEvent(LocationId locationId, UserId userId, LocalDateTime time, ReviewMedal medal, String review) {
-		super(locationId, userId, medal);
+	public AbstractLocationReviewAddedEvent(LocationId locationId, UserId userId, String userScreenName, LocalDateTime time, ReviewMedal medal, String review) {
+		super(locationId, userId, userScreenName, medal);
 		this.time = time;
 		this.review = review;
 	}

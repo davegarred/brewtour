@@ -1,5 +1,7 @@
 package org.garred.brewtour.application.event.location.user_fired;
 
+import static org.garred.brewtour.security.GuestUserAuth.ANONYMOUS_SCREEN_NAME;
+
 import java.time.LocalDateTime;
 
 import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
@@ -15,15 +17,15 @@ public class BeerReviewAddedByAnonymousEvent extends AbstractBeerReviewAddedEven
 	@JsonCreator
 	public BeerReviewAddedByAnonymousEvent(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("userId") UserId userId,
-			@JsonProperty("name") String name,
+			@JsonProperty("beerName") String beerName,
 			@JsonProperty("medal") ReviewMedal medal,
 			@JsonProperty("time") LocalDateTime time,
 			@JsonProperty("review") String review) {
-		super(locationId, userId, name, medal, time, review);
+		super(locationId, userId, ANONYMOUS_SCREEN_NAME, beerName, medal, time, review);
 	}
 
 	public static BeerReviewAddedByAnonymousEvent fromCommand(AddBeerReviewCommand command, UserId userId, LocalDateTime time) {
-		return new BeerReviewAddedByAnonymousEvent(command.locationId, userId, command.name, command.medal, time, command.review);
+		return new BeerReviewAddedByAnonymousEvent(command.locationId, userId, command.beerName, command.medal, time, command.review);
 	}
 
 }

@@ -6,12 +6,12 @@ import org.garred.brewtour.domain.UserId;
 
 public abstract class AbstractBeerStarRatingAddedEvent extends AbstractUserFiredLocationEvent {
 
-	public final String name;
+	public final String beerName;
 	public final ReviewMedal medal;
 
-	public AbstractBeerStarRatingAddedEvent(LocationId locationId, UserId userId, String name, ReviewMedal medal) {
-		super(locationId, userId);
-		this.name = name;
+	public AbstractBeerStarRatingAddedEvent(LocationId locationId, UserId userId, String userScreenName, String beerName, ReviewMedal medal) {
+		super(locationId, userId, userScreenName);
+		this.beerName = beerName;
 		this.medal = medal;
 	}
 

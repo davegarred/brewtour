@@ -15,6 +15,7 @@ public class UserAuthView extends AbstractView implements Entity<UserId>,UserAut
 	public static final String TEST_ROLE = "org.garred.brewtour.roles.TEST";
 
 	public UserId userId;
+	public String screenName;
 	public String login;
 	public Hash hash;
 	public Set<String> roles;
@@ -22,6 +23,11 @@ public class UserAuthView extends AbstractView implements Entity<UserId>,UserAut
 	@Override
 	public UserId identifier() {
 		return this.userId;
+	}
+
+	@Override
+	public String screenName() {
+		return this.screenName;
 	}
 
 	@Override
@@ -37,6 +43,7 @@ public class UserAuthView extends AbstractView implements Entity<UserId>,UserAut
 	public static UserAuthView fromEvent(UserAddedEvent event) {
 		final UserAuthView view = new UserAuthView();
 		view.userId = event.userId;
+		view.screenName = event.screenName;
 		view.login = event.login;
 		view.hash = event.hash;
 		return view;

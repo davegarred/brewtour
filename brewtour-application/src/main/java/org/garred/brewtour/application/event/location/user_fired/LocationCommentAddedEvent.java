@@ -17,15 +17,16 @@ public class LocationCommentAddedEvent extends AbstractUserFiredLocationEvent {
 	@JsonCreator
 	public LocationCommentAddedEvent(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("userId") UserId userId,
+			@JsonProperty("userScreenName") String userScreenName,
 			@JsonProperty("time") LocalDateTime time,
 			@JsonProperty("comment") String comment) {
-		super(locationId, userId);
+		super(locationId, userId, userScreenName);
 		this.time = time;
 		this.comment = comment;
 	}
 
-	public static LocationCommentAddedEvent fromCommand(AddLocationCommentCommand command, UserId userId, LocalDateTime time) {
-		return new LocationCommentAddedEvent(command.locationId, userId, time, command.comment);
+	public static LocationCommentAddedEvent fromCommand(AddLocationCommentCommand command, UserId userId, String userScreenName, LocalDateTime time) {
+		return new LocationCommentAddedEvent(command.locationId, userId, userScreenName, time, command.comment);
 	}
 
 }

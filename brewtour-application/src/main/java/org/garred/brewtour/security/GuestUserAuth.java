@@ -9,6 +9,7 @@ import org.garred.brewtour.domain.UserId;
 
 public class GuestUserAuth implements UserAuth {
 
+	public static final String ANONYMOUS_SCREEN_NAME = "Anonymous";
 	private final UserId userId;
 
 	public GuestUserAuth(UserId userId) {
@@ -18,6 +19,11 @@ public class GuestUserAuth implements UserAuth {
 	@Override
 	public UserId identifier() {
 		return this.userId;
+	}
+
+	@Override
+	public String screenName() {
+		return ANONYMOUS_SCREEN_NAME;
 	}
 
 	@Override

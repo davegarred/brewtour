@@ -77,6 +77,7 @@ public class LocationTest {
 	private static final BigDecimal IBU = new BigDecimal("76");
 	private static final BigDecimal IBU_2 = new BigDecimal("29");
 	protected static final UserId USER_ID = new UserId("a user id");
+	private static final String SCREEN_NAME = "User ScreenName";
 	protected static final LocalDateTime DATE_TIME = LocalDateTime.of(2015, 9, 20, 8, 50);
 	private static final String LOCATION_REVIEW = "some review";
 	private static final String BEER_REVIEW = "spicy but with a full body";
@@ -200,9 +201,10 @@ public class LocationTest {
 
 	@Test
 	public void testAddLocationComment() {
+		UserHolder.set(userAuth(USER_ID));
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND)
 			.when(ADD_LOCATION_COMMENT_COMMAND)
-			.expectEvents(LocationCommentAddedEvent.fromCommand(ADD_LOCATION_COMMENT_COMMAND, USER_ID, DATE_TIME));
+			.expectEvents(LocationCommentAddedEvent.fromCommand(ADD_LOCATION_COMMENT_COMMAND, USER_ID, SCREEN_NAME, DATE_TIME));
 	}
 
 	@Test
@@ -219,7 +221,7 @@ public class LocationTest {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
 		.when(ADD_LOCATION_REVIEW_COMMAND)
 		.expectEvents(
-				LocationReviewAddedByUserEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND, USER_ID, DATE_TIME),
+				LocationReviewAddedByUserEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND, USER_ID, SCREEN_NAME, DATE_TIME),
 				new LocationRatingUpdatedEvent(LOCATION_ID, GOLD));
 	}
 	@Test
@@ -237,7 +239,7 @@ public class LocationTest {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND, ADD_BEER)
 		.when(ADD_BEER_REVIEW_COMMAND)
 		.expectEvents(
-				BeerReviewAddedByUserEvent.fromCommand(ADD_BEER_REVIEW_COMMAND, USER_ID, DATE_TIME),
+				BeerReviewAddedByUserEvent.fromCommand(ADD_BEER_REVIEW_COMMAND, USER_ID, SCREEN_NAME, DATE_TIME),
 				new BeerRatingUpdatedEvent(LOCATION_ID, BEER_NAME, SILVER)
 				);
 	}
@@ -246,6 +248,7 @@ public class LocationTest {
 	private static UserAuthView userAuth(UserId userId) {
 		final UserAuthView auth = new UserAuthView();
 		auth.userId = userId;
+		auth.screenName = SCREEN_NAME;
 		return auth;
 	}
 }

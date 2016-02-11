@@ -71,14 +71,14 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
 
     @EventHandler
     public void on(BeerAddedEvent event) {
-    	final BeerView beer = BeerView.newBeerView(event.name, event.style, event.category, event.abv, event.ibu, true);
+    	final BeerView beer = BeerView.newBeerView(event.beerName, event.style, event.category, event.abv, event.ibu, true);
     	update(event.locationId, l -> l.beers.add(beer));
     }
 
 	@EventHandler
     public void on(BeerModifiedEvent event) {
 		update(event.locationId, l -> {
-			final BeerView beer = l.requireBeer(event.name);
+			final BeerView beer = l.requireBeer(event.beerName);
 			beer.style = event.style;
 			beer.category = event.category;
 			beer.abv = event.abv;
@@ -88,14 +88,14 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
     @EventHandler
     public void on(BeerAvailableEvent event) {
     	update(event.locationId, l -> {
-    		final BeerView beer = l.requireBeer(event.name);
+    		final BeerView beer = l.requireBeer(event.beerName);
     		beer.available = true;
     	});
     }
     @EventHandler
     public void on(BeerUnavailableEvent event) {
     	update(event.locationId, l -> {
-    		final BeerView beer = l.requireBeer(event.name);
+    		final BeerView beer = l.requireBeer(event.beerName);
     		beer.available = false;
     	});
     }
@@ -110,14 +110,14 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
     }
     @EventHandler
     public void on(AbstractLocationReviewAddedEvent event) {
-    	final Review review = new Review(event.medal.name(), event.review);
+    	final Review review = new Review(event.userScreenName, event.medal.name(), event.review);
     	update(event.locationId, l -> l.reviews.add(review));
     }
     @EventHandler
     public void on(AbstractBeerReviewAddedEvent event) {
-    	final Review review = new Review(event.medal.name(), event.review);
+    	final Review review = new Review(event.userScreenName, event.medal.name(), event.review);
     	update(event.locationId, l -> {
-    		final BeerView beer = l.requireBeer(event.name);
+    		final BeerView beer = l.requireBeer(event.beerName);
     		beer.addReview(review);
     	});
     }

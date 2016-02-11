@@ -13,12 +13,13 @@ public class LocationStarRatingAddedByUserEvent extends AbstractLocationStarRati
 	@JsonCreator
 	public LocationStarRatingAddedByUserEvent(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("userId") UserId userId,
+			@JsonProperty("userScreenName") String userScreenName,
 			@JsonProperty("medal") ReviewMedal medal) {
-		super(locationId, userId, medal);
+		super(locationId, userId, userScreenName, medal);
 	}
 
-	public static LocationStarRatingAddedByUserEvent fromCommand(AddLocationRatingCommand command, UserId userId) {
-		return new LocationStarRatingAddedByUserEvent(command.locationId, userId, command.medal);
+	public static LocationStarRatingAddedByUserEvent fromCommand(AddLocationRatingCommand command, UserId userId, String userScreenName) {
+		return new LocationStarRatingAddedByUserEvent(command.locationId, userId, userScreenName, command.medal);
 	}
 
 }
