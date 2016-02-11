@@ -1,6 +1,6 @@
 {
   "locationId" : "a location id",
   "name" : "a beer name",
-  "stars" : 4,
+  "medal" : "GOLD",
   "review" : "spicy but with a full body"
 }

@@ -1,5 +1,8 @@
 package org.garred.brewtour.api;
 
+import static org.garred.brewtour.domain.ReviewMedal.GOLD;
+import static org.garred.brewtour.domain.ReviewMedal.SILVER;
+
 import org.garred.brewtour.AbstractSerializationTest;
 import org.garred.brewtour.application.command.location.AddBeerCommand;
 import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
@@ -23,12 +26,12 @@ public class CommandSerializationTest extends AbstractSerializationTest {
 
 	@Test
 	public void testAddBeerReview() {
-		reflectionValidate(new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, 4, BEER_REVIEW));
+		reflectionValidate(new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, GOLD, BEER_REVIEW));
 	}
 
 	@Test
 	public void testAddLocationReview() {
-		reflectionValidate(new AddLocationReviewCommand(LOCATION_ID, 4, LOCATION_REVIEW));
+		reflectionValidate(new AddLocationReviewCommand(LOCATION_ID, SILVER, LOCATION_REVIEW));
 	}
 
 	@Test

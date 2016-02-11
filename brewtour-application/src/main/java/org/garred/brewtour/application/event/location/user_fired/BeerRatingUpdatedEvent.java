@@ -1,9 +1,8 @@
 package org.garred.brewtour.application.event.location.user_fired;
 
-import java.math.BigDecimal;
-
 import org.garred.brewtour.application.event.location.AbstractLocationEvent;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.ReviewMedal;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,15 +10,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class BeerRatingUpdatedEvent extends AbstractLocationEvent {
 
 	public final String beerName;
-	public final BigDecimal rating;
+	public final ReviewMedal medal;
 
 	@JsonCreator
 	public BeerRatingUpdatedEvent(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("beerName") String beerName,
-			@JsonProperty("rating") BigDecimal rating) {
+			@JsonProperty("medal") ReviewMedal medal) {
 		super(locationId);
 		this.beerName = beerName;
-		this.rating = rating;
+		this.medal = medal;
 	}
 
 }

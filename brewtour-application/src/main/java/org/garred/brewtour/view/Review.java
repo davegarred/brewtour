@@ -9,13 +9,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(value = NON_NULL)
 public class Review extends AbstractView {
 
-	public final int stars;
+	public final String medal;
 	public final String review;
 	@JsonCreator
 	public Review(
-			@JsonProperty("stars") int stars,
+			@JsonProperty("medal") String medal,
 			@JsonProperty("review") String review) {
-		this.stars = stars;
+		this.medal = medal;
 		this.review = review;
 	}
 

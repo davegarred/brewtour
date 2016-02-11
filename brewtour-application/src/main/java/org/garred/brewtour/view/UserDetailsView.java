@@ -6,6 +6,7 @@ import java.util.Map;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.domain.Entity;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.ReviewMedal;
 import org.garred.brewtour.domain.UserId;
 
 public class UserDetailsView extends AbstractView implements Entity<UserId> {
@@ -21,16 +22,16 @@ public class UserDetailsView extends AbstractView implements Entity<UserId> {
 		return this.userId;
 	}
 
-	public void addLocationReview(LocationId locationId, int stars, String review) {
-		this.locationReviews.put(locationId, new Review(stars,review));
+	public void addLocationReview(LocationId locationId, ReviewMedal medal, String review) {
+		this.locationReviews.put(locationId, new Review(medal.name(),review));
 	}
-	public void addBeerReview(LocationId locationId, String beerName, int stars, String review) {
+	public void addBeerReview(LocationId locationId, String beerName, ReviewMedal medal, String review) {
 		Map<String, Review> location = this.beerReviews.get(locationId);
 		if(location == null) {
 			location = new HashMap<>();
 			this.beerReviews.put(locationId, location);
 		}
-		location.put(beerName, new Review(stars,review));
+		location.put(beerName, new Review(medal.name(),review));
 	}
 
 	public static UserDetailsView fromEvent(UserAddedEvent event) {

@@ -1,6 +1,8 @@
 package org.garred.brewtour.integration;
 
 import static org.garred.brewtour.domain.LocaleId.SEATTLE;
+import static org.garred.brewtour.domain.ReviewMedal.GOLD;
+import static org.garred.brewtour.domain.ReviewMedal.SILVER;
 import static org.garred.brewtour.view.BeerView.newBeerView;
 import static org.junit.Assert.assertEquals;
 
@@ -111,19 +113,19 @@ public class IntegrationTest {
 		location = this.locationRepo.get(locationId);
 		assertSingleItemInCollection(newBeerView(BEER_NAME, STYLE, CATEGORY, ABV, IBU, true), location.beers);
 
-		final Review expectedReview = new Review(4, LOCATION_REVIEW);
+		final Review expectedReview = new Review(GOLD.name(), LOCATION_REVIEW);
 		this.commandGateway.sendAndWait(addLocationReviewCommand(locationId));
 		location = this.locationRepo.get(locationId);
-		assertEquals(new BigDecimal("4.0"), location.averageStars);
+		assertEquals(GOLD.name(), location.medal);
 		assertSingleItemInCollection(expectedReview, location.reviews);
 
 		userDetails = this.userDetailsRepo.get(USER_ID);
 		assertSingleItemInCollection(expectedReview, userDetails.locationReviews.values());
 
-		final Review expectedBeerReview = new Review(3, BEER_REVIEW);
+		final Review expectedBeerReview = new Review(SILVER.name(), BEER_REVIEW);
 		this.commandGateway.sendAndWait(addBeerReviewCommand(locationId));
 		final BeerView beer = this.locationRepo.get(locationId).beers.get(0);
-		assertEquals(new BigDecimal("3.0"), beer.averageStars);
+		assertEquals(SILVER.name(), beer.medal);
 		assertSingleItemInCollection(expectedBeerReview, beer.userReviews);
 
 		userDetails = this.userDetailsRepo.get(USER_ID);
@@ -139,11 +141,10 @@ public class IntegrationTest {
 		return new AddBeerCommand(locationId, BEER_NAME, STYLE, CATEGORY, ABV, IBU);
 	}
 	private static AddLocationReviewCommand addLocationReviewCommand(LocationId locationId) {
-		return new AddLocationReviewCommand(locationId, 4, LOCATION_REVIEW);
-
+		return new AddLocationReviewCommand(locationId, GOLD, LOCATION_REVIEW);
 	}
 	private static AddBeerReviewCommand addBeerReviewCommand(LocationId locationId) {
-		return new AddBeerReviewCommand(locationId, BEER_NAME, 3, BEER_REVIEW);
+		return new AddBeerReviewCommand(locationId, BEER_NAME, SILVER, BEER_REVIEW);
 	}
 	private static AddLocationCommentCommand addLocationCommentCommand(LocationId locationId) {
 		return new AddLocationCommentCommand(locationId, LOCATION_COMMENT);

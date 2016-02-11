@@ -1,5 +1,8 @@
 package org.garred.brewtour.application;
 
+import static org.garred.brewtour.domain.ReviewMedal.GOLD;
+import static org.garred.brewtour.domain.ReviewMedal.SILVER;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -77,9 +80,9 @@ public class LocationTest {
 	protected static final LocalDateTime DATE_TIME = LocalDateTime.of(2015, 9, 20, 8, 50);
 	private static final String LOCATION_REVIEW = "some review";
 	private static final String BEER_REVIEW = "spicy but with a full body";
-	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, 4, BEER_REVIEW);
+	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(LOCATION_ID, BEER_NAME, SILVER, BEER_REVIEW);
 
-	private static final AddLocationReviewCommand ADD_LOCATION_REVIEW_COMMAND = new AddLocationReviewCommand(LOCATION_ID, 4, LOCATION_REVIEW);
+	private static final AddLocationReviewCommand ADD_LOCATION_REVIEW_COMMAND = new AddLocationReviewCommand(LOCATION_ID, GOLD, LOCATION_REVIEW);
 
 	private static final ModifyBeerCommand MODIFY_BEER_COMMAND = new ModifyBeerCommand(LOCATION_ID, BEER_NAME, STYLE_2, CATEGORY_2, ABV_2, IBU_2);
 	private static final AddLocationCommand ADD_LOCATION_COMMAND = new AddLocationCommand("a location name");
@@ -208,7 +211,7 @@ public class LocationTest {
 		.when(ADD_LOCATION_REVIEW_COMMAND)
 		.expectEvents(
 				LocationReviewAddedByAnonymousEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND, USER_ID, DATE_TIME),
-				new LocationRatingUpdatedEvent(LOCATION_ID, new BigDecimal("4.0")));
+				new LocationRatingUpdatedEvent(LOCATION_ID, GOLD));
 	}
 	@Test
 	public void testAddLocationReview_byUser() {
@@ -217,7 +220,7 @@ public class LocationTest {
 		.when(ADD_LOCATION_REVIEW_COMMAND)
 		.expectEvents(
 				LocationReviewAddedByUserEvent.fromCommand(ADD_LOCATION_REVIEW_COMMAND, USER_ID, DATE_TIME),
-				new LocationRatingUpdatedEvent(LOCATION_ID, new BigDecimal("4.0")));
+				new LocationRatingUpdatedEvent(LOCATION_ID, GOLD));
 	}
 	@Test
 	public void testAddBeerReview_anonymous() {
@@ -225,7 +228,7 @@ public class LocationTest {
 			.when(ADD_BEER_REVIEW_COMMAND)
 			.expectEvents(
 				BeerReviewAddedByAnonymousEvent.fromCommand(ADD_BEER_REVIEW_COMMAND, USER_ID, DATE_TIME),
-				new BeerRatingUpdatedEvent(LOCATION_ID, BEER_NAME, new BigDecimal("4.0"))
+				new BeerRatingUpdatedEvent(LOCATION_ID, BEER_NAME, SILVER)
 				);
 	}
 	@Test
@@ -235,7 +238,7 @@ public class LocationTest {
 		.when(ADD_BEER_REVIEW_COMMAND)
 		.expectEvents(
 				BeerReviewAddedByUserEvent.fromCommand(ADD_BEER_REVIEW_COMMAND, USER_ID, DATE_TIME),
-				new BeerRatingUpdatedEvent(LOCATION_ID, BEER_NAME, new BigDecimal("4.0"))
+				new BeerRatingUpdatedEvent(LOCATION_ID, BEER_NAME, SILVER)
 				);
 	}
 

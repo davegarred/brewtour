@@ -1,7 +1,5 @@
 package org.garred.brewtour.application;
 
-import static java.math.RoundingMode.HALF_UP;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,6 +59,7 @@ import org.garred.brewtour.application.event.location.user_fired.LocationStarRat
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.Beer;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.ReviewMedal;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.domain.UserReview;
 import org.garred.brewtour.security.UserAuth;
@@ -86,9 +85,9 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 	private AvailableImages images;
 	private final List<Beer> beers = new ArrayList<>();
 	private final List<UserReview> reviews = new ArrayList<>();
-	private final Map<UserId,Integer> userStarRatings = new HashMap<>();
+	private final Map<UserId,ReviewMedal> userMedalRatings = new HashMap<>();
 
-	private BigDecimal averageStars;
+	private ReviewMedal medal;
 
     public Location() {}
 
@@ -184,9 +183,9 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		} else {
 			apply(LocationStarRatingAddedByAnonymousEvent.fromCommand(locationRating, user.identifier()));
 		}
-		final BigDecimal avg = updateReviewAverage();
-		if(avg != null && !Objects.equals(avg, this.averageStars)) {
-			apply(new LocationRatingUpdatedEvent(this.id, avg));
+		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(this.userMedalRatings.values()));
+		if(!Objects.equals(updatedMedal, this.medal)) {
+			apply(new LocationRatingUpdatedEvent(this.id, updatedMedal));
 		}
 	}
 	public void addLocationReview(AddLocationReviewCommand locationReview, UserAuth user, LocalDateTime time) {
@@ -195,9 +194,9 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		} else {
 			apply(LocationReviewAddedByAnonymousEvent.fromCommand(locationReview, user.identifier(), time));
 		}
-		final BigDecimal avg = updateReviewAverage();
-		if(avg != null && !Objects.equals(avg, this.averageStars)) {
-			apply(new LocationRatingUpdatedEvent(this.id, avg));
+		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(this.userMedalRatings.values()));
+		if(!Objects.equals(updatedMedal, this.medal)) {
+			apply(new LocationRatingUpdatedEvent(this.id, updatedMedal));
 		}
 	}
 
@@ -208,9 +207,9 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		} else {
 			apply(BeerStarRatingAddedByAnonymousEvent.fromCommand(beerReview, user.identifier()));
 		}
-		final BigDecimal avg = beer.updateReviewAverage();
-		if(avg != null && !Objects.equals(avg, beer.getAverageStars())) {
-			apply(new BeerRatingUpdatedEvent(this.id, beerReview.name, avg));
+		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(beer.getUserMedalRatings().values()));
+		if(!Objects.equals(updatedMedal, beer.getMedal())) {
+			apply(new BeerRatingUpdatedEvent(this.id, beerReview.name, updatedMedal));
 		}
 	}
 	public void addBeerReview(AddBeerReviewCommand beerReview, UserAuth user, LocalDateTime time) {
@@ -220,9 +219,9 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		} else {
 			apply(BeerReviewAddedByAnonymousEvent.fromCommand(beerReview, user.identifier(), time));
 		}
-		final BigDecimal avg = beer.updateReviewAverage();
-		if(avg != null && !Objects.equals(avg, beer.getAverageStars())) {
-			apply(new BeerRatingUpdatedEvent(this.id, beerReview.name, avg));
+		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(beer.getUserMedalRatings().values()));
+		if(!Objects.equals(updatedMedal, beer.getMedal())) {
+			apply(new BeerRatingUpdatedEvent(this.id, beerReview.name, updatedMedal));
 		}
 	}
 
@@ -241,19 +240,6 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		}
 		return beer;
 	}
-	private BigDecimal updateReviewAverage() {
-		int count = 0;
-		int totalStars = 0;
-		for(final Integer starRating : this.userStarRatings.values()) {
-			count ++;
-			totalStars += starRating.intValue();
-		}
-		if(count > 0) {
-			return new BigDecimal(((double)totalStars) / (double)count).setScale(1, HALF_UP);
-		}
-		return null;
-	}
-
 
     @EventHandler
     public void on(AbstractLocationAddedEvent event) {
@@ -321,22 +307,22 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     }
     @EventHandler
     public void on(AbstractLocationStarRatingAddedEvent event) {
-    	this.userStarRatings.put(event.userId, new Integer(event.stars));
+    	this.userMedalRatings.put(event.userId, event.medal);
     }
     @EventHandler
     public void on(AbstractLocationReviewAddedEvent event) {
-    	final UserReview review = new UserReview(event.userId, event.stars, event.time, event.review);
+    	final UserReview review = new UserReview(event.userId, event.medal, event.time, event.review);
     	this.reviews.add(review);
     	on((AbstractLocationStarRatingAddedEvent)event);
     }
     @EventHandler
     public void on(AbstractBeerStarRatingAddedEvent event) {
     	final Beer beer = findBeer(event.name);
-    	beer.setStarRating(event.userId, event.stars);
+    	beer.setMedalRating(event.userId, event.medal);
     }
     @EventHandler
     public void on(AbstractBeerReviewAddedEvent event) {
-    	final UserReview review = new UserReview(event.userId, event.stars, event.time, event.review);
+    	final UserReview review = new UserReview(event.userId, event.medal, event.time, event.review);
     	final Beer beer = findBeer(event.name);
     	beer.addReview(review);
     	on((AbstractBeerStarRatingAddedEvent)event);

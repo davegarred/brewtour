@@ -34,7 +34,7 @@ public class LocationView extends AbstractView implements Entity<LocationId> {
 	public List<BeerView> beers;
 	public List<Review> reviews;
 
-	public BigDecimal averageStars;
+	public String medal;
 
 	@Override
 	public LocationId identifier() {

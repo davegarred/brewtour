@@ -2,6 +2,9 @@ package org.garred.brewtour.security;
 
 import static java.lang.Boolean.TRUE;
 
+import java.util.UUID;
+
+import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.view.UserAuthView;
 
 public class UserHolder {
@@ -40,7 +43,7 @@ public class UserHolder {
 		tlBool.set(TRUE);
 	}
 	public static void logout() {
-		set(new GuestUserAuth(tl.get().identifier()));
+		set(new GuestUserAuth(new UserId(UUID.randomUUID().toString())));
 		tlBool.set(TRUE);
 	}
 

@@ -59,7 +59,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CommandInitialization implements ApplicationListener<ContextRefreshedEvent> {
 
-	private static boolean completed = false;
+	private static volatile boolean completed = false;
 
 	private final CommandGateway gateway;
 	private final IdentifierFactory<LocationId> identifierFactory;

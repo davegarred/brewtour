@@ -18,7 +18,6 @@ import org.garred.brewtour.application.event.location.user_fired.AbstractLocatio
 import org.garred.brewtour.application.event.location.user_fired.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationRatingUpdatedEvent;
 import org.garred.brewtour.domain.LocationId;
-import org.garred.brewtour.domain.UserReview;
 import org.garred.brewtour.repository.LocationViewRepository;
 
 public class LocationViewEventHandler extends AbstractViewEventHandler<LocationId, LocationView> {
@@ -103,20 +102,20 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
 
     @EventHandler
     public void on(LocationRatingUpdatedEvent event) {
-    	update(event.locationId, l -> l.averageStars = event.rating);
+    	update(event.locationId, l -> l.medal = event.medal.name());
     }
     @EventHandler
     public void on(BeerRatingUpdatedEvent event) {
-    	update(event.locationId, l -> l.requireBeer(event.beerName).averageStars = event.rating);
+    	update(event.locationId, l -> l.requireBeer(event.beerName).medal = event.medal.name());
     }
     @EventHandler
     public void on(AbstractLocationReviewAddedEvent event) {
-    	final Review review = new Review(event.stars, event.review);
+    	final Review review = new Review(event.medal.name(), event.review);
     	update(event.locationId, l -> l.reviews.add(review));
     }
     @EventHandler
     public void on(AbstractBeerReviewAddedEvent event) {
-    	final UserReview review = new UserReview(event.userId, event.stars, event.time, event.review);
+    	final Review review = new Review(event.medal.name(), event.review);
     	update(event.locationId, l -> {
     		final BeerView beer = l.requireBeer(event.name);
     		beer.addReview(review);

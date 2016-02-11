@@ -21,19 +21,19 @@ public class UserDetailsViewEventHandler extends AbstractViewEventHandler<UserId
 	}
 	@EventHandler
 	public void on(AbstractLocationReviewAddedEvent event) {
-		update(event.userId, v -> v.addLocationReview(event.locationId, event.stars, event.review));
+		update(event.userId, v -> v.addLocationReview(event.locationId, event.medal, event.review));
 	}
 	@EventHandler
 	public void on(AbstractLocationStarRatingAddedEvent event) {
-		update(event.userId, v -> v.addLocationReview(event.locationId, event.stars, null));
+		update(event.userId, v -> v.addLocationReview(event.locationId, event.medal, null));
 	}
 	@EventHandler
 	public void on(AbstractBeerReviewAddedEvent event) {
-		update(event.userId, v -> v.addBeerReview(event.locationId, event.name, event.stars, event.review));
+		update(event.userId, v -> v.addBeerReview(event.locationId, event.name, event.medal, event.review));
 	}
 	@EventHandler
 	public void on(AbstractBeerStarRatingAddedEvent event) {
-		update(event.userId, v -> v.addBeerReview(event.locationId, event.name, event.stars, null));
+		update(event.userId, v -> v.addBeerReview(event.locationId, event.name, event.medal, null));
 	}
 
 }

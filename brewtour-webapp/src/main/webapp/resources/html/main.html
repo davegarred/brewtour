@@ -12,7 +12,7 @@
 		<div class="hidden-md hidden-lg" ng-if="locationDetails">
 			<img ng-src='{{locationDetails.images.medium}}'>
 		</div>
-		<div class="hidden-xs hidden-sm" ng-if="locationDetails"
+		<div class="hidden-xs hidden-sm container" ng-if="locationDetails"
 			style="float: left; width: 400px;">
 			<img ng-src='{{locationDetails.images.medium}}'
 				ng-if="locationDetails.images">
@@ -31,6 +31,13 @@
 					data-toggle="modal" data-target="#locationCommentModal"></span>
  -->
 			</h3>
+			<p>
+				<img ng-src='resources/img/128x128_gold.png' style="width: 40px;">
+				<span>No ratings</span>
+				<span style="float: right;"><a href="#">Rate!</a></span>
+			</p>
+			<p>{{locationDetails.streetAddress}}, {{locationDetails.city}} WA&nbsp;&nbsp;{{locationDetails.postalCode}}</p> 
+			<p ng-if="locationDetails.website"><a target="_blank" href="{{locationDetails.website}}">{{locationDetails.website}}</a></p> 
 			<p>{{locationDetails.description}}</p>
 			<table ng-if="locationDetails.beers.length > 0" style="width: 100%;">
 				<tr>
@@ -58,6 +65,8 @@
 
 	<ng-include src="'resources/html/locationCommentModal.html'"></ng-include>
 	<ng-include src="'resources/html/loginModal.html'"></ng-include>
-	
+<!-- 
+	<pre>{{locationDetails | json}}</pre>
+ -->
 	
 </div>

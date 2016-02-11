@@ -1,7 +1,5 @@
 package org.garred.brewtour.domain;
 
-import static java.math.RoundingMode.HALF_UP;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,13 +13,16 @@ public class Beer extends AbstractObject {
 	private BigDecimal abv, ibu;
 	private boolean available;
 	private final List<UserReview> userReviews = new ArrayList<>();
-	private final Map<UserId,Integer> userStarRatings = new HashMap<>();
+	private final Map<UserId,ReviewMedal> userMedalRatings = new HashMap<>();
 
 	public List<UserReview> getReviews() {
 		return this.userReviews;
 	}
+	public Map<UserId,ReviewMedal> getUserMedalRatings() {
+		return this.userMedalRatings;
+	}
 
-	private BigDecimal averageStars;
+	private ReviewMedal medal;
 
 
 	public static Beer fromEvent(String name, String status, String style, String category,
@@ -63,8 +64,8 @@ public class Beer extends AbstractObject {
 		return this.status;
 	}
 
-	public BigDecimal getAverageStars() {
-		return this.averageStars;
+	public ReviewMedal getMedal() {
+		return this.medal;
 	}
 
 	public void setStyle(String style) {
@@ -85,22 +86,8 @@ public class Beer extends AbstractObject {
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
-	public void setStarRating(UserId userId, int stars) {
-		this.userStarRatings.put(userId, new Integer(stars));
-	}
-	public BigDecimal updateReviewAverage() {
-		int count = 0;
-		int totalStars = 0;
-		for(final Integer starRating : this.userStarRatings.values()) {
-			if(starRating != null) {
-				count ++;
-				totalStars += starRating.intValue();
-			}
-		}
-		if(count > 0) {
-			return new BigDecimal(((double)totalStars) / (double)count).setScale(1, HALF_UP);
-		}
-		return null;
+	public void setMedalRating(UserId userId, ReviewMedal medal) {
+		this.userMedalRatings.put(userId, medal);
 	}
 
 	@Override
