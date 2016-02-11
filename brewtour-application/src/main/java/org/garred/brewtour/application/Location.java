@@ -148,7 +148,7 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 	}
 
 	public void addBeer(AddBeerCommand addBeer) {
-		final Beer beer = findBeer(addBeer.name);
+		final Beer beer = findBeer(addBeer.beerName);
 		if(beer != null) {
 			throw new RuntimeException("Can not add a beer with the same name");
 		}
@@ -156,32 +156,32 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 	}
 
 	public void modifyBeer(ModifyBeerCommand modifyBeer) {
-		requireBeer(modifyBeer.name);
+		requireBeer(modifyBeer.beerName);
 		apply(BeerModifiedEvent.fromCommand(modifyBeer));
 	}
 
 	public void beerAvailable(BeerAvailableCommand beerAvailable) {
-		final Beer beer = requireBeer(beerAvailable.name);
+		final Beer beer = requireBeer(beerAvailable.beerName);
 		if(!beer.isAvailable()) {
 			apply(BeerAvailableEvent.fromCommand(beerAvailable));
 		}
 	}
 	public void beerUnavailable(BeerUnavailableCommand beerUnavailable) {
-		final Beer beer = requireBeer(beerUnavailable.name);
+		final Beer beer = requireBeer(beerUnavailable.beerName);
 		if(beer.isAvailable()) {
 			apply(BeerUnavailableEvent.fromCommand(beerUnavailable));
 		}
 	}
 
 	public void addComment(AddLocationCommentCommand command, UserAuth user, LocalDateTime time) {
-		apply(LocationCommentAddedEvent.fromCommand(command, user.identifier(), time));
+		apply(LocationCommentAddedEvent.fromCommand(command, user.identifier(), user.screenName(), time));
 	}
 
 	public void addLocationStarRating(AddLocationRatingCommand locationRating, UserAuth user) {
 		if(user.identified()) {
-			apply(LocationStarRatingAddedByUserEvent.fromCommand(locationRating, user.identifier()));
+			apply(LocationStarRatingAddedByUserEvent.fromCommand(locationRating, user.identifier(), user.screenName()));
 		} else {
-			apply(LocationStarRatingAddedByAnonymousEvent.fromCommand(locationRating, user.identifier()));
+			apply(LocationStarRatingAddedByAnonymousEvent.fromCommand(locationRating, user.identifier(), user.screenName()));
 		}
 		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(this.userMedalRatings.values()));
 		if(!Objects.equals(updatedMedal, this.medal)) {
@@ -190,7 +190,7 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 	}
 	public void addLocationReview(AddLocationReviewCommand locationReview, UserAuth user, LocalDateTime time) {
 		if(user.identified()) {
-			apply(LocationReviewAddedByUserEvent.fromCommand(locationReview, user.identifier(), time));
+			apply(LocationReviewAddedByUserEvent.fromCommand(locationReview, user.identifier(), user.screenName(), time));
 		} else {
 			apply(LocationReviewAddedByAnonymousEvent.fromCommand(locationReview, user.identifier(), time));
 		}
@@ -201,27 +201,27 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 	}
 
 	public void addBeerStarRating(AddBeerRatingCommand beerReview, UserAuth user) {
-		final Beer beer = requireBeer(beerReview.name);
+		final Beer beer = requireBeer(beerReview.beerName);
 		if(user.identified()) {
-			apply(BeerStarRatingAddedByUserEvent.fromCommand(beerReview, user.identifier()));
+			apply(BeerStarRatingAddedByUserEvent.fromCommand(beerReview, user.identifier(), user.screenName()));
 		} else {
 			apply(BeerStarRatingAddedByAnonymousEvent.fromCommand(beerReview, user.identifier()));
 		}
 		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(beer.getUserMedalRatings().values()));
 		if(!Objects.equals(updatedMedal, beer.getMedal())) {
-			apply(new BeerRatingUpdatedEvent(this.id, beerReview.name, updatedMedal));
+			apply(new BeerRatingUpdatedEvent(this.id, beerReview.beerName, updatedMedal));
 		}
 	}
 	public void addBeerReview(AddBeerReviewCommand beerReview, UserAuth user, LocalDateTime time) {
-		final Beer beer = requireBeer(beerReview.name);
+		final Beer beer = requireBeer(beerReview.beerName);
 		if(user.identified()) {
-			apply(BeerReviewAddedByUserEvent.fromCommand(beerReview, user.identifier(), time));
+			apply(BeerReviewAddedByUserEvent.fromCommand(beerReview, user.identifier(), user.screenName(), time));
 		} else {
 			apply(BeerReviewAddedByAnonymousEvent.fromCommand(beerReview, user.identifier(), time));
 		}
 		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(beer.getUserMedalRatings().values()));
 		if(!Objects.equals(updatedMedal, beer.getMedal())) {
-			apply(new BeerRatingUpdatedEvent(this.id, beerReview.name, updatedMedal));
+			apply(new BeerRatingUpdatedEvent(this.id, beerReview.beerName, updatedMedal));
 		}
 	}
 
@@ -283,13 +283,13 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 
     @EventHandler
     public void on(BeerAddedEvent event) {
-    	final Beer beer = Beer.fromEvent(event.name, null, event.style, event.category, event.abv, event.ibu, true);
+    	final Beer beer = Beer.fromEvent(event.beerName, null, event.style, event.category, event.abv, event.ibu, true);
 		this.beers.add(beer);
     }
 
     @EventHandler
     public void on(BeerModifiedEvent event) {
-    	final Beer beer = findBeer(event.name);
+    	final Beer beer = findBeer(event.beerName);
     	beer.setStyle(event.style);
     	beer.setCategory(event.category);
     	beer.setAbv(event.abv);
@@ -297,12 +297,12 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     }
     @EventHandler
     public void on(BeerAvailableEvent event) {
-    	final Beer beer = findBeer(event.name);
+    	final Beer beer = findBeer(event.beerName);
     	beer.setAvailable(true);
     }
     @EventHandler
     public void on(BeerUnavailableEvent event) {
-    	final Beer beer = findBeer(event.name);
+    	final Beer beer = findBeer(event.beerName);
     	beer.setAvailable(false);
     }
     @EventHandler
@@ -317,13 +317,13 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     }
     @EventHandler
     public void on(AbstractBeerStarRatingAddedEvent event) {
-    	final Beer beer = findBeer(event.name);
+    	final Beer beer = findBeer(event.beerName);
     	beer.setMedalRating(event.userId, event.medal);
     }
     @EventHandler
     public void on(AbstractBeerReviewAddedEvent event) {
     	final UserReview review = new UserReview(event.userId, event.medal, event.time, event.review);
-    	final Beer beer = findBeer(event.name);
+    	final Beer beer = findBeer(event.beerName);
     	beer.addReview(review);
     	on((AbstractBeerStarRatingAddedEvent)event);
     }

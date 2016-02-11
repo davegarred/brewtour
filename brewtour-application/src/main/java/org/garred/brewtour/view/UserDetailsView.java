@@ -22,16 +22,16 @@ public class UserDetailsView extends AbstractView implements Entity<UserId> {
 		return this.userId;
 	}
 
-	public void addLocationReview(LocationId locationId, ReviewMedal medal, String review) {
-		this.locationReviews.put(locationId, new Review(medal.name(),review));
+	public void addLocationReview(LocationId locationId, String userScreenName, ReviewMedal medal, String review) {
+		this.locationReviews.put(locationId, new Review(userScreenName, medal.name(), review));
 	}
-	public void addBeerReview(LocationId locationId, String beerName, ReviewMedal medal, String review) {
+	public void addBeerReview(LocationId locationId, String beerName, String userScreenName, ReviewMedal medal, String review) {
 		Map<String, Review> location = this.beerReviews.get(locationId);
 		if(location == null) {
 			location = new HashMap<>();
 			this.beerReviews.put(locationId, location);
 		}
-		location.put(beerName, new Review(medal.name(),review));
+		location.put(beerName, new Review(userScreenName, medal.name(), review));
 	}
 
 	public static UserDetailsView fromEvent(UserAddedEvent event) {

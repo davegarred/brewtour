@@ -11,8 +11,8 @@ public abstract class AbstractLocationStarRatingAddedEvent extends AbstractUserF
 	public final ReviewMedal medal;
 
 	@JsonCreator
-	public AbstractLocationStarRatingAddedEvent(LocationId locationId, UserId userId, ReviewMedal medal) {
-		super(locationId, userId);
+	public AbstractLocationStarRatingAddedEvent(LocationId locationId, UserId userId, String userScreenName, ReviewMedal medal) {
+		super(locationId, userId, userScreenName);
 		this.medal = medal;
 	}
 

@@ -6,19 +6,17 @@ import org.garred.brewtour.domain.ReviewMedal;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AddBeerReviewCommand extends AbstractLocationCommand {
+public class AddBeerReviewCommand extends AbstractLocationBeerCommand {
 
-	public final String name;
 	public final ReviewMedal medal;
 	public final String review;
 
 	@JsonCreator
 	public AddBeerReviewCommand(@JsonProperty("locationId") LocationId locationId,
-			@JsonProperty("name") String name,
+			@JsonProperty("beerName") String beerName,
 			@JsonProperty("medal") ReviewMedal medal,
 			@JsonProperty("review") String review) {
-		super(locationId);
-		this.name = name;
+		super(locationId, beerName);
 		this.medal = medal;
 		this.review = review;
 	}

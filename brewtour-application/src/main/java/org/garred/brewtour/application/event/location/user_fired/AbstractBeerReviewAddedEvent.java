@@ -11,8 +11,8 @@ public abstract class AbstractBeerReviewAddedEvent extends AbstractBeerStarRatin
 	public final LocalDateTime time;
 	public final String review;
 
-	public AbstractBeerReviewAddedEvent(LocationId locationId, UserId userId, String name, ReviewMedal medal, LocalDateTime time, String review) {
-		super(locationId, userId, name, medal);
+	public AbstractBeerReviewAddedEvent(LocationId locationId, UserId userId, String userScreenName, String name, ReviewMedal medal, LocalDateTime time, String review) {
+		super(locationId, userId, userScreenName, name, medal);
 		this.time = time;
 		this.review = review;
 	}

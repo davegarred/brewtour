@@ -26,13 +26,13 @@ import org.garred.brewtour.repository.AdminViewRepository;
 import org.garred.brewtour.repository.LocaleViewRepository;
 import org.garred.brewtour.repository.LocationViewRepository;
 import org.garred.brewtour.repository.UserDetailsViewRepository;
-import org.garred.brewtour.security.GuestUserAuth;
 import org.garred.brewtour.security.UserHolder;
 import org.garred.brewtour.view.AdminView;
 import org.garred.brewtour.view.BeerView;
 import org.garred.brewtour.view.LocaleView;
 import org.garred.brewtour.view.LocationView;
 import org.garred.brewtour.view.Review;
+import org.garred.brewtour.view.UserAuthView;
 import org.garred.brewtour.view.UserDetailsView;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 })
 public class IntegrationTest {
 
-	private static final String SCREEN_NAME = "screen name";
 	private static final String LOCATION_COMMENT = "Some very important comment on this location";
 	private static final String LOCATION_NAME = "a location name";
 	private static final BigDecimal LONGITUDE = new BigDecimal("-122.315");
@@ -71,6 +70,7 @@ public class IntegrationTest {
 	private static final String LOGIN = "a user login";
 	private static final String PASSWORD = "password";
 	private static final UserId USER_ID = new UserId("a user id");
+	private static final String SCREEN_NAME = "screen name";
 
 	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, SCREEN_NAME, LOGIN, PASSWORD);
 
@@ -92,7 +92,10 @@ public class IntegrationTest {
 
 	@Before
 	public void setup() {
-		UserHolder.set(new GuestUserAuth(USER_ID));
+		final UserAuthView view = new UserAuthView();
+		view.userId = USER_ID;
+		view.screenName = SCREEN_NAME;
+		UserHolder.set(view);
 	}
 
 	@Test
@@ -113,7 +116,7 @@ public class IntegrationTest {
 		location = this.locationRepo.get(locationId);
 		assertSingleItemInCollection(newBeerView(BEER_NAME, STYLE, CATEGORY, ABV, IBU, true), location.beers);
 
-		final Review expectedReview = new Review(GOLD.name(), LOCATION_REVIEW);
+		final Review expectedReview = new Review(SCREEN_NAME, GOLD.name(), LOCATION_REVIEW);
 		this.commandGateway.sendAndWait(addLocationReviewCommand(locationId));
 		location = this.locationRepo.get(locationId);
 		assertEquals(GOLD.name(), location.medal);
@@ -122,7 +125,7 @@ public class IntegrationTest {
 		userDetails = this.userDetailsRepo.get(USER_ID);
 		assertSingleItemInCollection(expectedReview, userDetails.locationReviews.values());
 
-		final Review expectedBeerReview = new Review(SILVER.name(), BEER_REVIEW);
+		final Review expectedBeerReview = new Review(SCREEN_NAME, SILVER.name(), BEER_REVIEW);
 		this.commandGateway.sendAndWait(addBeerReviewCommand(locationId));
 		final BeerView beer = this.locationRepo.get(locationId).beers.get(0);
 		assertEquals(SILVER.name(), beer.medal);

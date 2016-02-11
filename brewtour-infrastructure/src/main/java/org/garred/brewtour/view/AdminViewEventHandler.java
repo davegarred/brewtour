@@ -17,7 +17,7 @@ public class AdminViewEventHandler extends AbstractViewEventHandler<LocaleId, Ad
 	@EventHandler
 	public void on(LocationCommentAddedEvent event) {
 		final AdminView locale = getOrInitialize();
-		locale.comments.add(CommentView.newComment(event.locationId, event.userId, event.comment, event.time));
+		locale.comments.add(CommentView.newComment(event.locationId, event.userId, event.userScreenName, event.comment, event.time));
 		persist(locale);
 	}
 

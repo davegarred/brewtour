@@ -63,17 +63,17 @@ public class UserDetailsViewEventHandlerTest {
 	@Test
 	public void testLocationReviewAdded() {
 		final UserDetailsView expected = defaultDetailsView();
-		expected.locationReviews.put(LOCATION_ID, new Review(LOCATION_MEDAL.name(), LOCATION_REVIEW));
+		expected.locationReviews.put(LOCATION_ID, new Review(SCREEN_NAME, LOCATION_MEDAL.name(), LOCATION_REVIEW));
 
-		this.eventHandler.on(new LocationReviewAddedByUserEvent(LOCATION_ID, USER_ID, DATE_TIME, LOCATION_MEDAL, LOCATION_REVIEW));
+		this.eventHandler.on(new LocationReviewAddedByUserEvent(LOCATION_ID, USER_ID, SCREEN_NAME, DATE_TIME, LOCATION_MEDAL, LOCATION_REVIEW));
 		assertEquals(expected, this.repo.get(USER_ID));
 	}
 	@Test
 	public void testLocationStarRatingAdded() {
 		final UserDetailsView expected = defaultDetailsView();
-		expected.locationReviews.put(LOCATION_ID, new Review(LOCATION_MEDAL.name(), null));
+		expected.locationReviews.put(LOCATION_ID, new Review(SCREEN_NAME, LOCATION_MEDAL.name(), null));
 
-		this.eventHandler.on(new LocationStarRatingAddedByUserEvent(LOCATION_ID, USER_ID, LOCATION_MEDAL));
+		this.eventHandler.on(new LocationStarRatingAddedByUserEvent(LOCATION_ID, USER_ID, SCREEN_NAME, LOCATION_MEDAL));
 		assertEquals(expected, this.repo.get(USER_ID));
 	}
 
@@ -81,20 +81,20 @@ public class UserDetailsViewEventHandlerTest {
 	public void testBeerReviewAdded() {
 		final UserDetailsView expected = defaultDetailsView();
 		final Map<String,Review> reviewMap = new HashMap<>();
-		reviewMap.put(BEER_NAME, new Review(BEER_MEDAL.name(), BEER_REVIEW));
+		reviewMap.put(BEER_NAME, new Review(SCREEN_NAME, BEER_MEDAL.name(), BEER_REVIEW));
 		expected.beerReviews.put(LOCATION_ID, reviewMap);
 
-		this.eventHandler.on(new BeerReviewAddedByUserEvent(LOCATION_ID, USER_ID, BEER_NAME, BEER_MEDAL, DATE_TIME, BEER_REVIEW));
+		this.eventHandler.on(new BeerReviewAddedByUserEvent(LOCATION_ID, USER_ID, SCREEN_NAME, BEER_NAME, BEER_MEDAL, DATE_TIME, BEER_REVIEW));
 		assertEquals(expected, this.repo.get(USER_ID));
 	}
 	@Test
 	public void testBeerStarRatingAdded() {
 		final UserDetailsView expected = defaultDetailsView();
 		final Map<String,Review> reviewMap = new HashMap<>();
-		reviewMap.put(BEER_NAME, new Review(BEER_MEDAL.name(), null));
+		reviewMap.put(BEER_NAME, new Review(SCREEN_NAME, BEER_MEDAL.name(), null));
 		expected.beerReviews.put(LOCATION_ID, reviewMap);
 
-		this.eventHandler.on(new BeerStarRatingAddedByUserEvent(LOCATION_ID, USER_ID, BEER_NAME, BEER_MEDAL));
+		this.eventHandler.on(new BeerStarRatingAddedByUserEvent(LOCATION_ID, USER_ID, SCREEN_NAME, BEER_NAME, BEER_MEDAL));
 		assertEquals(expected, this.repo.get(USER_ID));
 	}
 

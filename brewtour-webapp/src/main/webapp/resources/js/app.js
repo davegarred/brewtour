@@ -137,12 +137,12 @@
     	$scope.sendComment = function() {
     		var dto = {
     				locationId : LocationService.get(),
-    				comment : this.locationDetailsComment
+    				comment : $scope.locationDetailsComment
     		};
     		$http.post('location/AddLocationComment', dto)
     		.then(function successCallback(response) {
     			$('#locationCommentModal').modal('hide');
-    			this.locationDetailsComment = "";
+    			$scope.locationDetailsComment = "";
     		}, function errorCallback(response) {
     			error(response);
     		})

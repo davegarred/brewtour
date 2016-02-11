@@ -15,14 +15,15 @@ public class LocationReviewAddedByUserEvent extends AbstractLocationReviewAddedE
 	@JsonCreator
 	public LocationReviewAddedByUserEvent(@JsonProperty("locationId") LocationId locationId,
 			@JsonProperty("userId") UserId userId,
+			@JsonProperty("userScreenName") String userScreenName,
 			@JsonProperty("time") LocalDateTime time,
 			@JsonProperty("medal") ReviewMedal medal,
 			@JsonProperty("review") String review) {
-		super(locationId, userId, time, medal, review);
+		super(locationId, userId, userScreenName, time, medal, review);
 	}
 
-	public static LocationReviewAddedByUserEvent fromCommand(AddLocationReviewCommand command, UserId userId, LocalDateTime time) {
-		return new LocationReviewAddedByUserEvent(command.locationId, userId, time, command.medal, command.review);
+	public static LocationReviewAddedByUserEvent fromCommand(AddLocationReviewCommand command, UserId userId, String userScreenName, LocalDateTime time) {
+		return new LocationReviewAddedByUserEvent(command.locationId, userId, userScreenName, time, command.medal, command.review);
 	}
 
 }
