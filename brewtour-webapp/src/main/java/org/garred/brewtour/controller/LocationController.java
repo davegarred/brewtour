@@ -80,13 +80,18 @@ public class LocationController extends AbstractRestController {
 	@ResponseBody
 	public LocationUserCombinedView addLocationReview(@RequestBody AddLocationReviewCommand locationReview) {
 		this.locationService.fireCommand(locationReview);
-		return new LocationUserCombinedView(this.locationService.getLocation(locationReview.locationId), this.userService.getCurrentUserDetails());
+		return updatedLocationUserCombinedView(locationReview.locationId);
 	}
 
-	@RequestMapping(value = "/beerReview", method = POST, produces="application/json")
+	@RequestMapping(value = "/AddBeerReview", method = POST, produces="application/json")
 	@ResponseBody
-	public void addBeerReview(@RequestBody AddBeerReviewCommand beerReview) {
+	public LocationUserCombinedView addBeerReview(@RequestBody AddBeerReviewCommand beerReview) {
 		this.locationService.fireCommand(beerReview);
+		return updatedLocationUserCombinedView(beerReview.locationId);
+	}
+
+	private LocationUserCombinedView updatedLocationUserCombinedView(LocationId locationId) {
+		return new LocationUserCombinedView(this.locationService.getLocation(locationId), this.userService.getCurrentUserDetails());
 	}
 
 	@RequestMapping(value = "/addLocation", method = POST, produces="application/json")

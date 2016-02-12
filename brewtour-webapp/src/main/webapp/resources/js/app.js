@@ -1,6 +1,6 @@
 'use strict';
 (function (angular) {
-    var beertour = angular.module('beertour', ['services' ]);
+    var beertour = angular.module('beertour', ['services']);
 
     beertour.controller('MapController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
     	$scope.removedBeers = [];
@@ -22,6 +22,11 @@
    			$scope.showLocationComments = !$scope.showLocationComments;
    		}
    		
+        $scope.reviewBeer = function(beer) {
+        	LocationService.setBeer(beer);
+        }
+
+   		
    		$scope.isUserAndHasNotReviewedLocation = function() {
    			if(!$scope.user) {
    				return false;
@@ -30,6 +35,23 @@
    			for(var i in $scope.user.locationReviews) {
    				if(locationId == i) {
    					return false; 
+   				}
+   			}
+   			return true;
+   		}
+   		$scope.isUserAndHasNotReviewedBeer = function(beerName) {
+   			if(!$scope.user) {
+   				return false;
+   			}
+   			var locationId = LocationService.location().locationId;
+   			for(var i in $scope.user.beerReviews) {
+   				if(locationId == i) {
+   					for(var j in $scope.user.beerReviews[i]) {
+   						if(beerName == j) {
+   							return false; 
+   						}
+   					}
+   					return true;
    				}
    			}
    			return true;
@@ -89,7 +111,6 @@
         	error(response);
         });
         
-
     }]);
     
     beertour.controller('LoginController', ['$scope', '$http', 'UserService', function ($scope, $http, UserService) {
@@ -147,9 +168,38 @@
     	}
     	
     }]);
+    beertour.controller('BeerReviewController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
+   		$scope.location = null;
+   		$scope.$watch(function(){ return LocationService.location() }, function(newVal,oldVal) {
+   			return $scope.location = newVal
+   		}, true);
+   		$scope.reviewingBeer = null;
+   		$scope.$watch(function(){ return LocationService.beer() }, function(newVal,oldVal) {
+   			return $scope.reviewingBeer = newVal
+   		}, true);
+
+    	$scope.sendReview = function() {
+    		var dto = {
+    				locationId : LocationService.location().locationId,
+    				beerName : $scope.reviewingBeer.name,
+    				medal : $scope.medal,
+    				review : $scope.beerReview
+    		};
+    		$http.post('location/AddBeerReview', dto)
+    		.then(function successCallback(response) {
+    			$('#beerReviewModal').modal('hide');
+    			$scope.medal = null;
+    			$scope.beerReview = "";
+    			UserService.set(response.data.user);
+    			LocationService.set(response.data.location);
+    		}, function errorCallback(response) {
+    			error(response);
+    		})
+    	}
+    	
+    }]);
     
     function error(error) {
     	console.log(error);
-    	debugger;
     }
 })(window.angular, window.jQuery)

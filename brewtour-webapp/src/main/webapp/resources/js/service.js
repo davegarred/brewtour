@@ -36,11 +36,13 @@
     	var currentLocation = null;
     	var ibu = false;
     	var abv = false;
+    	var currentBeer = null;
     	return {
     		set : function(location) {
     			currentLocation = location;
     			ibu = hasIbu(location.beers);
     			abv = hasAbv(location.beers);
+    			beer = null;
     		},
     		clear : function() {
     			currentLocation = null;
@@ -53,7 +55,14 @@
     		},
     		hasAbv : function() {
     			return abv;
-    		}
+    		},
+    		setBeer : function(beer) {
+    			currentBeer = beer;
+    		},
+    		beer : function() {
+    			return currentBeer;
+    		} 
+
     	}
     	
     	function hasIbu(beerList) {
