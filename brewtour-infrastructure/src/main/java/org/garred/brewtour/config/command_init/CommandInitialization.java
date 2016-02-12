@@ -62,9 +62,9 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 
 	private static final BigDecimal LONG_MIN = new BigDecimal("-122.36");
 
-	private static final BigDecimal LAT_MAX = new BigDecimal(47.65);
+	private static final BigDecimal LAT_MAX = new BigDecimal("47.65");
 
-	private static final BigDecimal LAT_MIN = new BigDecimal(47.53);
+	private static final BigDecimal LAT_MIN = new BigDecimal("47.53");
 
 	private static volatile boolean completed = false;
 

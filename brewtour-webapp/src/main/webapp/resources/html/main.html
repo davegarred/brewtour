@@ -28,7 +28,6 @@
 				<span ng-if="isUserAndHasNotReviewedLocation()" style="float: right;">
 					<a data-toggle="modal" data-target="#locationReviewModal" href="#">Rate!</a>
 				</span>
-					<a data-toggle="modal" data-target="#locationReviewModal" href="#">Rate!</a>
 			</p>
 			<p ng-if="showLocationComments" class="container">
 				<table class="comments_section">
@@ -56,18 +55,26 @@
 					<th ng-if="admin"></th>
 				</tr>
 				<tr ng-repeat="beer in locationDetails.beers">
-					<td ng-if="!beerRemoved(beer.name)">{{beer.name}}</td>
-					<td ng-if="beerRemoved(beer.name)"><strike>{{beer.name}}</strike></td>
-					<td ng-if="hasAbv"><span ng-if="beer.abv && !beerRemoved(beer.name)">{{beer.abv}}%</span></td>
-					<td ng-if="hasIbu"><span ng-if="beer.ibu && !beerRemoved(beer.name)">{{beer.ibu}}</span></td>
-					<td ng-if="admin && !beerRemoved(beer.name)"><a style="color: red;" ng-click="removeBeer(beer.name)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
-					<td ng-if="admin && beerRemoved(beer.name)"><a style="color: grey;" ng-click="reinstateBeer(beer.name)"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a></td>
+					<td>
+						<img ng-src='resources/img/128x128_gold.png' ng-if="beer.medal == 'GOLD'" style="width: 15px;">
+						<img ng-src='resources/img/128x128_silver.png' ng-if="beer.medal == 'SILVER'" style="width: 15px;">
+						<img ng-src='resources/img/128x128_bronze.png' ng-if="beer.medal == 'BRONZE'" style="width: 15px;">
+					</td>
+					<td>{{beer.name}}</td>
+					<td ng-if="hasAbv"><span ng-if="beer.abv">{{beer.abv}}%</span></td>
+					<td ng-if="hasIbu"><span ng-if="beer.ibu">{{beer.ibu}}</span></td>
+					<td>
+						<span ng-if="isUserAndHasNotReviewedBeer(beer.name)">
+						<a data-toggle="modal" data-target="#beerReviewModal" href="#" ng-click="reviewBeer(beer)">
+							Rate!
+						</a>
+						</span>
+					</td>
 				</tr>
 			</table>
 			<a data-toggle="modal" data-target="#locationCommentModal" href="#" style="float: right; color: #0000A5; margin-right: 10px;" >
 				Did we miss something?
 			</a>
-			<pre ng-if="debug">{{debug | json}}</pre>
 		</div>
 		<div id="map"></div>
 	</div>
@@ -80,4 +87,5 @@
 </div>
 	<ng-include src="'resources/html/locationCommentModal.html'"></ng-include>
 	<ng-include src="'resources/html/locationReviewModal.html'"></ng-include>
+	<ng-include src="'resources/html/beerReviewModal.html'"></ng-include>
 	<ng-include src="'resources/html/loginModal.html'"></ng-include>
