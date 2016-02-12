@@ -16,6 +16,7 @@ import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.GuestUserAuth;
 import org.garred.brewtour.security.UserAuth;
 import org.garred.brewtour.security.UserHolder;
+import org.garred.brewtour.service.UserCommandHandlerService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +34,23 @@ public class UserTest {
 	private static final AddRoleToUserCommand ADD_ROLE_TO_USER_COMMAND_2 = new AddRoleToUserCommand(USER_ID, ROLE_2);
 	private static final UserAuth USER_AUTH = new GuestUserAuth(USER_ID);
 
-	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, SCREEN_NAME, LOGIN, PASSWORD);
+	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(SCREEN_NAME, LOGIN, PASSWORD);
 
 	private FixtureConfiguration<User> fixture;
 
 	@Before
 	public void setup() {
 		this.fixture = Fixtures.newGivenWhenThenFixture(User.class);
-		this.fixture.registerAnnotatedCommandHandler(new UserCommandHandler(this.fixture.getRepository()));
+		this.fixture.registerAnnotatedCommandHandler(new UserCommandHandler(this.fixture.getRepository(), new UserCommandHandlerService() {
+			@Override
+			public UserId randomUserId() {
+				return USER_ID;
+			}
+			@Override
+			public UserId lastUserId() {
+				return null;
+			}
+		}));
 		UserHolder.set(USER_AUTH);
 	}
 	@After
@@ -52,7 +62,7 @@ public class UserTest {
 	public void testAddUser() {
 		this.fixture.givenNoPriorActivity()
 			.when(ADD_USER_COMMAND)
-			.expectEvents(UserAddedEvent.fromCommand(ADD_USER_COMMAND));
+			.expectEvents(UserAddedEvent.fromCommand(ADD_USER_COMMAND, USER_ID));
 	}
 
 	@Test

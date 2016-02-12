@@ -18,23 +18,32 @@
 				ng-if="locationDetails.images">
 			<h3>
 				{{locationDetails.name}} 
-<!-- 
-				<span class="glyphicon glyphicon-star"
-					aria-hidden="true" style="float: right; color: gold;"
-					ng-if="isFavorite(locationDetails.locationId)" 
-					ng-click="removeFavorite(locationDetails.locationId)"></span>
-				<span class="glyphicon glyphicon-star-empty" aria-hidden="true"
-					style="float: right" 
-					ng-if="!isFavorite(locationDetails.locationId)"
-					ng-click="addFavorite(locationDetails.locationId)"></span>
-				<span class="glyphicon glyphicon-pencil" aria-hidden="true" style="float: right; color: #0000A5; margin-right: 10px;"
-					data-toggle="modal" data-target="#locationCommentModal"></span>
- -->
 			</h3>
 			<p>
-				<img ng-src='resources/img/128x128_gold.png' style="width: 40px;">
-				<span>No ratings</span>
-				<span style="float: right;"><a href="#">Rate!</a></span>
+				<img ng-src='resources/img/128x128_gold.png' ng-if="locationDetails.medal == 'GOLD'" style="width: 40px;">
+				<img ng-src='resources/img/128x128_silver.png' ng-if="locationDetails.medal == 'SILVER'" style="width: 40px;">
+				<img ng-src='resources/img/128x128_bronze.png' ng-if="locationDetails.medal == 'BRONZE'" style="width: 40px;">
+				<span ng-if="locationDetails.reviews.length == 0">No ratings</span>
+				<span ng-if="locationDetails.reviews.length > 0"><a href="#" ng-click="toggleLocationComments()"">{{locationDetails.reviews.length}} ratings</a></span>
+				<span ng-if="isUserAndHasNotReviewedLocation()" style="float: right;">
+					<a data-toggle="modal" data-target="#locationReviewModal" href="#">Rate!</a>
+				</span>
+					<a data-toggle="modal" data-target="#locationReviewModal" href="#">Rate!</a>
+			</p>
+			<p ng-if="showLocationComments" class="container">
+				<table class="comments_section">
+					<tr ng-repeat="review in locationDetails.reviews">
+						<td>
+							<div>
+								<img ng-src='resources/img/128x128_gold.png' ng-if="review.medal == 'GOLD'" style="width: 15px;">
+								<img ng-src='resources/img/128x128_silver.png' ng-if="review.medal == 'SILVER'" style="width: 15px;">
+								<img ng-src='resources/img/128x128_bronze.png' ng-if="review.medal == 'BRONZE'" style="width: 15px;">
+								{{review.userScreenName}}
+							</div>
+							<div>{{review.review}}</div>
+						</td>
+					</tr>
+				</table>
 			</p>
 			<p>{{locationDetails.streetAddress}}, {{locationDetails.city}} WA&nbsp;&nbsp;{{locationDetails.postalCode}}</p> 
 			<p ng-if="locationDetails.website"><a target="_blank" href="{{locationDetails.website}}">{{locationDetails.website}}</a></p> 
@@ -55,7 +64,7 @@
 					<td ng-if="admin && beerRemoved(beer.name)"><a style="color: grey;" ng-click="reinstateBeer(beer.name)"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a></td>
 				</tr>
 			</table>
-			<a style="float: right; color: #0000A5; margin-right: 10px;" data-toggle="modal" data-target="#locationCommentModal" href="#">
+			<a data-toggle="modal" data-target="#locationCommentModal" href="#" style="float: right; color: #0000A5; margin-right: 10px;" >
 				Did we miss something?
 			</a>
 			<pre ng-if="debug">{{debug | json}}</pre>
@@ -63,10 +72,12 @@
 		<div id="map"></div>
 	</div>
 
-	<ng-include src="'resources/html/locationCommentModal.html'"></ng-include>
-	<ng-include src="'resources/html/loginModal.html'"></ng-include>
 <!-- 
+	<pre>{{user | json}}</pre>
 	<pre>{{locationDetails | json}}</pre>
  -->
 	
 </div>
+	<ng-include src="'resources/html/locationCommentModal.html'"></ng-include>
+	<ng-include src="'resources/html/locationReviewModal.html'"></ng-include>
+	<ng-include src="'resources/html/loginModal.html'"></ng-include>

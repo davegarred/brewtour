@@ -1,10 +1,10 @@
 package org.garred.brewtour.view;
 
 import org.axonframework.eventhandling.annotation.EventHandler;
-import org.garred.brewtour.application.event.location.user_fired.AbstractBeerReviewAddedEvent;
-import org.garred.brewtour.application.event.location.user_fired.AbstractBeerStarRatingAddedEvent;
-import org.garred.brewtour.application.event.location.user_fired.AbstractLocationReviewAddedEvent;
-import org.garred.brewtour.application.event.location.user_fired.AbstractLocationStarRatingAddedEvent;
+import org.garred.brewtour.application.event.location.user_fired.BeerReviewAddedByUserEvent;
+import org.garred.brewtour.application.event.location.user_fired.BeerStarRatingAddedByUserEvent;
+import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByUserEvent;
+import org.garred.brewtour.application.event.location.user_fired.LocationStarRatingAddedByUserEvent;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.repository.UserDetailsViewRepository;
@@ -20,19 +20,19 @@ public class UserDetailsViewEventHandler extends AbstractViewEventHandler<UserId
 		this.repository.save(UserDetailsView.fromEvent(event));
 	}
 	@EventHandler
-	public void on(AbstractLocationReviewAddedEvent event) {
+	public void on(LocationReviewAddedByUserEvent event) {
 		update(event.userId, v -> v.addLocationReview(event.locationId, event.userScreenName, event.medal, event.review));
 	}
 	@EventHandler
-	public void on(AbstractLocationStarRatingAddedEvent event) {
+	public void on(LocationStarRatingAddedByUserEvent event) {
 		update(event.userId, v -> v.addLocationReview(event.locationId, event.userScreenName, event.medal, null));
 	}
 	@EventHandler
-	public void on(AbstractBeerReviewAddedEvent event) {
+	public void on(BeerReviewAddedByUserEvent event) {
 		update(event.userId, v -> v.addBeerReview(event.locationId, event.beerName, event.userScreenName,event.medal, event.review));
 	}
 	@EventHandler
-	public void on(AbstractBeerStarRatingAddedEvent event) {
+	public void on(BeerStarRatingAddedByUserEvent event) {
 		update(event.userId, v -> v.addBeerReview(event.locationId, event.beerName, event.userScreenName, event.medal, null));
 	}
 

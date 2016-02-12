@@ -27,7 +27,8 @@
 		c:repository-ref="locationEventRepo"
 		c:service-ref="locationCommandHandlerService" />
 	<bean class="org.garred.brewtour.application.UserCommandHandler"
-		c:repository-ref="userEventRepo"/>
+		c:repository-ref="userEventRepo"
+		c:userCommandHandlerService-ref="userCommandHandlerService"/>
 
 
 	<bean id="commandGateway" class="org.axonframework.commandhandling.gateway.DefaultCommandGateway" >

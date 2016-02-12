@@ -26,5 +26,10 @@ public class UserAuthServiceImpl implements UserAuthService {
 		return getUserAuth(UserHolder.get().identifier());
 	}
 
+	@Override
+	public UserAuthView findUserByLogin(String login) {
+		return this.userRepo.findByLogin(login);
+	}
+
 
 }

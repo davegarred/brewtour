@@ -6,26 +6,21 @@ import org.garred.brewtour.application.command.user.AddRoleToUserCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.application.command.user.RemoveRoleFromUserCommand;
 import org.garred.brewtour.domain.UserId;
+import org.garred.brewtour.service.UserCommandHandlerService;
 
 public class UserCommandHandler extends AbstractCommandHandler<UserId,User> {
 
-	public UserCommandHandler(Repository<User> repository) {
+	private final UserCommandHandlerService userCommandHandlerService;
+
+	public UserCommandHandler(Repository<User> repository, UserCommandHandlerService userCommandHandlerService) {
 		super(repository);
+		this.userCommandHandlerService = userCommandHandlerService;
 	}
 
 	@CommandHandler
 	public void handle(AddUserCommand command) {
-		this.repository.add(User.addUser(command));
+		this.repository.add(User.addUser(command, this.userCommandHandlerService.randomUserId()));
 	}
-//	@CommandHandler
-//	public void handle(AddFavoriteLocationCommand command) {
-//		getOrCreate(command).addFavoriteLocation(command);
-//	}
-//
-//	@CommandHandler
-//	public void handle(RemoveFavoriteLocationCommand command) {
-//		require(command).removeFavoriteLocation(command);
-//	}
 
 	@CommandHandler
 	public void handle(AddRoleToUserCommand command) {

@@ -27,6 +27,7 @@ import org.garred.brewtour.repository.LocaleViewRepository;
 import org.garred.brewtour.repository.LocationViewRepository;
 import org.garred.brewtour.repository.UserDetailsViewRepository;
 import org.garred.brewtour.security.UserHolder;
+import org.garred.brewtour.service.UserCommandHandlerService;
 import org.garred.brewtour.view.AdminView;
 import org.garred.brewtour.view.BeerView;
 import org.garred.brewtour.view.LocaleView;
@@ -34,7 +35,6 @@ import org.garred.brewtour.view.LocationView;
 import org.garred.brewtour.view.Review;
 import org.garred.brewtour.view.UserAuthView;
 import org.garred.brewtour.view.UserDetailsView;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,10 +69,10 @@ public class IntegrationTest {
 
 	private static final String LOGIN = "a user login";
 	private static final String PASSWORD = "password";
-	private static final UserId USER_ID = new UserId("a user id");
+//	private static final UserId USER_ID = new UserId("a user id");
 	private static final String SCREEN_NAME = "screen name";
 
-	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(USER_ID, SCREEN_NAME, LOGIN, PASSWORD);
+	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(SCREEN_NAME, LOGIN, PASSWORD);
 
 	private static final AddLocationCommand ADD_LOCATION_COMMAND = new AddLocationCommand(LOCATION_NAME);
 
@@ -80,6 +80,8 @@ public class IntegrationTest {
 	private CommandGateway commandGateway;
 	@Autowired
 	private IdentifierFactory<LocationId> locationIdentifierFactory;
+	@Autowired
+	private UserCommandHandlerService userCommandHandlerService;
 
 	@Autowired
 	private UserDetailsViewRepository userDetailsRepo;
@@ -90,18 +92,12 @@ public class IntegrationTest {
 	@Autowired
 	private AdminViewRepository adminRepo;
 
-	@Before
-	public void setup() {
-		final UserAuthView view = new UserAuthView();
-		view.userId = USER_ID;
-		view.screenName = SCREEN_NAME;
-		UserHolder.set(view);
-	}
-
 	@Test
 	public void test() {
 		this.commandGateway.sendAndWait(ADD_USER_COMMAND);
-		UserDetailsView userDetails = this.userDetailsRepo.get(USER_ID);
+		final UserId userId = this.userCommandHandlerService.lastUserId();
+		setCurrentUser(userId);
+		UserDetailsView userDetails = this.userDetailsRepo.get(userId);
 		assertEquals(LOGIN, userDetails.login);
 
 		this.commandGateway.sendAndWait(ADD_LOCATION_COMMAND);
@@ -122,7 +118,7 @@ public class IntegrationTest {
 		assertEquals(GOLD.name(), location.medal);
 		assertSingleItemInCollection(expectedReview, location.reviews);
 
-		userDetails = this.userDetailsRepo.get(USER_ID);
+		userDetails = this.userDetailsRepo.get(userId);
 		assertSingleItemInCollection(expectedReview, userDetails.locationReviews.values());
 
 		final Review expectedBeerReview = new Review(SCREEN_NAME, SILVER.name(), BEER_REVIEW);
@@ -131,13 +127,20 @@ public class IntegrationTest {
 		assertEquals(SILVER.name(), beer.medal);
 		assertSingleItemInCollection(expectedBeerReview, beer.userReviews);
 
-		userDetails = this.userDetailsRepo.get(USER_ID);
+		userDetails = this.userDetailsRepo.get(userId);
 		assertSingleItemInCollection(expectedBeerReview, userDetails.beerReviews.get(locationId).values());
 
 		this.commandGateway.sendAndWait(addLocationCommentCommand(locationId));
 		final AdminView adminView = this.adminRepo.get(SEATTLE);
 		assertEquals(1,adminView.comments.size());
 		assertEquals(LOCATION_COMMENT, adminView.comments.get(0).comment);
+	}
+
+	public static void setCurrentUser(UserId userId) {
+		final UserAuthView view = new UserAuthView();
+		view.userId = userId;
+		view.screenName = SCREEN_NAME;
+		UserHolder.set(view);
 	}
 
 	private static AddBeerCommand addBeerCommand(LocationId locationId) {
