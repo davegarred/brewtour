@@ -8,8 +8,11 @@
 <link rel="stylesheet" type="text/css" href="resources/lib/bootstrap-3.3.5/css/bootstrap.min.css">
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByxWmpMEVn7YBBNR4XU22VI8NqxsW_RGc"></script>
+
 <script type="text/javascript" src="resources/js/app.js"></script>
 <script type="text/javascript" src="resources/js/service.js"></script>
+
+<link rel="stylesheet" type="text/css" href="resources/css/app.css">
 
 <style type="text/css">
 html, body {

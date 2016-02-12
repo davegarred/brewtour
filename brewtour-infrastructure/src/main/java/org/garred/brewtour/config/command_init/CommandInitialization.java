@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -44,7 +43,6 @@ import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.Beer;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocationId;
-import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -224,7 +222,7 @@ public class CommandInitialization implements ApplicationListener<ContextRefresh
 			return;
 		}
 		completed = true;
-		this.gateway.send(new AddUserCommand(new UserId(UUID.randomUUID().toString()), "FBS", "dave", "password"));
+		this.gateway.send(new AddUserCommand("FBS", "dave", "password"));
 //		this.gateway.send(new AddUserCommand(new UserId(UUID.randomUUID().toString()), "dave", "dave@gmail.com", "password"));
 		try {
 //			buildCommandTable();

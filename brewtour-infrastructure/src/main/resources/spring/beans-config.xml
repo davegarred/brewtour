@@ -48,6 +48,7 @@
 	
 	<bean id="locationCommandHandlerService" class="org.garred.brewtour.service.LocationCommandHandlerServiceImpl"
 		c:identifierFactory-ref="locationIdentifierFactory" />
+	<bean id="userCommandHandlerService" class="org.garred.brewtour.service.UserCommandHandlerServiceImpl"/>
 		
 		
 	

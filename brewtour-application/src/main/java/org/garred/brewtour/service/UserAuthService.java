@@ -7,5 +7,6 @@ public interface UserAuthService {
 
 	UserAuthView getCurrentUserAuth();
 	UserAuthView getUserAuth(UserId userId);
+	UserAuthView findUserByLogin(String login);
 
 }

@@ -17,7 +17,9 @@ import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.service.LocationQueryService;
+import org.garred.brewtour.service.UserDetailsService;
 import org.garred.brewtour.view.LocaleView;
+import org.garred.brewtour.view.LocationUserCombinedView;
 import org.garred.brewtour.view.LocationView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,10 +36,13 @@ public class LocationController extends AbstractRestController {
 
 	private final LocationQueryService locationService;
 	private final LocationIdentifierFactoryStub locationIdentifierFactory;
+	private final UserDetailsService userService;
 
-	public LocationController(LocationQueryService locationService, LocationIdentifierFactoryStub locationIdentifierFactory) {
+	public LocationController(LocationQueryService locationService, LocationIdentifierFactoryStub locationIdentifierFactory,
+			UserDetailsService userService) {
 		this.locationService = locationService;
 		this.locationIdentifierFactory = locationIdentifierFactory;
+		this.userService = userService;
 	}
 
 	@RequestMapping(value = "/locations", method = GET, produces="application/json")
@@ -71,10 +76,11 @@ public class LocationController extends AbstractRestController {
 		this.locationService.fireCommand(locationComment);
 	}
 
-	@RequestMapping(value = "/locationReview", method = POST, produces="application/json")
+	@RequestMapping(value = "AddLocationReview", method = POST, produces="application/json")
 	@ResponseBody
-	public void addLocationReview(@RequestBody AddLocationReviewCommand locationReview) {
+	public LocationUserCombinedView addLocationReview(@RequestBody AddLocationReviewCommand locationReview) {
 		this.locationService.fireCommand(locationReview);
+		return new LocationUserCombinedView(this.locationService.getLocation(locationReview.locationId), this.userService.getCurrentUserDetails());
 	}
 
 	@RequestMapping(value = "/beerReview", method = POST, produces="application/json")

@@ -27,27 +27,11 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
 
     public User() {}
 
-    public static User addUser(AddUserCommand command) {
+    public static User addUser(AddUserCommand command, UserId userId) {
     	final User user = new User();
-    	user.apply(UserAddedEvent.fromCommand(command));
+    	user.apply(UserAddedEvent.fromCommand(command, userId));
     	return user;
     }
-
-//    public void addFavoriteLocation(AddFavoriteLocationCommand command) {
-//    	if(!this.favoriteLocations.contains(command.locationId)) {
-//    		final Set<LocationId> allLocations = new HashSet<>(this.favoriteLocations);
-//    		allLocations.add(command.locationId);
-//    		apply(new FavoriteLocationsUpdatedEvent(command.identifier(), allLocations));
-//    	}
-//    }
-//
-//    public void removeFavoriteLocation(RemoveFavoriteLocationCommand command) {
-//    	if(this.favoriteLocations.contains(command.locationId)) {
-//    		final Set<LocationId> allLocations = new HashSet<>(this.favoriteLocations);
-//    		allLocations.remove(command.locationId);
-//    		apply(new FavoriteLocationsUpdatedEvent(command.identifier(), allLocations));
-//    	}
-//    }
 
     public void addRole(AddRoleToUserCommand command) {
     	if(!this.roles.contains(command.role)) {
@@ -71,10 +55,7 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
 		this.login = event.login;
 		this.hash = event.hash;
 	}
-//	@EventHandler
-//	public void on(FavoriteLocationsUpdatedEvent event) {
-//		this.favoriteLocations = event.favoriteLocations;
-//	}
+
 	@EventHandler
 	public void on(UserRolesUpdatedEvent event) {
 		this.roles = event.roles;

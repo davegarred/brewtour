@@ -24,8 +24,8 @@ public class UserAddedEvent extends AbstractUserEvent {
 		this.hash = hash;
 	}
 
-	public static UserAddedEvent fromCommand(AddUserCommand command) {
-		return new UserAddedEvent(command.identifier(), command.screenName, command.login, Hash.hashFromPassword(command.identifier(), command.password));
+	public static UserAddedEvent fromCommand(AddUserCommand command, UserId userId) {
+		return new UserAddedEvent(userId, command.screenName, command.login, Hash.hashFromPassword(userId, command.password));
 	}
 
 }

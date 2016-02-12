@@ -16,16 +16,6 @@
     	    		error(response);
     	    	});
     		},
-    		login : function(dto) {
-            	$http.post('user/login', dto)
-            	.then(function successCallback(response) {
-            		currentUser = response.data;
-            		$('#loginModal').modal('hide');
-            	}, function errorCallback(response) {
-            		error(response);
-            	});
-
-    		},
     		logout : function(dto) {
             	$http.get('user/logout')
             	.then(function successCallback(response) {
@@ -43,14 +33,44 @@
     }]);
     
     services.factory('LocationService', ['$http', function ($http) {
-    	var locationId = null;
+    	var currentLocation = null;
+    	var ibu = false;
+    	var abv = false;
     	return {
-    		set : function(newLocationId) {
-    			this.locationId = newLocationId;
+    		set : function(location) {
+    			currentLocation = location;
+    			ibu = hasIbu(location.beers);
+    			abv = hasAbv(location.beers);
     		},
-    		get : function() {
-    			return this.locationId;
+    		clear : function() {
+    			currentLocation = null;
+    		},
+    		location : function() {
+    			return currentLocation;
+    		},
+    		hasIbu : function() {
+    			return ibu;
+    		},
+    		hasAbv : function() {
+    			return abv;
     		}
+    	}
+    	
+    	function hasIbu(beerList) {
+    		for(var i in beerList) {
+    			if(beerList[i].ibu) {
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
+    	function hasAbv(beerList) {
+    		for(var i in beerList) {
+    			if(beerList[i].abv) {
+    				return true;
+    			}
+    		}
+    		return false;
     	}
     	
     }]);

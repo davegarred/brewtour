@@ -4,34 +4,36 @@
 
     beertour.controller('MapController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
     	$scope.removedBeers = [];
-   		$scope.user = {};
+   		$scope.user = null;
    		$scope.$watch(function(){ return UserService.user() }, function(newVal,oldVal) {
    			return $scope.user = newVal
    		}, true);
    		UserService.find();
-    	
-    	function setLocationDetails(details) {
-    		$scope.locationDetails = details;
-    		$scope.hasIbu = hasIbu(details.beers);
-    		$scope.hasAbv = hasAbv(details.beers);
-    		LocationService.set(details.locationId);
-    	}
-    	function hasIbu(beerList) {
-    		for(var i in beerList) {
-    			if(beerList[i].ibu) {
-    				return true;
-    			}
-    		}
-    		return false;
-    	}
-    	function hasAbv(beerList) {
-    		for(var i in beerList) {
-    			if(beerList[i].abv) {
-    				return true;
-    			}
-    		}
-    		return false;
-    	}
+
+   		$scope.locationDetails = null;
+   		$scope.$watch(function(){ return LocationService.location() }, function(newVal,oldVal) {
+    		$scope.hasIbu = LocationService.hasIbu();
+    		$scope.hasAbv = LocationService.hasAbv();
+   			return $scope.locationDetails = newVal
+   		}, true);
+   		
+   		$scope.showLocationComments = false;
+   		$scope.toggleLocationComments = function() {
+   			$scope.showLocationComments = !$scope.showLocationComments;
+   		}
+   		
+   		$scope.isUserAndHasNotReviewedLocation = function() {
+   			if(!$scope.user) {
+   				return false;
+   			}
+   			var locationId = LocationService.location().locationId;
+   			for(var i in $scope.user.locationReviews) {
+   				if(locationId == i) {
+   					return false; 
+   				}
+   			}
+   			return true;
+   		}
     	
     	
         function initMap() {
@@ -67,7 +69,7 @@
         		
         		$http.get('location/' + location.locationId)
             	.then(function successCallback(response) {
-            		setLocationDetails(response.data);
+            		LocationService.set(response.data);
             	}, function errorCallback(response) {
             		error(response);
             	});
@@ -75,44 +77,8 @@
         }
         
         
-//        $scope.login = function() {
-//        	UserService.login(this.loginDto);
-//        	this.loginDto = {};
-//        }
         $scope.logout = function() {
         	UserService.logout();
-        }
-        $scope.beerRemoved = function(beerName) {
-        	for(var i in $scope.removedBeers) {
-        		var removed = $scope.removedBeers[i];
-        		if(removed.locationId == $scope.locationDetails.identifier
-        				&& removed.beerName == beerName) {
-        			return true;
-        		}
-        	}
-        	return false;
-        }
-        $scope.removeBeer = function(beerName) {
-        	var dto = {
-        			locationId : $scope.locationDetails.identifier,
-        			beerName : beerName
-        	};
-        	$scope.removedBeers.push(dto);
-        	$scope.debug = dto;
-        }
-        $scope.reinstateBeer = function(beerName) {
-        	var dto = {
-        			locationId : $scope.locationDetails.identifier,
-        			beerName : beerName
-        	};
-        	for(var i in $scope.removedBeers) {
-        		var removed = $scope.removedBeers[i];
-        		if(removed.locationId == $scope.locationDetails.identifier
-        				&& removed.beerName == beerName) {
-        			$scope.removedBeers.splice(i,1);
-        		}
-        	}
-        	$scope.debug = dto;
         }
         
         $http.get('location/locations')
@@ -127,22 +93,54 @@
     }]);
     
     beertour.controller('LoginController', ['$scope', '$http', 'UserService', function ($scope, $http, UserService) {
+    	$scope.userNotFound = false;
         $scope.login = function() {
-        	UserService.login(this.loginDto);
-        	this.loginDto = {};
+        	$scope.userNotFound = false;
+        	$http.post('user/login', this.loginDto)
+        	.then(function successCallback(response) {
+        		UserService.set(response.data);
+        		$('#loginModal').modal('hide');
+        		$scope.loginDto = {};
+        	}, function errorCallback(response) {
+        		if(response.status == 404) {
+        			$scope.userNotFound = true;
+        		} else {
+        			error(response);
+        		}
+        	});
         }
     }]);
     
     beertour.controller('LocationCommentController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
     	$scope.sendComment = function() {
     		var dto = {
-    				locationId : LocationService.get(),
+    				locationId : LocationService.location().locationId,
     				comment : $scope.locationDetailsComment
     		};
     		$http.post('location/AddLocationComment', dto)
     		.then(function successCallback(response) {
     			$('#locationCommentModal').modal('hide');
     			$scope.locationDetailsComment = "";
+    		}, function errorCallback(response) {
+    			error(response);
+    		})
+    	}
+    	
+    }]);
+    beertour.controller('LocationReviewController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
+    	$scope.sendReview = function() {
+    		var dto = {
+    				locationId : LocationService.location().locationId,
+    				medal : $scope.medal,
+    				review : $scope.locationReview
+    		};
+    		$http.post('location/AddLocationReview', dto)
+    		.then(function successCallback(response) {
+    			$('#locationReviewModal').modal('hide');
+    			$scope.medal = null;
+    			$scope.locationReview = "";
+    			UserService.set(response.data.user);
+    			LocationService.set(response.data.location);
     		}, function errorCallback(response) {
     			error(response);
     		})
