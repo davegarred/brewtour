@@ -1,0 +1,114 @@
+{
+	"id": "97f6b34e-8952-9e90-a7a7-df61afcdd58a",
+	"name": "S3",
+	"description": "",
+	"order": [
+		"ada90f5d-37bd-a570-c575-03c9ccb15b18",
+		"2719cca6-5e15-6353-798c-9d7b6e4acb1f",
+		"6bebc6db-71ca-5781-febc-f4da17c0f7dd"
+	],
+	"folders": [],
+	"timestamp": 1453320822470,
+	"owner": "",
+	"remoteLink": "",
+	"public": false,
+	"requests": [
+		{
+			"id": "2719cca6-5e15-6353-798c-9d7b6e4acb1f",
+			"headers": "Authorization: Basic MDAwLTAwMC0xMTAtMzA0ODE6YTNhdWVMQVNtIQ==\n",
+			"url": "https://s3-staging.openmarket.com/v1/reporting_fileshare/",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": [
+				{
+					"key": "file",
+					"value": "fileshare_userFileTree.png",
+					"type": "file",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"currentHelper": "basicAuth",
+			"helperAttributes": {
+				"username": "000-000-110-30481",
+				"password": "a3aueLASm!",
+				"saveToRequest": true,
+				"id": "basic",
+				"timestamp": 1452869164722
+			},
+			"time": 1453321064239,
+			"name": "post to S3-staging",
+			"description": "",
+			"collectionId": "97f6b34e-8952-9e90-a7a7-df61afcdd58a",
+			"responses": []
+		},
+		{
+			"id": "6bebc6db-71ca-5781-febc-f4da17c0f7dd",
+			"headers": "Authorization: Basic MDAwLTAwMC0xMTAtMzA0ODE6YTNhdWVMQVNtIQ==\n",
+			"url": "https://s3-staging.openmarket.com/v1/reporting_fileshare/e74ea43e-5e82-4e8c-a4a4-6d29eb012243",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "GET",
+			"data": [
+				{
+					"key": "file",
+					"value": "fileshare_user.png",
+					"type": "file",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": "",
+			"currentHelper": "basicAuth",
+			"helperAttributes": {
+				"username": "000-000-110-30481",
+				"password": "a3aueLASm!",
+				"saveToRequest": true,
+				"id": "basic",
+				"timestamp": 1452869164722
+			},
+			"time": 1453327094064,
+			"name": "retrieve from S3-staging",
+			"description": "",
+			"collectionId": "97f6b34e-8952-9e90-a7a7-df61afcdd58a",
+			"responses": []
+		},
+		{
+			"id": "ada90f5d-37bd-a570-c575-03c9ccb15b18",
+			"headers": "Authorization: Basic MDAwLTAwMC0xMTAtMzA0ODE6YTNhdWVMQVNtIQ==\n",
+			"url": "https://s3-adc.openmarket.com/v1/ReportClientTest/698b0b2d-e950-4c9b-aa62-42e109ed5597",
+			"pathVariables": {},
+			"preRequestScript": "",
+			"method": "HEAD",
+			"collectionId": "97f6b34e-8952-9e90-a7a7-df61afcdd58a",
+			"data": [
+				{
+					"key": "file",
+					"value": null,
+					"type": "file",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"name": "random report from reporting",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1453320822470,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"currentHelper": "basicAuth",
+			"helperAttributes": {
+				"username": "000-000-110-30481",
+				"password": "a3aueLASm!",
+				"saveToRequest": true,
+				"id": "basic",
+				"timestamp": 1452869164722
+			}
+		}
+	]
+}

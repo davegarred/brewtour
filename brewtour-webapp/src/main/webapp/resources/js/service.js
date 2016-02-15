@@ -39,6 +39,11 @@
     	var currentBeer = null;
     	return {
     		set : function(location) {
+    			var beerList = [];
+    			for(var i in location.beers) {
+    				beerList.push(location.beers[i]);
+    			}
+    			location.beers = beerList; 
     			currentLocation = location;
     			ibu = hasIbu(location.beers);
     			abv = hasAbv(location.beers);

@@ -1,0 +1,8 @@
+{
+  "locationId" : "a location id",
+  "streetAddress" : "street address",
+  "streetAddress2" : "apt",
+  "city" : "Seattle",
+  "state" : "WA",
+  "postalCode" : "98109"
+}

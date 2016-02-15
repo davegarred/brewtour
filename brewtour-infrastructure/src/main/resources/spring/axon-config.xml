@@ -10,7 +10,10 @@
 
 	<!-- View Event Handlers -->
 	<bean id="locationViewEventHandler" class="org.garred.brewtour.view.LocationViewEventHandler"
-		c:repository-ref="locationViewRepo" />
+		c:repository-ref="locationViewRepo" 
+		c:beerRepository-ref="beerViewRepo"/>
+	<bean id="beerViewEventHandler" class="org.garred.brewtour.view.BeerViewEventHandler"
+		c:repository-ref="beerViewRepo"/>
 	<bean id="localeViewEventHandler" class="org.garred.brewtour.view.LocaleViewEventHandler"
 		c:repository-ref="localeViewRepo" />
 	<bean id="userDetailsViewEventHandler" class="org.garred.brewtour.view.UserDetailsViewEventHandler"
@@ -26,6 +29,12 @@
 	<bean class="org.garred.brewtour.application.LocationCommandHandler"
 		c:repository-ref="locationEventRepo"
 		c:service-ref="locationCommandHandlerService" />
+	<bean class="org.garred.brewtour.application.BeerCommandHandler"
+		c:repository-ref="beerEventRepo"
+		c:service-ref="beerCommandHandlerService" />
+	<bean class="org.garred.brewtour.application.BreweryCommandHandler"
+		c:repository-ref="breweryEventRepo"
+		c:service-ref="breweryCommandHandlerService" />
 	<bean class="org.garred.brewtour.application.UserCommandHandler"
 		c:repository-ref="userEventRepo"
 		c:userCommandHandlerService-ref="userCommandHandlerService"/>
@@ -44,6 +53,12 @@
 	<axon:event-bus id="eventBus"/>
 	<axon:event-sourcing-repository id="locationEventRepo"
 		aggregate-type="org.garred.brewtour.application.Location" 
+		event-bus="eventBus" event-store="eventStore"/>
+	<axon:event-sourcing-repository id="beerEventRepo"
+		aggregate-type="org.garred.brewtour.application.Beer" 
+		event-bus="eventBus" event-store="eventStore"/>
+	<axon:event-sourcing-repository id="breweryEventRepo"
+		aggregate-type="org.garred.brewtour.application.Brewery" 
 		event-bus="eventBus" event-store="eventStore"/>
 	<axon:event-sourcing-repository id="userEventRepo"
 		aggregate-type="org.garred.brewtour.application.User" 

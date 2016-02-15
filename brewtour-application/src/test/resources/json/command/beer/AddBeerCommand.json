@@ -1,0 +1,9 @@
+{
+  "beerName" : "a beer name",
+  "breweryId" : "BREW10001",
+  "breweryName" : "Stone Brewing",
+  "style" : "awesome style",
+  "category" : "niche category",
+  "abv" : 6.2,
+  "ibu" : 45
+}

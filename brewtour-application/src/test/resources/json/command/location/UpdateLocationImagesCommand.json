@@ -1,0 +1,8 @@
+{
+  "locationId" : "a location id",
+  "images" : {
+    "icon" : "image 1",
+    "medium" : "image 2",
+    "large" : ""
+  }
+}

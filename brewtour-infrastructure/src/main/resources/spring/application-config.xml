@@ -22,10 +22,12 @@
 	
 	
 	<!-- Initial command to populate test database -->
+<!-- 
 	<bean id="initializationCommands"
 		class="org.garred.brewtour.config.command_init.CommandInitialization"
 		c:gateway-ref="commandGateway"
 		c:identifierFactory-ref="locationIdentifierFactory" 
 		c:dataSource-ref="dataSource"/>
+ -->
 	
 </beans>
