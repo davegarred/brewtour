@@ -1,85 +1,21 @@
-<div ng-controller="MapController">
+<div>
+	<ng-include src="'resources/html/header.html'"></ng-include>
 	<div>
-		<span ng-if="user.login">
-			{{user.screenName}}
-			<button class="btn btn-xs" ng-click="logout()">logout</button>
-		</span>
-		<span ng-if="!user.login">
-			<button class="btn btn-xs" data-toggle="modal" data-target="#loginModal">login</button>
-		</span>
-	</div>
-	<div>
-		<div class="hidden-md hidden-lg" ng-if="locationDetails">
-			<img ng-src='{{locationDetails.images.medium}}'>
+		<div ng-controller="LocationController">
+			<div class="hidden-md hidden-lg container" ng-if="locationDetails" style="float: left; width: 100%">
+				<div ng-controller="LocationController">
+					<ng-include src="'resources/html/location.html'"></ng-include>
+				</div>
+			</div>
+			<div class="hidden-xs hidden-sm container" ng-if="locationDetails" style="float: left; width: 400px;">
+				<ng-include src="'resources/html/location.html'"></ng-include>
+			</div>
 		</div>
-		<div class="hidden-xs hidden-sm container" ng-if="locationDetails"
-			style="float: left; width: 400px;">
-			<img ng-src='{{locationDetails.images.medium}}'
-				ng-if="locationDetails.images">
-			<h3>
-				{{locationDetails.name}} 
-			</h3>
-			<p>
-				<img ng-src='resources/img/128x128_gold.png' ng-if="locationDetails.medal == 'GOLD'" style="width: 40px;">
-				<img ng-src='resources/img/128x128_silver.png' ng-if="locationDetails.medal == 'SILVER'" style="width: 40px;">
-				<img ng-src='resources/img/128x128_bronze.png' ng-if="locationDetails.medal == 'BRONZE'" style="width: 40px;">
-				<span ng-if="locationDetails.reviews.length == 0">No ratings</span>
-				<span ng-if="locationDetails.reviews.length > 0"><a href="#" ng-click="toggleLocationComments()"">{{locationDetails.reviews.length}} ratings</a></span>
-				<span ng-if="isUserAndHasNotReviewedLocation()" style="float: right;">
-					<a data-toggle="modal" data-target="#locationReviewModal" href="#">Rate!</a>
-				</span>
-			</p>
-			<p ng-if="showLocationComments" class="container">
-				<table class="comments_section">
-					<tr ng-repeat="review in locationDetails.reviews">
-						<td>
-							<div>
-								<img ng-src='resources/img/128x128_gold.png' ng-if="review.medal == 'GOLD'" style="width: 15px;">
-								<img ng-src='resources/img/128x128_silver.png' ng-if="review.medal == 'SILVER'" style="width: 15px;">
-								<img ng-src='resources/img/128x128_bronze.png' ng-if="review.medal == 'BRONZE'" style="width: 15px;">
-								{{review.userScreenName}}
-							</div>
-							<div>{{review.review}}</div>
-						</td>
-					</tr>
-				</table>
-			</p>
-			<p>{{locationDetails.streetAddress}}, {{locationDetails.city}} WA&nbsp;&nbsp;{{locationDetails.postalCode}}</p> 
-			<p ng-if="locationDetails.website"><a target="_blank" href="{{locationDetails.website}}">{{locationDetails.website}}</a></p> 
-			<p>{{locationDetails.description}}</p>
-			<table ng-if="locationDetails.beers.length > 0" style="width: 100%;">
-				<tr>
-					<th></th>
-					<th ng-if="hasAbv">ABV</th>
-					<th ng-if="hasIbu">IBU</th>
-					<th ng-if="admin"></th>
-				</tr>
-				<tr ng-repeat="beer in locationDetails.beers">
-					<td>
-						<img ng-src='resources/img/128x128_gold.png' ng-if="beer.medal == 'GOLD'" style="width: 15px;">
-						<img ng-src='resources/img/128x128_silver.png' ng-if="beer.medal == 'SILVER'" style="width: 15px;">
-						<img ng-src='resources/img/128x128_bronze.png' ng-if="beer.medal == 'BRONZE'" style="width: 15px;">
-					</td>
-					<td>{{beer.name}}</td>
-					<td ng-if="hasAbv"><span ng-if="beer.abv">{{beer.abv}}%</span></td>
-					<td ng-if="hasIbu"><span ng-if="beer.ibu">{{beer.ibu}}</span></td>
-					<td>
-						<span ng-if="isUserAndHasNotReviewedBeer(beer.name)">
-						<a data-toggle="modal" data-target="#beerReviewModal" href="#" ng-click="reviewBeer(beer)">
-							Rate!
-						</a>
-						</span>
-					</td>
-				</tr>
-			</table>
-			<a data-toggle="modal" data-target="#locationCommentModal" href="#" style="float: right; color: #0000A5; margin-right: 10px;" >
-				Did we miss something?
-			</a>
-		</div>
-		<div id="map"></div>
+
+		<div id="map" ng-controller="MapController"></div>
 	</div>
 
-<!-- 
+	<!-- 
 	<pre>{{user | json}}</pre>
 	<pre>{{locationDetails | json}}</pre>
  -->

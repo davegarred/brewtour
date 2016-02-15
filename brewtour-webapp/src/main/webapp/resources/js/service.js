@@ -42,7 +42,7 @@
     			currentLocation = location;
     			ibu = hasIbu(location.beers);
     			abv = hasAbv(location.beers);
-    			beer = null;
+    			currentBeer = null;
     		},
     		clear : function() {
     			currentLocation = null;

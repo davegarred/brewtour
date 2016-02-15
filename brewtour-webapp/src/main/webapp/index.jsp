@@ -11,6 +11,7 @@
 
 <script type="text/javascript" src="resources/js/app.js"></script>
 <script type="text/javascript" src="resources/js/service.js"></script>
+<script type="text/javascript" src="resources/js/directive.js"></script>
 
 <link rel="stylesheet" type="text/css" href="resources/css/app.css">
 
@@ -20,7 +21,6 @@ html, body {
 	margin: 0;
 	padding: 0;
 }
-
 #map {
 	height: 100%;
 }

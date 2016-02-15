@@ -1,0 +1,58 @@
+<div>
+		<button type="button" class="close" aria-label="Close" ng-click="closeLocation()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		<img ng-src='{{locationDetails.images.medium}}' ng-if="locationDetails.images">
+		<h3>{{locationDetails.name}}</h3>
+		<p>
+			<location-large-medal-img></location-large-medal-img>
+			<span ng-if="locationDetails.reviews.length == 0">No ratings</span>
+			<span ng-if="locationDetails.reviews.length > 0">
+				<a href="#" ng-click="toggleLocationComments()"">{{locationDetails.reviews.length}} ratings</a>
+			</span>
+			<span ng-if="isUserAndHasNotReviewedLocation()" style="float: right;">
+				<a data-toggle="modal" data-target="#locationReviewModal" href="#">Rate!</a>
+			</span>
+		</p>
+		<p ng-if="showLocationComments" class="container">
+		<table class="comments_section">
+			<tr ng-repeat="review in locationDetails.reviews">
+				<td>
+					<div>
+						<location-medal-img></location-medal-img>
+						{{review.userScreenName}}
+					</div>
+					<div>{{review.review}}</div>
+				</td>
+			</tr>
+		</table>
+		</p>
+		<p>{{locationDetails.streetAddress}}, {{locationDetails.city}} WA&nbsp;&nbsp;{{locationDetails.postalCode}}</p>
+		<p ng-if="locationDetails.website">
+			<a target="_blank" href="{{locationDetails.website}}">{{locationDetails.website}}</a>
+		</p>
+		<p>{{locationDetails.description}}</p>
+		<table ng-if="locationDetails.beers.length > 0" style="width: 100%;">
+			<tr>
+				<th></th>
+				<th></th>
+				<th ng-if="hasAbv">ABV</th>
+				<th ng-if="hasIbu">IBU</th>
+			</tr>
+			<tr ng-repeat="beer in locationDetails.beers">
+				<td>
+					<beer-medal-img></beer-medal-img>
+				</td>
+				<td>{{beer.name}}</td>
+				<td ng-if="hasAbv"><span ng-if="beer.abv">{{beer.abv}}%</span></td>
+				<td ng-if="hasIbu"><span ng-if="beer.ibu">{{beer.ibu}}</span></td>
+				<td>
+					<span ng-if="isUserAndHasNotReviewedBeer(beer.name)">
+						<a data-toggle="modal" data-target="#beerReviewModal" href="#" ng-click="reviewBeer(beer)">Rate!</a>
+					</span>
+				</td>
+			</tr>
+		</table>
+		<a data-toggle="modal" data-target="#locationCommentModal" href="#" style="float: right; color: #0000A5; margin-right: 10px;"> Did we
+			miss something? </a>
+</div>
