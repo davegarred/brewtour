@@ -1,0 +1,7 @@
+<div ng-controller="MainController">
+	<span ng-if="user.login"> {{user.screenName}}
+		<button class="btn btn-xs" ng-click="logout()">logout</button>
+	</span> <span ng-if="!user.login">
+		<button class="btn btn-xs" data-toggle="modal" data-target="#loginModal">login</button>
+	</span>
+</div>
