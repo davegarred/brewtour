@@ -4,23 +4,21 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot;
 import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
-import org.garred.brewtour.application.command.location.AddBeerCommand;
-import org.garred.brewtour.application.command.location.AddBeerRatingCommand;
-import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
 import org.garred.brewtour.application.command.location.AddLocationRatingCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
-import org.garred.brewtour.application.command.location.ModifyBeerCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationAddressCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationHoursOfOperationCommand;
@@ -29,9 +27,7 @@ import org.garred.brewtour.application.command.location.UpdateLocationPhoneComma
 import org.garred.brewtour.application.command.location.UpdateLocationPositionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationWebsiteCommand;
 import org.garred.brewtour.application.event.location.AbstractLocationAddedEvent;
-import org.garred.brewtour.application.event.location.BeerAddedEvent;
 import org.garred.brewtour.application.event.location.BeerAvailableEvent;
-import org.garred.brewtour.application.event.location.BeerModifiedEvent;
 import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
@@ -41,15 +37,8 @@ import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent
 import org.garred.brewtour.application.event.location.LocationPhoneUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationPositionUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationWebsiteUpdatedEvent;
-import org.garred.brewtour.application.event.location.user_fired.AbstractBeerReviewAddedEvent;
-import org.garred.brewtour.application.event.location.user_fired.AbstractBeerStarRatingAddedEvent;
 import org.garred.brewtour.application.event.location.user_fired.AbstractLocationReviewAddedEvent;
 import org.garred.brewtour.application.event.location.user_fired.AbstractLocationStarRatingAddedEvent;
-import org.garred.brewtour.application.event.location.user_fired.BeerRatingUpdatedEvent;
-import org.garred.brewtour.application.event.location.user_fired.BeerReviewAddedByAnonymousEvent;
-import org.garred.brewtour.application.event.location.user_fired.BeerReviewAddedByUserEvent;
-import org.garred.brewtour.application.event.location.user_fired.BeerStarRatingAddedByAnonymousEvent;
-import org.garred.brewtour.application.event.location.user_fired.BeerStarRatingAddedByUserEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationCommentAddedEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationRatingUpdatedEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByAnonymousEvent;
@@ -57,7 +46,7 @@ import org.garred.brewtour.application.event.location.user_fired.LocationReviewA
 import org.garred.brewtour.application.event.location.user_fired.LocationStarRatingAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationStarRatingAddedByUserEvent;
 import org.garred.brewtour.domain.AvailableImages;
-import org.garred.brewtour.domain.Beer;
+import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.ReviewMedal;
 import org.garred.brewtour.domain.UserId;
@@ -83,7 +72,7 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 	private String phoneNumber;
 	private String website;
 	private AvailableImages images;
-	private final List<Beer> beers = new ArrayList<>();
+	private final Set<BeerId> availableBeers = new HashSet<>();
 	private final List<UserReview> reviews = new ArrayList<>();
 	private final Map<UserId,ReviewMedal> userMedalRatings = new HashMap<>();
 
@@ -147,31 +136,18 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		}
 	}
 
-	public void addBeer(AddBeerCommand addBeer) {
-		final Beer beer = findBeer(addBeer.beerName);
-		if(beer != null) {
-			throw new RuntimeException("Can not add a beer with the same name");
+	public void beerAvailable(BeerAvailableCommand command) {
+		if(!this.availableBeers.contains(command.beerId)) {
+			apply(new BeerAvailableEvent(this.id, command.beerId));
 		}
-		apply(BeerAddedEvent.fromCommand(addBeer));
+	}
+	public void beerUnavailable(BeerUnavailableCommand command) {
+		if(this.availableBeers.contains(command.beerId)) {
+			apply(new BeerUnavailableEvent(this.id, command.beerId));
+		}
 	}
 
-	public void modifyBeer(ModifyBeerCommand modifyBeer) {
-		requireBeer(modifyBeer.beerName);
-		apply(BeerModifiedEvent.fromCommand(modifyBeer));
-	}
 
-	public void beerAvailable(BeerAvailableCommand beerAvailable) {
-		final Beer beer = requireBeer(beerAvailable.beerName);
-		if(!beer.isAvailable()) {
-			apply(BeerAvailableEvent.fromCommand(beerAvailable));
-		}
-	}
-	public void beerUnavailable(BeerUnavailableCommand beerUnavailable) {
-		final Beer beer = requireBeer(beerUnavailable.beerName);
-		if(beer.isAvailable()) {
-			apply(BeerUnavailableEvent.fromCommand(beerUnavailable));
-		}
-	}
 
 	public void addComment(AddLocationCommentCommand command, UserAuth user, LocalDateTime time) {
 		apply(LocationCommentAddedEvent.fromCommand(command, user.identifier(), user.screenName(), time));
@@ -200,46 +176,7 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		}
 	}
 
-	public void addBeerStarRating(AddBeerRatingCommand beerReview, UserAuth user) {
-		final Beer beer = requireBeer(beerReview.beerName);
-		if(user.identified()) {
-			apply(BeerStarRatingAddedByUserEvent.fromCommand(beerReview, user.identifier(), user.screenName()));
-		} else {
-			apply(BeerStarRatingAddedByAnonymousEvent.fromCommand(beerReview, user.identifier()));
-		}
-		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(beer.getUserMedalRatings().values()));
-		if(!Objects.equals(updatedMedal, beer.getMedal())) {
-			apply(new BeerRatingUpdatedEvent(this.id, beerReview.beerName, updatedMedal));
-		}
-	}
-	public void addBeerReview(AddBeerReviewCommand beerReview, UserAuth user, LocalDateTime time) {
-		final Beer beer = requireBeer(beerReview.beerName);
-		if(user.identified()) {
-			apply(BeerReviewAddedByUserEvent.fromCommand(beerReview, user.identifier(), user.screenName(), time));
-		} else {
-			apply(BeerReviewAddedByAnonymousEvent.fromCommand(beerReview, user.identifier(), time));
-		}
-		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(beer.getUserMedalRatings().values()));
-		if(!Objects.equals(updatedMedal, beer.getMedal())) {
-			apply(new BeerRatingUpdatedEvent(this.id, beerReview.beerName, updatedMedal));
-		}
-	}
 
-	private Beer findBeer(String beername) {
-		for(final Beer beer : this.beers) {
-			if(beer.getName().equals(beername)) {
-				return beer;
-			}
-		}
-		return null;
-	}
-	private Beer requireBeer(String beerName) {
-		final Beer beer = findBeer(beerName);
-		if(beer == null) {
-			throw new RuntimeException("Beer '" + beerName + "' could not be found");
-		}
-		return beer;
-	}
 
     @EventHandler
     public void on(AbstractLocationAddedEvent event) {
@@ -282,29 +219,15 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     }
 
     @EventHandler
-    public void on(BeerAddedEvent event) {
-    	final Beer beer = Beer.fromEvent(event.beerName, null, event.style, event.category, event.abv, event.ibu, true);
-		this.beers.add(beer);
-    }
-
-    @EventHandler
-    public void on(BeerModifiedEvent event) {
-    	final Beer beer = findBeer(event.beerName);
-    	beer.setStyle(event.style);
-    	beer.setCategory(event.category);
-    	beer.setAbv(event.abv);
-    	beer.setIbu(event.ibu);
-    }
-    @EventHandler
     public void on(BeerAvailableEvent event) {
-    	final Beer beer = findBeer(event.beerName);
-    	beer.setAvailable(true);
+    	this.availableBeers.add(event.beerId);
     }
     @EventHandler
     public void on(BeerUnavailableEvent event) {
-    	final Beer beer = findBeer(event.beerName);
-    	beer.setAvailable(false);
+    	this.availableBeers.remove(event.beerId);
     }
+
+
     @EventHandler
     public void on(AbstractLocationStarRatingAddedEvent event) {
     	this.userMedalRatings.put(event.userId, event.medal);
@@ -314,18 +237,6 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     	final UserReview review = new UserReview(event.userId, event.medal, event.time, event.review);
     	this.reviews.add(review);
     	on((AbstractLocationStarRatingAddedEvent)event);
-    }
-    @EventHandler
-    public void on(AbstractBeerStarRatingAddedEvent event) {
-    	final Beer beer = findBeer(event.beerName);
-    	beer.setMedalRating(event.userId, event.medal);
-    }
-    @EventHandler
-    public void on(AbstractBeerReviewAddedEvent event) {
-    	final UserReview review = new UserReview(event.userId, event.medal, event.time, event.review);
-    	final Beer beer = findBeer(event.beerName);
-    	beer.addReview(review);
-    	on((AbstractBeerStarRatingAddedEvent)event);
     }
 
 }

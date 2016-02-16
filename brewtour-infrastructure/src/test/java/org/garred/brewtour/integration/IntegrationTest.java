@@ -12,13 +12,16 @@ import java.util.Collection;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewtour.application.IdentifierFactory;
-import org.garred.brewtour.application.command.location.AddBeerCommand;
-import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
+import org.garred.brewtour.application.command.beer.AddBeerCommand;
+import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
+import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.BeerId;
+import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
@@ -49,6 +52,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 })
 public class IntegrationTest {
 
+	private static final String BREWERY_NAME = "Stone Brewing";
+	private static final BreweryId BREWERY_ID = new BreweryId("BREW1001");
+	private static final BeerId BEER_ID = new BeerId("BEER10101");
 	private static final String LOCATION_COMMENT = "Some very important comment on this location";
 	private static final String LOCATION_NAME = "a location name";
 	private static final BigDecimal LONGITUDE = new BigDecimal("-122.315");
@@ -108,9 +114,10 @@ public class IntegrationTest {
 		final LocaleView locale = this.localeRepo.get(SEATTLE);
 		assertEquals(SEATTLE.id, locale.name);
 
-		this.commandGateway.sendAndWait(addBeerCommand(locationId));
+		this.commandGateway.sendAndWait(addBeerCommand());
+		this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, BEER_ID));
 		location = this.locationRepo.get(locationId);
-		assertSingleItemInCollection(newBeerView(BEER_NAME, STYLE, CATEGORY, ABV, IBU, true), location.beers);
+		assertSingleItemInCollection(newBeerView(BEER_ID, BEER_NAME, STYLE, CATEGORY, ABV, IBU), location.beers.values());
 
 		final Review expectedReview = new Review(SCREEN_NAME, GOLD.name(), LOCATION_REVIEW);
 		this.commandGateway.sendAndWait(addLocationReviewCommand(locationId));
@@ -123,12 +130,12 @@ public class IntegrationTest {
 
 		final Review expectedBeerReview = new Review(SCREEN_NAME, SILVER.name(), BEER_REVIEW);
 		this.commandGateway.sendAndWait(addBeerReviewCommand(locationId));
-		final BeerView beer = this.locationRepo.get(locationId).beers.get(0);
+		final BeerView beer = this.locationRepo.get(locationId).beers.get(BEER_ID);
 		assertEquals(SILVER.name(), beer.medal);
 		assertSingleItemInCollection(expectedBeerReview, beer.userReviews);
 
 		userDetails = this.userDetailsRepo.get(userId);
-		assertSingleItemInCollection(expectedBeerReview, userDetails.beerReviews.get(locationId).values());
+		assertEquals(expectedBeerReview, userDetails.beerReviews.get(BEER_ID));
 
 		this.commandGateway.sendAndWait(addLocationCommentCommand(locationId));
 		final AdminView adminView = this.adminRepo.get(SEATTLE);
@@ -143,14 +150,14 @@ public class IntegrationTest {
 		UserHolder.set(view);
 	}
 
-	private static AddBeerCommand addBeerCommand(LocationId locationId) {
-		return new AddBeerCommand(locationId, BEER_NAME, STYLE, CATEGORY, ABV, IBU);
+	private static AddBeerCommand addBeerCommand() {
+		return new AddBeerCommand(BEER_NAME, BREWERY_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
 	}
 	private static AddLocationReviewCommand addLocationReviewCommand(LocationId locationId) {
 		return new AddLocationReviewCommand(locationId, GOLD, LOCATION_REVIEW);
 	}
 	private static AddBeerReviewCommand addBeerReviewCommand(LocationId locationId) {
-		return new AddBeerReviewCommand(locationId, BEER_NAME, SILVER, BEER_REVIEW);
+		return new AddBeerReviewCommand(BEER_ID, SILVER, BEER_REVIEW);
 	}
 	private static AddLocationCommentCommand addLocationCommentCommand(LocationId locationId) {
 		return new AddLocationCommentCommand(locationId, LOCATION_COMMENT);

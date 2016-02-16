@@ -26,6 +26,12 @@
 			<artifactId>guava</artifactId>
 		</dependency>
 
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		
 		<!-- Axon -->
 		<dependency>
 			<groupId>org.axonframework</groupId>

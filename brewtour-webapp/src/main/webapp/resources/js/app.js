@@ -199,18 +199,22 @@
 
     	$scope.sendReview = function() {
     		var dto = {
-    				locationId : LocationService.location().locationId,
-    				beerName : $scope.reviewingBeer.name,
+    				beerId : $scope.reviewingBeer.id,
     				medal : $scope.medal,
     				review : $scope.beerReview
     		};
-    		$http.post('location/AddBeerReview', dto)
+    		$http.post('beer/AddBeerReview', dto)
     		.then(function successCallback(response) {
     			$('#beerReviewModal').modal('hide');
     			$scope.medal = null;
     			$scope.beerReview = "";
     			UserService.set(response.data.user);
-    			LocationService.set(response.data.location);
+    			$http.get('location/' + LocationService.location().locationId)
+    			.then(function successCallback(response) {
+    				LocationService.set(response.data);
+    			}, function errorCallback(response) {
+    				error(response);
+    			});
     		}, function errorCallback(response) {
     			error(response);
     		})

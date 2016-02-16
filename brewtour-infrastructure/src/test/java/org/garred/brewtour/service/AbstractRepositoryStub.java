@@ -10,7 +10,7 @@ import org.garred.brewtour.repository.ViewRepository;
 
 public abstract class AbstractRepositoryStub<I extends Identifier,T extends Entity<I>> implements ViewRepository<I,T> {
 
-	private final Map<I,T> objectMap = new HashMap<>();
+	protected final Map<I,T> objectMap = new HashMap<>();
 
 	protected abstract Class<T> objectClass();
 

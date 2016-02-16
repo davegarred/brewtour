@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.garred.brewtour.application.event.user.UserAddedEvent;
+import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.Entity;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.ReviewMedal;
@@ -15,7 +16,7 @@ public class UserDetailsView extends AbstractView implements Entity<UserId> {
 	public String screenName;
 	public String login;
 	public Map<LocationId,Review> locationReviews;
-	public Map<LocationId,Map<String,Review>> beerReviews;
+	public Map<BeerId,Review> beerReviews;
 
 	@Override
 	public UserId identifier() {
@@ -25,13 +26,8 @@ public class UserDetailsView extends AbstractView implements Entity<UserId> {
 	public void addLocationReview(LocationId locationId, String userScreenName, ReviewMedal medal, String review) {
 		this.locationReviews.put(locationId, new Review(userScreenName, medal.name(), review));
 	}
-	public void addBeerReview(LocationId locationId, String beerName, String userScreenName, ReviewMedal medal, String review) {
-		Map<String, Review> location = this.beerReviews.get(locationId);
-		if(location == null) {
-			location = new HashMap<>();
-			this.beerReviews.put(locationId, location);
-		}
-		location.put(beerName, new Review(userScreenName, medal.name(), review));
+	public void addBeerReview(BeerId beerId, String userScreenName, ReviewMedal medal, String review) {
+		this.beerReviews.put(beerId, new Review(userScreenName, medal.name(), review));
 	}
 
 	public static UserDetailsView fromEvent(UserAddedEvent event) {

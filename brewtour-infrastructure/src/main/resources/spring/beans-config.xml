@@ -15,6 +15,9 @@
 	<bean id="locationViewRepo" class="org.garred.brewtour.repository.LocationViewRepositoryImpl" 
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper" />
+	<bean id="beerViewRepo" class="org.garred.brewtour.repository.BeerViewRepositoryImpl" 
+		c:datasource-ref="dataSource" 
+		c:objectMapper-ref="objectMapper" />
 	<bean id="localeViewRepo" class="org.garred.brewtour.repository.LocaleViewRepositoryImpl" 
 		c:datasource-ref="dataSource" 
 		c:objectMapper-ref="objectMapper" />
@@ -45,9 +48,15 @@
 		
 	<!-- Identifier factories -->
 	<bean id="locationIdentifierFactory" class="org.garred.brewtour.application.LocationIdentifierFactoryStub"/>
+	<bean id="beerIdentifierFactory" class="org.garred.brewtour.application.BeerIdentifierFactoryStub"/>
+	<bean id="breweryIdentifierFactory" class="org.garred.brewtour.application.BreweryIdentifierFactoryStub"/>
 	
 	<bean id="locationCommandHandlerService" class="org.garred.brewtour.service.LocationCommandHandlerServiceImpl"
 		c:identifierFactory-ref="locationIdentifierFactory" />
+	<bean id="beerCommandHandlerService" class="org.garred.brewtour.service.BeerCommandHandlerServiceImpl"
+		c:identifierFactory-ref="beerIdentifierFactory" />
+	<bean id="breweryCommandHandlerService" class="org.garred.brewtour.service.BreweryCommandHandlerServiceImpl"
+		c:identifierFactory-ref="breweryIdentifierFactory" />
 	<bean id="userCommandHandlerService" class="org.garred.brewtour.service.UserCommandHandlerServiceImpl"/>
 		
 		

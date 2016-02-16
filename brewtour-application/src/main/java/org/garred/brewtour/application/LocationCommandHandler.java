@@ -2,16 +2,12 @@ package org.garred.brewtour.application;
 
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.Repository;
-import org.garred.brewtour.application.command.location.AddBeerCommand;
-import org.garred.brewtour.application.command.location.AddBeerRatingCommand;
-import org.garred.brewtour.application.command.location.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
 import org.garred.brewtour.application.command.location.AddLocationRatingCommand;
 import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
-import org.garred.brewtour.application.command.location.ModifyBeerCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationAddressCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationHoursOfOperationCommand;
@@ -68,23 +64,13 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 		require(command).updateWebsite(command);
 	}
 
-
 	@CommandHandler
-	public void handle(AddBeerCommand command) {
-		require(command).addBeer(command);
-	}
-
-	@CommandHandler
-	public void handle(ModifyBeerCommand command) {
-		require(command).modifyBeer(command);
+	public void handle(BeerAvailableCommand command) {
+		require(command).beerAvailable(command);
 	}
 	@CommandHandler
 	public void handle(BeerUnavailableCommand command) {
 		require(command).beerUnavailable(command);
-	}
-	@CommandHandler
-	public void handle(BeerAvailableCommand command) {
-		require(command).beerAvailable(command);
 	}
 
 	// user fired commands
@@ -99,14 +85,6 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 	@CommandHandler
 	public void handle(AddLocationReviewCommand command) {
 		require(command).addLocationReview(command, user(), this.service.now());
-	}
-	@CommandHandler
-	public void handle(AddBeerRatingCommand command) {
-		require(command).addBeerStarRating(command, user());
-	}
-	@CommandHandler
-	public void handle(AddBeerReviewCommand command) {
-		require(command).addBeerReview(command, user(), this.service.now());
 	}
 
 

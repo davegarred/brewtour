@@ -3,24 +3,18 @@ package org.garred.brewtour.application;
 import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 
 import org.garred.brewtour.AbstractSerializationTest;
-import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.Image;
 import org.junit.Test;
 
 public class ApplicationSerializationTest extends AbstractSerializationTest {
 
 	public ApplicationSerializationTest() {
-		super("application");
+		super("application", null, null);
 	}
 
 	@Test
 	public void testImage() {
 		validate(new Image("test value"));
-	}
-
-	@Test
-	public void testAvailableImages() {
-		validate(new AvailableImages(IMAGE_1, IMAGE_2, null));
 	}
 
 	@Test

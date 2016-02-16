@@ -4,11 +4,14 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.garred.brewtour.application.event.location.AbstractLocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.Entity;
 import org.garred.brewtour.domain.LocationId;
 
@@ -31,7 +34,7 @@ public class LocationView extends AbstractView implements Entity<LocationId> {
 	public String phoneNumber;
 	public String website;
 	public AvailableImages images;
-	public List<BeerView> beers;
+	public Map<BeerId,BeerView> beers;
 	public List<Review> reviews;
 
 	public String medal;
@@ -45,7 +48,7 @@ public class LocationView extends AbstractView implements Entity<LocationId> {
 		final LocationView view = new LocationView();
 		view.locationId = event.locationId;
 		view.name = event.name;
-		view.beers = new ArrayList<>();
+		view.beers = new HashMap<>();
 		view.reviews = new ArrayList<>();
 		return view;
 	}
@@ -53,18 +56,13 @@ public class LocationView extends AbstractView implements Entity<LocationId> {
 		return initialize(event);
 	}
 
-	public BeerView findBeer(String beername) {
-		for(final BeerView beer : this.beers) {
-			if(beer.name.equals(beername)) {
-				return beer;
-			}
-		}
-		return null;
+	public BeerView findBeer(BeerId beerId) {
+		return this.beers.get(beerId);
 	}
-	public BeerView requireBeer(String beerName) {
-		final BeerView beer = findBeer(beerName);
+	public BeerView requireBeer(BeerId beerId) {
+		final BeerView beer = findBeer(beerId);
 		if(beer == null) {
-			throw new RuntimeException("Beer '" + beerName + "' could not be found in location view " + this.locationId);
+			throw new RuntimeException("Beer '" + beerId + "' could not be found in location view " + this.locationId);
 		}
 		return beer;
 	}

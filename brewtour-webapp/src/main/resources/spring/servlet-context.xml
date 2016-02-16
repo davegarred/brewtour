@@ -36,6 +36,8 @@
 		c:locationService-ref="locationService"
 		c:locationIdentifierFactory-ref="locationIdentifierFactory"
 		c:userService-ref="userDetailsService" />
+	<beans:bean class="org.garred.brewtour.controller.BeerController"
+		c:locationService-ref="locationService" />
 	
 	<beans:bean class="org.garred.brewtour.controller.ApplicationStatusController"/>
 

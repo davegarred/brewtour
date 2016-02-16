@@ -19,6 +19,11 @@ CREATE TABLE brewtour.location_view (
   version integer NOT NULL,
   data clob
 );
+CREATE TABLE brewtour.beer_view (
+  id varchar(36) NOT NULL,
+  version integer NOT NULL,
+  data clob
+);
 CREATE TABLE brewtour.locale_view (
   id varchar(36) NOT NULL,
   version integer NOT NULL,

@@ -1,30 +1,46 @@
 package org.garred.brewtour;
 
 import static java.lang.String.format;
+import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.BeerId;
+import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocalePoint;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.RegexPatternTypeFilter;
+import org.springframework.core.type.filter.TypeFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractSerializationTest {
 
-	protected static final String BEER_BREWDB_ID = "beer id";
+	protected static final String BREWERY_NAME = "Stone Brewing";
+	protected static final BreweryId BREWERY_ID = new BreweryId("BREW10001");
+	protected static final BeerId BEER_ID = new BeerId("BEER10101");
+
 	protected static final String BEER_CATEGORY = "niche category";
 	protected static final String BEER_STYLE = "awesome style";
 	protected static final String BEER_STATUS = "someStatus";
@@ -48,9 +64,13 @@ public abstract class AbstractSerializationTest {
 	private static final ObjectMapper MAPPER = ObjectMapperFactory.objectMapper();
 
 	private final String folder;
+	private final String packageName;
+	private final TestType testType;
 
-	public AbstractSerializationTest(String folder) {
-		this.folder = folder;
+	public AbstractSerializationTest(String jsonFolder, String packageName, TestType testType) {
+		this.folder = jsonFolder;
+		this.packageName = packageName;
+		this.testType = testType;
 	}
 
 	protected <T> void reflectionValidate(T object) {
@@ -96,5 +116,48 @@ public abstract class AbstractSerializationTest {
 	protected Object retriveStored(Class<?> clazz) throws IOException {
 		final InputStream in = new FileInputStream(format("src/test/resources/json/%s/%s.json", this.folder, clazz.getSimpleName()));
 		return MAPPER.readValue(in, clazz);
+	}
+
+	@Test
+	public void testAudit() {
+		if(this.packageName == null && this.testType == null) {
+			return;
+		}
+		final ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
+		scanner.addIncludeFilter(this.testType.filter);
+		final Set<BeanDefinition> components = scanner.findCandidateComponents(this.packageName);
+		final List<String> requiredTests = new ArrayList<>();
+		for(final BeanDefinition beanDef : components) {
+			final String commandName = beanDef.getBeanClassName();
+			requiredTests.add(commandName.substring(commandName.lastIndexOf(".") + 1));
+		}
+		final List<String> foundMethods = new ArrayList<>();
+		for(final Method method : this.getClass().getMethods()) {
+			if(method.isAnnotationPresent(Test.class)) {
+				final String methodName = method.getName();
+				foundMethods.add(methodName.substring(4) + this.testType.classSuffix);
+			}
+		}
+		final List<String> missingTests = new ArrayList<>();
+		for(final String requiredTest : requiredTests) {
+			if(!foundMethods.contains(requiredTest)) {
+				missingTests.add(requiredTest);
+			}
+		}
+		if(!missingTests.isEmpty()) {
+			fail("Missing test(s) for \n  - " + String.join("\n  - ", missingTests));
+		}
+	}
+
+	public enum TestType {
+		COMMAND("Command", new RegexPatternTypeFilter(compile(".*Command$"))),
+		EVENT("Event", new RegexPatternTypeFilter(compile(".*Event$")));
+
+		public final String classSuffix;
+		public final TypeFilter filter;
+		private TestType(String classSuffix, TypeFilter filter) {
+			this.classSuffix = classSuffix;
+			this.filter = filter;
+		}
 	}
 }
