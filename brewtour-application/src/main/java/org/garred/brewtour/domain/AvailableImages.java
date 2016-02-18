@@ -20,6 +20,10 @@ public class AvailableImages extends AbstractObject {
 		this.large = large == null ? NOT_AVAILABLE : large;
 	}
 
+	public static AvailableImages fromString(String icon, String medium, String large) {
+		return new AvailableImages(new Image(icon), new Image(medium), new Image(large));
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
