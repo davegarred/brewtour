@@ -1,10 +1,17 @@
 package org.garred.brewtour.application.command.beer;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.garred.brewtour.application.command.AddAggregateCallback;
+import org.garred.brewtour.application.command.AddAggregateCommand;
+import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.BreweryId;
 
-public abstract class AbstractAddBeerCommand {
+public abstract class AbstractAddBeerCommand implements AddAggregateCommand<BeerId> {
+
+	private final List<AddAggregateCallback<BeerId>> callbacks = new ArrayList<>();
 
 	public final String beerName;
 	public final BreweryId breweryId;
@@ -28,6 +35,18 @@ public abstract class AbstractAddBeerCommand {
 		this.category = category;
 		this.abv = abv;
 		this.ibu = ibu;
+	}
+
+	@Override
+	public void subscribe(AddAggregateCallback<BeerId> callback) {
+		if(callback != null) {
+			this.callbacks.add(callback);
+		}
+	}
+
+	@Override
+	public void identified(BeerId identifier) {
+		this.callbacks.stream().forEach(c -> c.callback(identifier));
 	}
 
 }

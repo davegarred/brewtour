@@ -1,5 +1,6 @@
 package org.garred.brewtour.controller;
 
+import static org.garred.brewtour.application.command.GenericAddAggregateCallback.forCommand;
 import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -7,7 +8,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.garred.brewtour.application.IdentifierFactory;
+import org.garred.brewtour.application.command.GenericAddAggregateCallback;
 import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AbstractLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
@@ -34,13 +35,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class LocationController extends AbstractRestController {
 
 	private final LocationQueryService locationService;
-	private final IdentifierFactory<LocationId> locationIdentifierFactory;
 	private final UserDetailsService userService;
 
-	public LocationController(LocationQueryService locationService, IdentifierFactory<LocationId> locationIdentifierFactory,
-			UserDetailsService userService) {
+	public LocationController(LocationQueryService locationService, UserDetailsService userService) {
 		this.locationService = locationService;
-		this.locationIdentifierFactory = locationIdentifierFactory;
 		this.userService = userService;
 	}
 
@@ -95,9 +93,10 @@ public class LocationController extends AbstractRestController {
 
 	@RequestMapping(value = "/addLocation", method = POST, produces="application/json")
 	@ResponseBody
-	public LocationView addlocation(@RequestBody AddLocationCommand addLocation) {
+	public LocationId addlocation(@RequestBody AddLocationCommand addLocation) {
+		final GenericAddAggregateCallback<LocationId> callback = forCommand(addLocation);
 		this.locationService.fireCommand(addLocation);
-		return this.locationService.getLocation(this.locationIdentifierFactory.last());
+		return callback.identifier();
 	}
 	@RequestMapping(value = "/modlocation/{commandName}", method = POST, produces="application/json")
 	@ResponseBody

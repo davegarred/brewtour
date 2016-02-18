@@ -17,7 +17,9 @@ public class BreweryCommandHandler extends AbstractCommandHandler<BreweryId,Brew
 
 	@CommandHandler
     public void handle(AddBreweryCommand command) {
-		this.repository.add(Brewery.addBrewery(this.service.nextBreweryId(), command.breweryName));
+		final BreweryId breweryId = this.service.nextBreweryId();
+		this.repository.add(Brewery.addBrewery(breweryId, command.breweryName));
+		command.identified(breweryId);
     }
 
 }

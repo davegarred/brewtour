@@ -19,7 +19,9 @@ public class UserCommandHandler extends AbstractCommandHandler<UserId,User> {
 
 	@CommandHandler
 	public void handle(AddUserCommand command) {
-		this.repository.add(User.addUser(command, this.userCommandHandlerService.randomUserId()));
+		final UserId userId = this.userCommandHandlerService.randomUserId();
+		this.repository.add(User.addUser(command, userId));
+		command.identified(userId);
 	}
 
 	@CommandHandler

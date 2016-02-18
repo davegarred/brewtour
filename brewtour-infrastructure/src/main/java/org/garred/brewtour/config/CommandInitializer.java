@@ -1,6 +1,7 @@
 package org.garred.brewtour.config;
 
 import static java.util.stream.Collectors.toList;
+import static org.garred.brewtour.application.command.GenericAddAggregateCallback.forCommand;
 import static org.garred.brewtour.config.BrewDbDataPrep.BEER_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.BREWERY_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.LOCATION_FILE;
@@ -17,7 +18,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewdb.domain.Beer;
 import org.garred.brewdb.domain.Images;
 import org.garred.brewdb.domain.Location;
-import org.garred.brewtour.application.IdentifierFactory;
+import org.garred.brewtour.application.command.GenericAddAggregateCallback;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.brewery.AddBreweryCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
@@ -51,18 +52,19 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 		public final Map<String,BeerSetMapping> beerMap;
 
 		private final CommandGateway commandGateway;
-		private final IdentifierFactory<LocationId> locationIdentifierFactory;
-		private final IdentifierFactory<BreweryId> breweryIdentifierFactory;
-		private final IdentifierFactory<BeerId> beerIdentifierFactory;
+//		private final IdentifierFactory<LocationId> locationIdentifierFactory;
+//		private final IdentifierFactory<BreweryId> breweryIdentifierFactory;
+//		private final IdentifierFactory<BeerId> beerIdentifierFactory;
 
-		public CommandInitializer(CommandGateway commandGateway,
-				IdentifierFactory<LocationId> locationIdentifierFactory,
-				IdentifierFactory<BreweryId> breweryIdentifierFactory,
-				IdentifierFactory<BeerId> beerIdentifierFactory) {
+		public CommandInitializer(CommandGateway commandGateway
+//				IdentifierFactory<LocationId> locationIdentifierFactory,
+//				IdentifierFactory<BreweryId> breweryIdentifierFactory,
+//				IdentifierFactory<BeerId> beerIdentifierFactory
+				) {
 			this.commandGateway = commandGateway;
-			this.locationIdentifierFactory = locationIdentifierFactory;
-			this.breweryIdentifierFactory = breweryIdentifierFactory;
-			this.beerIdentifierFactory = beerIdentifierFactory;
+//			this.locationIdentifierFactory = locationIdentifierFactory;
+//			this.breweryIdentifierFactory = breweryIdentifierFactory;
+//			this.beerIdentifierFactory = beerIdentifierFactory;
 			try(
 					final InputStream locationFile = Thread.currentThread().getContextClassLoader().getResourceAsStream(LOCATION_FILE);
 					final InputStream breweryFile = Thread.currentThread().getContextClassLoader().getResourceAsStream(BREWERY_FILE);
@@ -86,8 +88,9 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 
 		private LocationId fireLocationCommands(Location brewDbLocation) {
 			final AddLocationCommand command = new AddLocationCommand(brewDbLocation.brewery.name);
+			final GenericAddAggregateCallback<LocationId> callback = GenericAddAggregateCallback.forCommand(command);
 			this.commandGateway.sendAndWait(command);
-			final LocationId locationId = this.locationIdentifierFactory.last();
+			final LocationId locationId = callback.identifier();
 
 			this.commandGateway.sendAndWait(new UpdateLocationAddressCommand(locationId, brewDbLocation.streetAddress, "",
 					brewDbLocation.locality, brewDbLocation.region, brewDbLocation.postalCode));
@@ -126,16 +129,21 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 		}
 
 		private BreweryId fireBreweryCommands(BreweryData brewery) {
-			this.commandGateway.sendAndWait(new AddBreweryCommand(brewery.breweryName));
-			return this.breweryIdentifierFactory.last();
+			final AddBreweryCommand command = new AddBreweryCommand(brewery.breweryName);
+			final GenericAddAggregateCallback<BreweryId> callback = forCommand(command);
+			this.commandGateway.sendAndWait(command);
+			return callback.identifier();
 		}
 		private BeerId fireBeerCommands(Beer beer, BreweryId breweryId, String breweryName, List<LocationId> locationIds) {
-			this.commandGateway.sendAndWait(new AddBeerCommand(beer.name, breweryId, breweryName,
+			final AddBeerCommand command = new AddBeerCommand(beer.name, breweryId, breweryName,
 					beer.style == null ? null : beer.style.name,
 					(beer.style == null || beer.style.category == null) ? null : beer.style.category.name,
 					beer.abv == null ? null : new BigDecimal(beer.abv),
-					beer.ibu == null ? null : new BigDecimal(beer.ibu)));
-			final BeerId beerId = this.beerIdentifierFactory.last();
+					beer.ibu == null ? null : new BigDecimal(beer.ibu));
+			final GenericAddAggregateCallback<BeerId> callback = forCommand(command);
+			this.commandGateway.sendAndWait(command);
+			final BeerId beerId = callback.identifier();
+
 			for(final LocationId locationId : locationIds) {
 				this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
 			}
