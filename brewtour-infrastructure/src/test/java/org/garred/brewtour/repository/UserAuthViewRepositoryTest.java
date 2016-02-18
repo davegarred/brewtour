@@ -16,7 +16,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring/application-config.xml")
+@ContextConfiguration(locations = {
+		"classpath:spring/persistence-config.xml",
+		"classpath:spring/beans-config.xml",
+		"classpath:spring/axon-config.xml"
+})
 public class UserAuthViewRepositoryTest {
 
 	private static final String USER_LOGIN = "user login";

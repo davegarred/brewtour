@@ -17,6 +17,9 @@ import org.garred.brewtour.repository.LocaleViewRepository;
 
 public class LocaleViewEventHandler extends AbstractViewEventHandler<LocaleId, LocaleView> {
 
+	private static final GoogleMapsParameters SEATTLE_CENTER = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.61"), new BigDecimal("-122.333")), 12);
+	private static final GoogleMapsParameters FREMONT_CENTER = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.658"), new BigDecimal("-122.358")), 15);
+
 	public LocaleViewEventHandler(LocaleViewRepository repository) {
 		super(repository);
 	}
@@ -58,8 +61,7 @@ public class LocaleViewEventHandler extends AbstractViewEventHandler<LocaleId, L
 			locale = new LocaleView();
 			locale.id = SEATTLE;
 			locale.name = SEATTLE.id;
-			locale.googleMapsParameters = new GoogleMapsParameters(new GoogleMapsPosition(new BigDecimal("47.61"), new BigDecimal("-122.333")),
-					12);
+			locale.googleMapsParameters = FREMONT_CENTER;
 			locale.locations = new ArrayList<>();
 			this.repository.save(locale);
 		}
