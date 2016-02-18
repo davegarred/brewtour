@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,16 +21,29 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 
 public class BrewDbDataPrep {
 
 	public static final String LOCATION_FILE = "json/init_locations.json";
 	public static final String BREWERY_FILE = "json/init_breweries.json";
 	public static final String BEER_FILE = "json/init_beers.json";
-	private static final BigDecimal LONG_MAX = new BigDecimal("-122.3");
-	private static final BigDecimal LONG_MIN = new BigDecimal("-122.36");
+	private static final BigDecimal LONG_MAX = new BigDecimal("-122.2");
+	private static final BigDecimal LONG_MIN = new BigDecimal("-122.4");
 	private static final BigDecimal LAT_MAX = new BigDecimal("47.65");
 	private static final BigDecimal LAT_MIN = new BigDecimal("47.53");
+	private static List<String> targetLocations = new ImmutableList.Builder<String>()
+			.add("Rooftop Brewing Company")
+			.add("Fremont Brewing")
+			.add("Gilligan's Brewing Co")
+			.add("Populuxe Brewing")
+			.add("Lucky Envelope Brewing")
+			.add("Stoup Brewing")
+			.add("Reuben's Brews")
+			.add("Peddler Brewing Company")
+			.add("Hilliard's Beer")
+			.add("NW Peaks Brewery")
+			.build();
 
 	private final ObjectMapper objectMapper = ObjectMapperFactory.objectMapper();
 
@@ -61,12 +75,16 @@ public class BrewDbDataPrep {
 	}
 
 	private static boolean useThisLocation(Location brewDbLocation) {
-		if (brewDbLocation.latitude.compareTo(LAT_MIN) < 1 || brewDbLocation.latitude.compareTo(LAT_MAX) > 1
-				|| brewDbLocation.longitude.compareTo(LONG_MIN) < 1
-				|| brewDbLocation.longitude.compareTo(LONG_MAX) > 1) {
-			return true;
+		if(brewDbLocation == null || brewDbLocation.latitude == null || brewDbLocation.longitude == null) {
+			return false;
 		}
-		return false;
+		return brewDbLocation.brewery != null && targetLocations.contains(brewDbLocation.brewery.name);
+//		if (brewDbLocation.latitude.compareTo(LAT_MIN) < 1 || brewDbLocation.latitude.compareTo(LAT_MAX) > 1
+//				|| brewDbLocation.longitude.compareTo(LONG_MIN) < 1
+//				|| brewDbLocation.longitude.compareTo(LONG_MAX) > 1) {
+//			return true;
+//		}
+//		return false;
 	}
 
 	public void loadLocationData() throws JsonParseException, JsonMappingException, IOException {
