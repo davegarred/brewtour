@@ -1,7 +1,18 @@
-<div ng-controller="MainController">
-	<span ng-if="user.login"> {{user.screenName}}
-		<button class="btn btn-xs" ng-click="logout()">logout</button>
-	</span> <span ng-if="!user.login">
-		<button class="btn btn-xs" data-toggle="modal" data-target="#loginModal">login</button>
-	</span>
-</div>
+<nav class="navbar navbar-default" ng-controller="MainController" style="margin-bottom: 0px;">
+	<div class="container-fluid">
+    	<!-- Brand and toggle get grouped for better mobile display -->
+    	<div class="navbar-header">
+<!-- 
+    		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        		<span class="sr-only">Toggle navigation</span>
+        		<span class="icon-bar"></span>
+        		<span class="icon-bar"></span>
+        		<span class="icon-bar"></span>
+      		</button>
+ -->    	
+      		<a class="navbar-brand" href="#">Seattle Beer Tour</a>
+    	</div>
+    	<button type="button" class="btn btn-default btn-sm navbar-btn navbar-right" ng-click="logout()" ng-if="user.login">{{user.screenName}}</button>
+    	<button type="button" class="btn btn-default btn-sm navbar-btn navbar-right" data-toggle="modal" data-target="#loginModal" ng-if="!user.login">Sign in</button>
+    </div>
+</nav>
