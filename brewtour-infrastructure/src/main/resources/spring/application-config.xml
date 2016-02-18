@@ -24,9 +24,6 @@
 	<!-- Initial command to populate test database -->
 	<bean class="org.garred.brewtour.config.CommandInitializer" 
 		c:commandGateway-ref="commandGateway"
-		c:locationIdentifierFactory-ref="locationIdentifierFactory"
-		c:breweryIdentifierFactory-ref="breweryIdentifierFactory"
-		c:beerIdentifierFactory-ref="beerIdentifierFactory"
 		/>
 	
 </beans>

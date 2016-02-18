@@ -22,7 +22,9 @@ public class BeerCommandHandler extends AbstractCommandHandler<BeerId,Beer> {
 
 	@CommandHandler
     public void handle(AddBeerCommand command) {
-		this.repository.add(Beer.addBeer(this.service.nextBeerId(), command));
+		final BeerId beerId = this.service.nextBeerId();
+		this.repository.add(Beer.addBeer(beerId, command));
+		command.identified(beerId);
     }
 
 

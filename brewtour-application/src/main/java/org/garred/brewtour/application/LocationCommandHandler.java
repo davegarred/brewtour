@@ -32,7 +32,9 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 
 	@CommandHandler
     public void handle(AddLocationCommand command) {
-		this.repository.add(Location.addLocation(this.service.nextLocationId(), command));
+		final LocationId locationId = this.service.nextLocationId();
+		this.repository.add(Location.addLocation(locationId, command));
+		command.identified(locationId);
     }
 
 	@CommandHandler
