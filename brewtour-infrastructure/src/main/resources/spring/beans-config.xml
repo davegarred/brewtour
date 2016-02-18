@@ -46,11 +46,6 @@
 		c:locationRepository-ref="locationViewRepo"
 		c:commandGateway-ref="commandGateway"/>
 		
-	<!-- Identifier factories -->
-	<bean id="locationIdentifierFactory" class="org.garred.brewtour.application.LocationIdentifierFactoryStub"/>
-	<bean id="beerIdentifierFactory" class="org.garred.brewtour.application.BeerIdentifierFactoryStub"/>
-	<bean id="breweryIdentifierFactory" class="org.garred.brewtour.application.BreweryIdentifierFactoryStub"/>
-	
 	<bean id="locationCommandHandlerService" class="org.garred.brewtour.service.LocationCommandHandlerServiceImpl"
 		c:identifierFactory-ref="locationIdentifierFactory" />
 	<bean id="beerCommandHandlerService" class="org.garred.brewtour.service.BeerCommandHandlerServiceImpl"

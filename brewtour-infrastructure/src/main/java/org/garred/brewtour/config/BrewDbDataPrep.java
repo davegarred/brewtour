@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.garred.brewdb.domain.Beer;
 import org.garred.brewdb.domain.Location;
@@ -33,6 +35,7 @@ public class BrewDbDataPrep {
 	private static final BigDecimal LAT_MAX = new BigDecimal("47.65");
 	private static final BigDecimal LAT_MIN = new BigDecimal("47.53");
 	private static List<String> targetLocations = new ImmutableList.Builder<String>()
+			// Fremont
 			.add("Rooftop Brewing Company")
 			.add("Fremont Brewing")
 			.add("Gilligan's Brewing Co")
@@ -43,6 +46,16 @@ public class BrewDbDataPrep {
 			.add("Peddler Brewing Company")
 			.add("Hilliard's Beer")
 			.add("NW Peaks Brewery")
+
+			//Georgetown
+			.add("Spinnaker Bay Brewing")
+			.add("Machine House Brewery")
+			.add("Seattle Cider Company")
+			.add("Two Beers Brewing Company")
+			.add("Georgetown Brewing Company")
+			.add("Schooner Exact Brewing Company")
+			.add("Seapine Brewing Company")
+			.add("Flying Lion Brewing")
 			.build();
 
 	private final ObjectMapper objectMapper = ObjectMapperFactory.objectMapper();
@@ -78,6 +91,7 @@ public class BrewDbDataPrep {
 		if(brewDbLocation == null || brewDbLocation.latitude == null || brewDbLocation.longitude == null) {
 			return false;
 		}
+//		return true;
 		return brewDbLocation.brewery != null && targetLocations.contains(brewDbLocation.brewery.name);
 //		if (brewDbLocation.latitude.compareTo(LAT_MIN) < 1 || brewDbLocation.latitude.compareTo(LAT_MAX) > 1
 //				|| brewDbLocation.longitude.compareTo(LONG_MIN) < 1
@@ -127,16 +141,11 @@ public class BrewDbDataPrep {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
 		final BrewDbDataPrep builder = new BrewDbDataPrep();
-		for (final Location location : builder.locationMap.values()) {
-			System.out.println(location.brewery.name);
-			final Set<Beer> beerList = builder.beerMap.get(location.breweryId);
-			if (beerList != null) {
-				for (final Beer beer : beerList) {
-					System.out.print(beer.name + ", ");
-				}
-				System.out.println();
-			}
-		}
+		Set<String> locationNames = builder.locationMap.values().stream()
+			.map(l -> l.brewery.name)
+			.collect(Collectors.toSet());
+		locationNames = new TreeSet<>(locationNames);
+		locationNames.forEach(System.out::println);
 	}
 
 }

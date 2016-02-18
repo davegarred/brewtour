@@ -3,32 +3,24 @@ package org.garred.brewtour.application;
 import javax.sql.DataSource;
 
 import org.garred.brewtour.domain.LocationId;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-public class H2LocationIdentifierFactory implements IdentifierFactory<LocationId> {
+public class H2LocationIdentifierFactory extends AbstractH2IdentifierFactory<LocationId> {
 
-	private static final String NEXTVAL = "SELECT NEXTVAL('locationSequence')";
-	private static final String CURRVAL = "SELECT CURRVAL('locationSequence')";
-
-	private final JdbcTemplate jdbcTemplate;
+	private static final String LOCATION_SEQUENCE = "locationSequence";
+	private static final String IDENTIFIER_PREFIX = "LOCA";
 
 	public H2LocationIdentifierFactory(DataSource dataSource) {
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		super(dataSource);
 	}
 
 	@Override
-	public LocationId next() {
-		final SqlRowSet res = this.jdbcTemplate.queryForRowSet(NEXTVAL);
-		res.next();
-		return new LocationId("LOCA" + res.getInt(1));
+	protected String sequenceName() {
+		return LOCATION_SEQUENCE;
 	}
 
 	@Override
-	public LocationId last() {
-		final SqlRowSet res = this.jdbcTemplate.queryForRowSet(CURRVAL);
-		res.next();
-		return new LocationId("LOCA" + res.getInt(1));
+	protected LocationId newIdentifier(long sequence) {
+		return new LocationId(IDENTIFIER_PREFIX + sequence);
 	}
 
 }

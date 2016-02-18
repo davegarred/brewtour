@@ -7,7 +7,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.garred.brewtour.application.LocationIdentifierFactoryStub;
+import org.garred.brewtour.application.IdentifierFactory;
 import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.location.AbstractLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
@@ -34,10 +34,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class LocationController extends AbstractRestController {
 
 	private final LocationQueryService locationService;
-	private final LocationIdentifierFactoryStub locationIdentifierFactory;
+	private final IdentifierFactory<LocationId> locationIdentifierFactory;
 	private final UserDetailsService userService;
 
-	public LocationController(LocationQueryService locationService, LocationIdentifierFactoryStub locationIdentifierFactory,
+	public LocationController(LocationQueryService locationService, IdentifierFactory<LocationId> locationIdentifierFactory,
 			UserDetailsService userService) {
 		this.locationService = locationService;
 		this.locationIdentifierFactory = locationIdentifierFactory;
