@@ -54,7 +54,6 @@ public class IntegrationTest {
 
 	private static final String BREWERY_NAME = "Stone Brewing";
 	private static final BreweryId BREWERY_ID = new BreweryId("BREW1001");
-	private static final BeerId BEER_ID = new BeerId("BEER10101");
 	private static final String LOCATION_COMMENT = "Some very important comment on this location";
 	private static final String LOCATION_NAME = "a location name";
 	private static final BigDecimal LONGITUDE = new BigDecimal("-122.315");
@@ -87,6 +86,8 @@ public class IntegrationTest {
 	@Autowired
 	private IdentifierFactory<LocationId> locationIdentifierFactory;
 	@Autowired
+	private IdentifierFactory<BeerId> beerIdentifierFactory;
+	@Autowired
 	private UserCommandHandlerService userCommandHandlerService;
 
 	@Autowired
@@ -115,9 +116,10 @@ public class IntegrationTest {
 		assertEquals(SEATTLE.id, locale.name);
 
 		this.commandGateway.sendAndWait(addBeerCommand());
-		this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, BEER_ID));
+		final BeerId beerId = this.beerIdentifierFactory.last();
+		this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
 		location = this.locationRepo.get(locationId);
-		assertSingleItemInCollection(newBeerView(BEER_ID, BEER_NAME, STYLE, CATEGORY, ABV, IBU), location.beers.values());
+		assertSingleItemInCollection(newBeerView(beerId, BEER_NAME, STYLE, CATEGORY, ABV, IBU), location.beers.values());
 
 		final Review expectedReview = new Review(SCREEN_NAME, GOLD.name(), LOCATION_REVIEW);
 		this.commandGateway.sendAndWait(addLocationReviewCommand(locationId));
@@ -129,13 +131,13 @@ public class IntegrationTest {
 		assertSingleItemInCollection(expectedReview, userDetails.locationReviews.values());
 
 		final Review expectedBeerReview = new Review(SCREEN_NAME, SILVER.name(), BEER_REVIEW);
-		this.commandGateway.sendAndWait(addBeerReviewCommand(locationId));
-		final BeerView beer = this.locationRepo.get(locationId).beers.get(BEER_ID);
+		this.commandGateway.sendAndWait(addBeerReviewCommand(beerId));
+		final BeerView beer = this.locationRepo.get(locationId).beers.get(beerId);
 		assertEquals(SILVER.name(), beer.medal);
 		assertSingleItemInCollection(expectedBeerReview, beer.userReviews);
 
 		userDetails = this.userDetailsRepo.get(userId);
-		assertEquals(expectedBeerReview, userDetails.beerReviews.get(BEER_ID));
+		assertEquals(expectedBeerReview, userDetails.beerReviews.get(beerId));
 
 		this.commandGateway.sendAndWait(addLocationCommentCommand(locationId));
 		final AdminView adminView = this.adminRepo.get(SEATTLE);
@@ -156,8 +158,8 @@ public class IntegrationTest {
 	private static AddLocationReviewCommand addLocationReviewCommand(LocationId locationId) {
 		return new AddLocationReviewCommand(locationId, GOLD, LOCATION_REVIEW);
 	}
-	private static AddBeerReviewCommand addBeerReviewCommand(LocationId locationId) {
-		return new AddBeerReviewCommand(BEER_ID, SILVER, BEER_REVIEW);
+	private static AddBeerReviewCommand addBeerReviewCommand(BeerId beerId) {
+		return new AddBeerReviewCommand(beerId, SILVER, BEER_REVIEW);
 	}
 	private static AddLocationCommentCommand addLocationCommentCommand(LocationId locationId) {
 		return new AddLocationCommentCommand(locationId, LOCATION_COMMENT);
