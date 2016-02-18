@@ -1,7 +1,4 @@
 <div class="modal fade" id="locationCommentModal"  ng-controller="LocationCommentController">
-	<!-- 
-	<div class="modal fade" id="locationCommentModal" ng-controller="LocationCommentController">
- -->
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -13,7 +10,7 @@
 			<div class="modal-body">
 				<p>Have details or corrections about this brewery? Seattle Beer Tour is a user driven site, let us know what you know!</p>
 				<h3>{{locationDetails.name}}</h3>
-				<textarea rows="4" cols="50" ng-model="locationDetailsComment"></textarea>
+				<textarea rows="4" cols="60" ng-model="locationDetailsComment" placeholder="Tell us something about this place."></textarea>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

@@ -1,6 +1,6 @@
 <div>
 		<button type="button" class="close" aria-label="Close" ng-click="closeLocation()">
-			<span aria-hidden="true">&times;</span>
+			<span aria-hidden="true" style="font-size: 35px;">&times;</span>
 		</button>
 		<img ng-src='{{locationDetails.images.medium}}' ng-if="locationDetails.images">
 		<h3>{{locationDetails.name}}</h3>
@@ -53,7 +53,9 @@
 				</td>
 			</tr>
 		</table>
-		<a data-toggle="modal" data-target="#locationCommentModal" href="#" style="float: right; color: #0000A5; margin-right: 10px;"> Did we
-			miss something? </a>
+		<a data-toggle="modal" data-target="#locationCommentModal" href="#" style="float: right; color: #0000A5; margin-right: 10px;"
+			data-placement="top" title="If you know something about this place that we don't, please let us know!">
+			Did we miss something?
+		</a>
 			
 </div>

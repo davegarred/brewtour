@@ -168,6 +168,13 @@
     	
     }]);
     beertour.controller('LocationReviewController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
+    	$('#locationReviewModal').on('show.bs.modal', function(e) {
+    		$scope.locationName = LocationService.location().name;
+    		$scope.medal = null;
+    		$scope.locationReview = "";
+    		$scope.$apply();
+    	});
+    	
     	$scope.sendReview = function() {
     		var dto = {
     				locationId : LocationService.location().locationId,
