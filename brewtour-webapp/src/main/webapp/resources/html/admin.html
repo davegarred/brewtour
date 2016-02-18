@@ -1,0 +1,34 @@
+<div class="container" ng-controller="AdminController">
+	<div class="row">
+		<div class="col-md-6">
+			<table class="table table-condensed table-sm">
+				<tr ng-repeat="location in locale.locations" style="font-size: x-small">
+					<td>{{location.locationId}}</td>
+					<td>{{location.name}}</td>
+					<td><button type="button" class="btn btn-default btn-xs" ng-click="focusLocation(location)">Focus</button></td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-6">
+			<table class="table table-condensed table-sm" ng-if="focusedLocation">
+				<tr ng-repeat="beer in focusedLocation.beers" style="font-size: x-small">
+					<td>{{beer.id}}</td>
+					<td>{{beer.beerName}}</td>
+					<td><button type="button" class="btn btn-default btn-xs" ng-click="focusBeer(beer)">Edit</button></td>
+				</tr>
+			</table>
+		</div>
+
+	</div>
+
+	<pre style="font-size: x-small">{{focusedBeer | json}}</pre>
+	<pre style="font-size: x-small">{{focusedLocation | json}}</pre>
+
+</div>
+
+<!-- 
+	<ng-include src="'resources/html/locationCommentModal.html'"></ng-include>
+	<ng-include src="'resources/html/locationReviewModal.html'"></ng-include>
+	<ng-include src="'resources/html/beerReviewModal.html'"></ng-include>
+	<ng-include src="'resources/html/loginModal.html'"></ng-include>
+ -->

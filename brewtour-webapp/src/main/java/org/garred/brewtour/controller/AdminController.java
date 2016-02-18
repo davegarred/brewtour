@@ -39,6 +39,11 @@ public class AdminController extends AbstractRestController {
 		return this.adminViewRepo.get(SEATTLE);
 	}
 
+	@RequestMapping(value = "interface", method = GET)
+	public String adminInterface() {
+		return "admin";
+	}
+
 	@RequestMapping(value = "AddUser", method = RequestMethod.POST)
 	@ResponseBody
 	public UserAuthView addUser(@RequestBody AddUserCommand command) {
