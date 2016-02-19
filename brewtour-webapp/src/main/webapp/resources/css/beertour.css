@@ -1,0 +1,26 @@
+td {
+    padding: 3;
+}
+.comments_section {
+    font-size: small;
+    padding: 3;
+}
+
+.location_close {
+	font-size: 35px;
+}
+.hidden-md .location_close {
+	font-size: 45px;
+}
+
+/*
+@media (max-width: 768px) {
+    body{
+    	font-size: 18px;
+    }
+}
+*/
+
+/* start google maps parameters */
+
+/* end google maps parameters */

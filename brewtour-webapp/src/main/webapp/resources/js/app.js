@@ -203,6 +203,13 @@
    		$scope.$watch(function(){ return LocationService.beer() }, function(newVal,oldVal) {
    			return $scope.reviewingBeer = newVal
    		}, true);
+   		
+    	$('#beerReviewModal').on('show.bs.modal', function(e) {
+    		$scope.locationName = LocationService.location().name;
+    		$scope.medal = null;
+    		$scope.beerReview = "";
+    		$scope.$apply();
+    	});
 
     	$scope.sendReview = function() {
     		var dto = {
@@ -215,10 +222,10 @@
     			$('#beerReviewModal').modal('hide');
     			$scope.medal = null;
     			$scope.beerReview = "";
-    			UserService.set(response.data.user);
-    			$http.get('location/' + LocationService.location().locationId)
+    			$http.get('location/' + LocationService.location().locationId + '/wuser')
     			.then(function successCallback(response) {
-    				LocationService.set(response.data);
+        			UserService.set(response.data.user);
+        			LocationService.set(response.data.location);
     			}, function errorCallback(response) {
     				error(response);
     			});
