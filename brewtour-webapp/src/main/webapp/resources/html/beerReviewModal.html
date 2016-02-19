@@ -12,19 +12,20 @@
 				<h3>{{reviewingBeer.beerName}}({{location.name}})</h3>
 					<div ng-if="reviewingBeer.abv">{{reviewingBeer.abv}}% ABV</div>
 					<div ng-if="reviewingBeer.ibu">{{reviewingBeer.ibu}} IBUs</div>
-					<label class="radio-inline">
-						<input type="radio" ng-model="medal" value="GOLD">
+
+				<div class="btn-group" role="group" aria-label="rating">
+					<a href="#" class="btn btn-default" ng-class="{'active':medal=='GOLD'}" ng-click="medal = 'GOLD'" data-placement="top" title="One of the best beers around">
 						<img ng-src='resources/img/128x128_gold.png' style="width: 40px;">
-					</label>
-					<label class="radio-inline">
-						<input type="radio" ng-model="medal"  value="SILVER">
+					</a>
+					<a href="#" class="btn btn-default" ng-class="{'active':medal=='SILVER'}" ng-click="medal = 'SILVER'" data-placement="top" title="A great beer">
 						<img ng-src='resources/img/128x128_silver.png' style="width: 40px;">
-					</label>
-					<label class="radio-inline">
-						<input type="radio" ng-model="medal" value="BRONZE">
+					</a>
+					<a href="#" class="btn btn-default" ng-class="{'active':medal=='BRONZE'}" ng-click="medal = 'BRONZE'" data-placement="top" title="Just a beer">
 						<img ng-src='resources/img/128x128_bronze.png' style="width: 40px;">
-					</label>
-				<textarea rows="4" cols="50" ng-model="beerReview"></textarea>
+					</a>
+				</div>
+				<p></p>
+				<textarea rows="4" cols="50" ng-model="beerReview" ng-show="medal" placeholder="Add a review here"></textarea>
 			</div>
 
 			<div class="modal-footer">

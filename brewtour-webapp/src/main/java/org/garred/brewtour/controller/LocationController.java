@@ -54,6 +54,11 @@ public class LocationController extends AbstractRestController {
 	public LocationView location(@PathVariable String locationId) {
 		return this.locationService.getLocation(new LocationId(locationId));
 	}
+	@RequestMapping(value = "{locationId}/wuser", method = GET, produces="application/json")
+	@ResponseBody
+	public LocationUserCombinedView locationWithUser(@PathVariable LocationId locationId) {
+		return updatedLocationUserCombinedView(locationId);
+	}
 
 //	@RequestMapping(value = "/beerAvailable", method = POST, produces="application/json")
 //	@ResponseBody
