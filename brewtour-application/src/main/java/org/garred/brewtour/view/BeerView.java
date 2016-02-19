@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.Entity;
 
@@ -12,6 +13,7 @@ public class BeerView extends AbstractView implements Entity<BeerId> {
 	public BeerId id;
 	public String beerName,description,style,category;
 	public BigDecimal abv, ibu;
+	public AvailableImages images;
 	public List<Review> userReviews;
 
 	public String medal;

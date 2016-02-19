@@ -24,6 +24,7 @@ import org.garred.brewdb.domain.Images;
 import org.garred.brewdb.domain.Location;
 import org.garred.brewtour.application.command.GenericAddAggregateCallback;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
 import org.garred.brewtour.application.command.brewery.AddBreweryCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
@@ -92,7 +93,7 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 		public static class CustomLocationCommandList extends ArrayList<CustomLocationCommand> {}
 		@SuppressWarnings("serial")
 		public static class CustomBeerCommandList extends ArrayList<CustomAddBeerCommand> {}
-		
+
 
 		private LocationId fireLocationCommands(Location brewDbLocation) {
 			final AddLocationCommand command = new AddLocationCommand(brewDbLocation.brewery.name);
@@ -141,7 +142,7 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			final AddBreweryCommand command = new AddBreweryCommand(brewery.breweryName);
 			final GenericAddAggregateCallback<BreweryId> callback = forCommand(command);
 			this.commandGateway.sendAndWait(command);
-			BreweryId breweryId = callback.identifier();
+			final BreweryId breweryId = callback.identifier();
 			this.nameToBreweryIdMap.put(brewery.breweryName, breweryId);
 			return breweryId;
 		}
@@ -155,33 +156,41 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			this.commandGateway.sendAndWait(command);
 			final BeerId beerId = callback.identifier();
 
+			final Images bdbImages = beer.labels;
+			if(bdbImages != null && (
+					bdbImages.icon != null ||
+					bdbImages.medium != null ||
+					bdbImages.large != null)) {
+				this.commandGateway.sendAndWait(new UpdateBeerImagesCommand(beerId, AvailableImages.fromString(bdbImages.icon, bdbImages.medium,bdbImages.large)));
+			}
+
 			for(final LocationId locationId : locationIds) {
 				this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
 			}
 			return beerId;
 		}
 		private void fireCustomCommands() {
-			for(CustomLocationCommand customCommand : this.customLocationList) {
-				LocationId locationId = this.nameToLocationIdMap.get(customCommand.locationName);
+			for(final CustomLocationCommand customCommand : this.customLocationList) {
+				final LocationId locationId = this.nameToLocationIdMap.get(customCommand.locationName);
 				try {
-					Class<?> commandClass = Class.forName(customCommand.commandClass);
-					Object command = objectMapper.readValue(customCommand.serializedCommand, commandClass);
-					Field field = command.getClass().getField("locationId");
+					final Class<?> commandClass = Class.forName(customCommand.commandClass);
+					final Object command = this.objectMapper.readValue(customCommand.serializedCommand, commandClass);
+					final Field field = command.getClass().getField("locationId");
 					field.setAccessible(true);
 					field.set(command, locationId);
 					this.commandGateway.sendAndWait(command);
 				} catch (ClassNotFoundException | IOException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}
-				
+
 			}
-			for(CustomAddBeerCommand customCommand : this.customBeerList) {
-				String breweryName = customCommand.breweryName;
-				BreweryId breweryId = this.nameToBreweryIdMap.get(breweryName);
-				LocationId locationId = this.nameToLocationIdMap.get(customCommand.locationName);
-				AddBeerCommand command = customCommand.command;
-				AddBeerCommand newCommand = new AddBeerCommand(command.beerName, command.description, breweryId, breweryName, command.style, command.category, command.abv, command.ibu);
-				GenericAddAggregateCallback<BeerId> callback = GenericAddAggregateCallback.forCommand(newCommand);
+			for(final CustomAddBeerCommand customCommand : this.customBeerList) {
+				final String breweryName = customCommand.breweryName;
+				final BreweryId breweryId = this.nameToBreweryIdMap.get(breweryName);
+				final LocationId locationId = this.nameToLocationIdMap.get(customCommand.locationName);
+				final AddBeerCommand command = customCommand.command;
+				final AddBeerCommand newCommand = new AddBeerCommand(command.beerName, command.description, breweryId, breweryName, command.style, command.category, command.abv, command.ibu);
+				final GenericAddAggregateCallback<BeerId> callback = GenericAddAggregateCallback.forCommand(newCommand);
 				this.commandGateway.sendAndWait(newCommand);
 				this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, callback.identifier()));
 			}
