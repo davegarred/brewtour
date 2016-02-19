@@ -8,6 +8,8 @@ import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.beer.AddBeerRatingCommand;
 import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.beer.ModifyBeerCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.domain.AvailableImages;
 import org.junit.Test;
 
 public class BeerCommandSerializationTest extends AbstractSerializationTest {
@@ -29,6 +31,10 @@ public class BeerCommandSerializationTest extends AbstractSerializationTest {
 	@Test
 	public void testModifyBeer() {
 		reflectionValidate(new ModifyBeerCommand(BEER_ID, BEER_STYLE, BEER_CATEGORY, BEER_ABV, BEER_IBU));
+	}
+	@Test
+	public void testUpdateBeerImages() {
+		reflectionValidate(new UpdateBeerImagesCommand(BEER_ID, new AvailableImages(IMAGE_1, IMAGE_2, null)));
 	}
 
 	@Test

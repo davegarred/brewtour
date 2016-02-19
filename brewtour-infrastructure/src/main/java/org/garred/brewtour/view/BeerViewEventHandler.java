@@ -3,6 +3,7 @@ package org.garred.brewtour.view;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.garred.brewtour.application.event.beer.AbstractBeerReviewAddedEvent;
 import org.garred.brewtour.application.event.beer.BeerAddedEvent;
+import org.garred.brewtour.application.event.beer.BeerImagesUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerModifiedEvent;
 import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
 import org.garred.brewtour.domain.BeerId;
@@ -28,6 +29,11 @@ public class BeerViewEventHandler extends AbstractViewEventHandler<BeerId, BeerV
 			b.abv = event.abv;
 			b.ibu = event.ibu;
 		});
+	}
+
+	@EventHandler
+	public void on(BeerImagesUpdatedEvent event) {
+		update(event.beerId, b -> b.images = event.images);
 	}
 
     @EventHandler

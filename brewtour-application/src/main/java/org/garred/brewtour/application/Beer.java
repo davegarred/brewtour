@@ -17,9 +17,11 @@ import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.beer.AddBeerRatingCommand;
 import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.beer.ModifyBeerCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
 import org.garred.brewtour.application.event.beer.AbstractBeerReviewAddedEvent;
 import org.garred.brewtour.application.event.beer.AbstractBeerStarRatingAddedEvent;
 import org.garred.brewtour.application.event.beer.BeerAddedEvent;
+import org.garred.brewtour.application.event.beer.BeerImagesUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerModifiedEvent;
 import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByAnonymousEvent;
@@ -68,6 +70,11 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
 		apply(BeerModifiedEvent.fromCommand(modifyBeer));
 	}
 
+	public void updateImages(UpdateBeerImagesCommand command) {
+		if(this.images == null || !this.images.equals(command.images)) {
+			apply(BeerImagesUpdatedEvent.fromCommand(command));
+		}
+	}
 
 
 	public void addBeerStarRating(AddBeerRatingCommand beerReview, UserAuth user) {
@@ -111,6 +118,10 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
     	this.category = event.category;
     	this.abv = event.abv;
     	this.ibu = event.ibu;
+    }
+    @EventHandler
+    public void on(BeerImagesUpdatedEvent event) {
+    	this.images = event.images;
     }
     @EventHandler
     public void on(AbstractBeerStarRatingAddedEvent event) {

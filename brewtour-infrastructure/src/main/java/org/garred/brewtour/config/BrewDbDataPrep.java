@@ -20,6 +20,9 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.garred.brewdb.domain.Beer;
+import org.garred.brewdb.domain.BeerStyle;
+import org.garred.brewdb.domain.Brewery;
+import org.garred.brewdb.domain.Images;
 import org.garred.brewdb.domain.Location;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationWebsiteCommand;
@@ -32,6 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 
 public class BrewDbDataPrep {
+
+	private int idCounter = 1;
 
 	public static final String LOCATION_FILE = "json/init_locations.json";
 	public static final String BREWERY_FILE = "json/init_breweries.json";
@@ -79,6 +84,7 @@ public class BrewDbDataPrep {
 			loadLocationData();
 			buildBreweryList();
 			loadBeerData();
+			addCustomLocations();
 			buildCustomAddBeerCommands();
 			writeAll();
 		} catch (final IOException e) {
@@ -156,21 +162,90 @@ public class BrewDbDataPrep {
 			}
 		}
 	}
+
+	private void addCustomLocations() {
+		final Location location = bdbLocation("Cloudburst Brewing",
+				"2116 Western Ave",
+				"98121",
+				"http://cloudburstbrew.com/",
+				null,
+				"47.6112849",
+				"-122.345076",
+				"resources/img/breweries/initial/cloudburst.png");
+		this.locationMap.put(location.id, location);
+		final String breweryId = location.breweryId;
+		this.breweryMap.put(breweryId, buildBreweryData(location));
+
+		final Set<Beer> beerSet = new HashSet<>();
+		beerSet.add(buildBdbBeer("Pigeonhole IPA", "IPA with Chinook, Citra, Amarillo, and LOTS of Simcoe", null, null, "American-Style India Pale Ale"));
+		beerSet.add(buildBdbBeer("Born Again", "Strong Blonde Ale spiced with grains of paradise, long peppercorns, & coriander", null, null, null));
+		beerSet.add(buildBdbBeer("Punch Drunk Love", "Strong Pale Ale with Sweet Cherry puree and Pineapple juice.", null, null, null));
+		beerSet.add(buildBdbBeer("Psycho Hose Beast", "Triple IPA", null, null, null));
+		beerSet.add(buildBdbBeer("Market Fresh Saison", "Version 2: Grapefruit & Rosemary", null, null, null));
+		beerSet.add(buildBdbBeer("Aw Shucks", "Oyster Stout", null, null, null));
+		beerSet.add(buildBdbBeer("Unreliable Narrator", "Dry Hopped Pale with GR Mandarina & NZ Nelson Sauvin hops", null, null, null));
+		beerSet.add(buildBdbBeer("Cure-All", "Nitro Milk Stout", null, null, null));
+		beerSet.add(buildBdbBeer("Hotline Bling IPA", "IPA with Mosaic, Galaxy, & El Dorado", null, null, null));
+		beerSet.add(buildBdbBeer("Hoppy Little Clouds", "Dry-Hopped Pilsner", null, null, null));
+		this.beerMap.put(breweryId, beerSet);
+	}
+	private static Beer buildBdbBeer(final String beerName, final String beerDescription, final String abv, final String ibu,
+			final String style) {
+		final Beer beer = new Beer();
+		beer.name = beerName;
+		beer.description = beerDescription;
+		beer.ibu = ibu;
+		beer.abv = abv;
+		beer.style = new BeerStyle();
+		beer.style.name = style;
+		return beer;
+	}
+	private static BreweryData buildBreweryData(final Location location) {
+		final BreweryData brewery = new BreweryData(location.breweryId, location.brewery.name);
+		brewery.locationIds.add(location.id);
+		return brewery;
+	}
+	private Location bdbLocation(final String breweryName, final String address1, final String zip,
+			final String website, final String description, final String lat, final String longit, final String image) {
+		final String locationId = nextBDBId();
+		final String breweryId = nextBDBId();
+		final Location location = new Location();
+		location.id = locationId;
+		location.breweryId = breweryId;
+		final Brewery brewery = new Brewery();
+		brewery.images = new Images();
+		brewery.images.medium = image;
+		brewery.id = breweryId;
+		brewery.name = breweryName;
+		brewery.description = description;
+		location.brewery = brewery;
+		location.latitude = new BigDecimal(lat);
+		location.longitude = new BigDecimal(longit);
+		location.website = website;
+		location.streetAddress = address1;
+		location.locality = "Seattle";
+		location.region = "WA";
+		location.postalCode = zip;
+		return location;
+	}
+	private String nextBDBId() {
+		return "bdb" + this.idCounter++;
+	}
 	private void buildCustomAddBeerCommands() {
-		customLocationCommands.add(genericCustomLocationCommand("Lucky Envelope Brewing", new UpdateLocationWebsiteCommand(null, "http://www.luckyenvelopebrewing.com/"), objectMapper));
-		customLocationCommands.add(genericCustomLocationCommand("Populuxe Brewing", new UpdateLocationWebsiteCommand(null, "https://www.facebook.com/PopuluxeBrewing/"), objectMapper));
-		customLocationCommands.add(genericCustomLocationCommand("NW Peaks Brewery", new UpdateLocationWebsiteCommand(null, "http://www.nwpeaksbrewery.com/"), objectMapper));
-		
-		customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Boss Fight Triple IPA", "Triple IPA Season is upon us! Intense hop flavors and aromas from heavy double dry hopping at over 2 pounds per barrel. Our 3x IPA is bigger, meaner, and has a lot more hit points than your standard IPA.", null, null, null, "Imperial or Double India Pale Ale", new BigDecimal("10.3"), new BigDecimal("104"))));
-		customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("ENIAC 2.0 Mosaic India Pale Ale", "Version 2.0 of our ENIAC IPA screams Mosaic hops and a balanced malt profile with notes of juicy tropical fruit and resinous pine.", null, null, null, "American-Style India Pale Ale", new BigDecimal("6.4"), new BigDecimal("68"))));
-		customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("50th Street India Pale Ale", "Our San Diego-inspired IPA is a bitter and grapefruit-forward hoppy beer. The pilsner malt base is crisp and clean to let the hop profile shine.", null, null, null, "American-Style India Pale Ale", new BigDecimal("6.8"), new BigDecimal("80"))));
-		customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Galaxy Session IPA", "This hoppy, yet sessionable beer packs the hop kick of a traditional IPA but with less alcohol. Australian Galaxy hops provide a juicy, tropical fruit aroma.", null, null, null, "Session India Pale Ale", new BigDecimal("4.6"), new BigDecimal("52"))));
-		customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Imperial Porter", "The imperial robust porter packs complex malt flavor while still being able to enjoy a pint. This beer is bold and chewy with flavors of espresso, milk chocolate, and caramel.", null, null, null, "American-Style Imperial Porter", new BigDecimal("7.5"), new BigDecimal("42"))));
-		customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Flying Envelope Washington Lager", "This American Craft Lager uses 100% Washington-grown ingredients and our house lager strain. Light and crisp, this beer showcases local heirloom malt with a smooth bready finish.", null, null, null, null, new BigDecimal("4.7"), new BigDecimal("26"))));
-		customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Buddha’s Hand Pale Ale", "A classic Pacific Northwest pale ale infused with zest from Buddha’s Hand and Chinese pomelo citrus fruits. Both citrus fruits are native to southeastern Asia", null, null, null, "American-Style Pale Ale", new BigDecimal("5.1"), new BigDecimal("38"))));
+		this.customLocationCommands.add(genericCustomLocationCommand("Lucky Envelope Brewing", new UpdateLocationWebsiteCommand(null, "http://www.luckyenvelopebrewing.com/"), this.objectMapper));
+		this.customLocationCommands.add(genericCustomLocationCommand("Populuxe Brewing", new UpdateLocationWebsiteCommand(null, "https://www.facebook.com/PopuluxeBrewing/"), this.objectMapper));
+		this.customLocationCommands.add(genericCustomLocationCommand("NW Peaks Brewery", new UpdateLocationWebsiteCommand(null, "http://www.nwpeaksbrewery.com/"), this.objectMapper));
+
+		this.customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Boss Fight Triple IPA", "Triple IPA Season is upon us! Intense hop flavors and aromas from heavy double dry hopping at over 2 pounds per barrel. Our 3x IPA is bigger, meaner, and has a lot more hit points than your standard IPA.", null, null, null, "Imperial or Double India Pale Ale", new BigDecimal("10.3"), new BigDecimal("104"))));
+		this.customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("ENIAC 2.0 Mosaic India Pale Ale", "Version 2.0 of our ENIAC IPA screams Mosaic hops and a balanced malt profile with notes of juicy tropical fruit and resinous pine.", null, null, null, "American-Style India Pale Ale", new BigDecimal("6.4"), new BigDecimal("68"))));
+		this.customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("50th Street India Pale Ale", "Our San Diego-inspired IPA is a bitter and grapefruit-forward hoppy beer. The pilsner malt base is crisp and clean to let the hop profile shine.", null, null, null, "American-Style India Pale Ale", new BigDecimal("6.8"), new BigDecimal("80"))));
+		this.customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Galaxy Session IPA", "This hoppy, yet sessionable beer packs the hop kick of a traditional IPA but with less alcohol. Australian Galaxy hops provide a juicy, tropical fruit aroma.", null, null, null, "Session India Pale Ale", new BigDecimal("4.6"), new BigDecimal("52"))));
+		this.customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Imperial Porter", "The imperial robust porter packs complex malt flavor while still being able to enjoy a pint. This beer is bold and chewy with flavors of espresso, milk chocolate, and caramel.", null, null, null, "American-Style Imperial Porter", new BigDecimal("7.5"), new BigDecimal("42"))));
+		this.customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Flying Envelope Washington Lager", "This American Craft Lager uses 100% Washington-grown ingredients and our house lager strain. Light and crisp, this beer showcases local heirloom malt with a smooth bready finish.", null, null, null, null, new BigDecimal("4.7"), new BigDecimal("26"))));
+		this.customAddBeerCommands.add(genericCustomBeerCommand("Lucky Envelope Brewing", new AddBeerCommand("Buddha’s Hand Pale Ale", "A classic Pacific Northwest pale ale infused with zest from Buddha’s Hand and Chinese pomelo citrus fruits. Both citrus fruits are native to southeastern Asia", null, null, null, "American-Style Pale Ale", new BigDecimal("5.1"), new BigDecimal("38"))));
 
 	}
-	
+
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException {
 		final BrewDbDataPrep builder = new BrewDbDataPrep();
 		Set<String> locationNames = builder.locationMap.values().stream()
