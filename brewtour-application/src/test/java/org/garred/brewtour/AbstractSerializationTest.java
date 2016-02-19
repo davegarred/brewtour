@@ -41,6 +41,7 @@ public abstract class AbstractSerializationTest {
 	protected static final BreweryId BREWERY_ID = new BreweryId("BREW10001");
 	protected static final BeerId BEER_ID = new BeerId("BEER10101");
 
+	protected static final String BEER_DESCRIPTION = "a very tasty beer";
 	protected static final String BEER_CATEGORY = "niche category";
 	protected static final String BEER_STYLE = "awesome style";
 	protected static final String BEER_STATUS = "someStatus";

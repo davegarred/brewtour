@@ -18,7 +18,7 @@ public class BeerCommandSerializationTest extends AbstractSerializationTest {
 
 	@Test
 	public void testAddBeer() {
-		reflectionValidate(new AddBeerCommand(BEER_NAME, BREWERY_ID, BREWERY_NAME, BEER_STYLE, BEER_CATEGORY, BEER_ABV, BEER_IBU));
+		reflectionValidate(new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, BREWERY_ID, BREWERY_NAME, BEER_STYLE, BEER_CATEGORY, BEER_ABV, BEER_IBU));
 	}
 
 	@Test

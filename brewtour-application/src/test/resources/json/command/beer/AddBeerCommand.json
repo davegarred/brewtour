@@ -1,5 +1,6 @@
 {
   "beerName" : "a beer name",
+  "description" : "a very tasty beer",
   "breweryId" : "BREW10001",
   "breweryName" : "Stone Brewing",
   "style" : "awesome style",

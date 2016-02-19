@@ -10,17 +10,18 @@ import org.garred.brewtour.domain.Entity;
 public class BeerView extends AbstractView implements Entity<BeerId> {
 
 	public BeerId id;
-	public String beerName,style,category;
+	public String beerName,description,style,category;
 	public BigDecimal abv, ibu;
 	public List<Review> userReviews;
 
 	public String medal;
 
-	public static BeerView newBeerView(BeerId beerId, String beerName, String style, String category,
+	public static BeerView newBeerView(BeerId beerId, String beerName, String description, String style, String category,
 			BigDecimal abv, BigDecimal ibu) {
 		final BeerView view = new BeerView();
 		view.id = beerId;
 		view.beerName = beerName;
+		view.description = description;
 		view.style = style;
 		view.category = category;
 		view.abv = abv;

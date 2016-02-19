@@ -64,6 +64,7 @@ public class IntegrationTest {
 	private static final Image IMAGE_2 = new Image("image 2");
 	private static final AvailableImages AVAILABLE_IMAGES = new AvailableImages(IMAGE_1, IMAGE_2, null);
 	private static final String BEER_NAME = "A beer name";
+	private static final String BEER_DESCRIPTION = "a very tasty beer";
 	private static final String STYLE = "Beer Style";
 	private static final String CATEGORY = "beer category";
 	private static final BigDecimal ABV = new BigDecimal("6.3");
@@ -119,7 +120,7 @@ public class IntegrationTest {
 		final BeerId beerId = this.beerIdentifierFactory.last();
 		this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
 		location = this.locationRepo.get(locationId);
-		assertSingleItemInCollection(newBeerView(beerId, BEER_NAME, STYLE, CATEGORY, ABV, IBU), location.beers.values());
+		assertSingleItemInCollection(newBeerView(beerId, BEER_NAME, BEER_DESCRIPTION, STYLE, CATEGORY, ABV, IBU), location.beers.values());
 
 		final Review expectedReview = new Review(SCREEN_NAME, GOLD.name(), LOCATION_REVIEW);
 		this.commandGateway.sendAndWait(addLocationReviewCommand(locationId));
@@ -153,7 +154,7 @@ public class IntegrationTest {
 	}
 
 	private static AddBeerCommand addBeerCommand() {
-		return new AddBeerCommand(BEER_NAME, BREWERY_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
+		return new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, BREWERY_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
 	}
 	private static AddLocationReviewCommand addLocationReviewCommand(LocationId locationId) {
 		return new AddLocationReviewCommand(locationId, GOLD, LOCATION_REVIEW);

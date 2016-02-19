@@ -16,7 +16,7 @@ public class BeerViewEventHandler extends AbstractViewEventHandler<BeerId, BeerV
 
 	@EventHandler
     public void on(BeerAddedEvent event) {
-		this.repository.save(BeerView.newBeerView(event.beerId, event.beerName, event.style, event.category, event.abv, event.ibu));
+		this.repository.save(BeerView.newBeerView(event.beerId, event.beerName, event.description, event.style, event.category, event.abv, event.ibu));
     }
 
 

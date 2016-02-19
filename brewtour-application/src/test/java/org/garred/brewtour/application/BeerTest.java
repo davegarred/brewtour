@@ -41,6 +41,7 @@ public class BeerTest {
 	private static final BigDecimal LATITUDE = new BigDecimal("47.614");
 	private static final LocationId LOCATION_ID = new LocationId("LOCA10001");
 	private static final BeerId BEER_ID = new BeerId("BEER10101");
+	protected static final String BEER_DESCRIPTION = "a very tasty beer";
 	protected static final String BREWERY_NAME = "Stone Brewing";
 	protected static final BreweryId BREWERY_ID = new BreweryId("BREW10001");
 
@@ -73,7 +74,7 @@ public class BeerTest {
 
 	private static final ModifyBeerCommand MODIFY_BEER_COMMAND = new ModifyBeerCommand(BEER_ID, STYLE_2, CATEGORY_2, ABV_2, IBU_2);
 	private static final AddLocationCommand ADD_LOCATION_COMMAND = new AddLocationCommand("a location name");
-	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(BEER_NAME, BREWERY_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
+	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, BREWERY_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
 
 
 	private FixtureConfiguration<Beer> fixture;
