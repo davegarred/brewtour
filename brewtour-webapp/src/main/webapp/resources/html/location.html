@@ -32,12 +32,13 @@
 			<a target="_blank" href="{{locationDetails.website}}">{{locationDetails.website}}</a>
 		</p>
 		<p>{{locationDetails.description}}</p>
-		<table ng-if="locationDetails.beers.length > 0" style="width: 100%;">
+		<table class="table table-condensed" ng-if="locationDetails.beers.length > 0" style="width: 100%;">
 			<tr>
 				<th></th>
-				<th></th>
+				<th>On tap</th>
 				<th ng-if="hasAbv">ABV</th>
 				<th ng-if="hasIbu">IBU</th>
+				<th></th>
 			</tr>
 			<tr ng-repeat="beer in locationDetails.beers">
 				<td>
