@@ -1,6 +1,6 @@
 'use strict';
 (function (angular) {
-    var beertour = angular.module('beertour', ['services']);
+    var beertour = angular.module('beertour', ['services', 'ui.bootstrap']);
 
     beertour.controller('MainController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
    		$scope.user = null;

@@ -17,5 +17,4 @@
     		templateUrl: 'resources/html/template/beerReviewMedal.html'
     	};
     });
-
 })(window.angular, window.jQuery)

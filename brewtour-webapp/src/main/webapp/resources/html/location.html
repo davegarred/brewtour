@@ -47,6 +47,7 @@
 			<a target="_blank" href="{{locationDetails.website}}">{{locationDetails.website}}</a>
 		</p>
 		<p>{{locationDetails.description}}</p>
+		
 		<table class="table table-condensed" ng-if="locationDetails.beers.length > 0" style="width: 100%;">
 			<tr>
 				<th></th>
@@ -70,7 +71,12 @@
 							data-placement="top" title="Add this as a favorite beer"></span>
 					</span>
 				</td>
-				<td>{{beer.beerName}}</td>
+				<td>
+					<a href="#" ng-if="beer.description" uib-popover="{{beer.description}}" popover-title="{{beer.beerName}}"
+						popover-placement="right" popover-trigger="focus"
+						>{{beer.beerName}}</a>
+					<span ng-if="!beer.description">{{beer.beerName}}</span>
+				</td>
 				<td ng-if="hasAbv"><span ng-if="beer.abv">{{beer.abv}}%</span></td>
 				<td ng-if="hasIbu"><span ng-if="beer.ibu">{{beer.ibu}}</span></td>
 				<td>

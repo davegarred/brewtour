@@ -5,6 +5,7 @@
 <title>Seattle Beer Tour</title>
 <script type="text/javascript" src="resources/lib/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="resources/lib/angular/angular.min.js"></script>
+<script type="text/javascript" src="resources/lib/ui-bootstrap-tpls-1.1.2.min.js"></script>
 <script type="text/javascript" src="resources/lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/lib/bootstrap-3.3.5/css/bootstrap.min.css">
 
