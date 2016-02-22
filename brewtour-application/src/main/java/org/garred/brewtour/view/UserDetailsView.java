@@ -2,6 +2,7 @@ package org.garred.brewtour.view;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.domain.BeerId;
@@ -15,6 +16,8 @@ public class UserDetailsView extends AbstractView implements Entity<UserId> {
 	public UserId userId;
 	public String screenName;
 	public String login;
+	public Set<LocationId> favoriteLocations;
+	public Set<BeerId> favoriteBeers;
 	public Map<LocationId,Review> locationReviews;
 	public Map<BeerId,Review> beerReviews;
 

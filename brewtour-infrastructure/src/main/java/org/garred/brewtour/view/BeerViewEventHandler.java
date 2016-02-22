@@ -44,4 +44,5 @@ public class BeerViewEventHandler extends AbstractViewEventHandler<BeerId, BeerV
     public void on(AbstractBeerReviewAddedEvent event) {
     	update(event.beerId, b -> b.addReview(new Review(event.userScreenName, event.medal.name(), event.review)));
     }
+
 }

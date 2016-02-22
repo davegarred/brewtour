@@ -9,8 +9,11 @@ import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
 import org.garred.brewtour.application.command.user.AddRoleToUserCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.application.command.user.RemoveRoleFromUserCommand;
+import org.garred.brewtour.application.event.user.FavoriteBeersUpdatedEvent;
+import org.garred.brewtour.application.event.user.FavoriteLocationsUpdatedEvent;
 import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.application.event.user.UserRolesUpdatedEvent;
+import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.Hash;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
@@ -23,6 +26,8 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
     private String screenName;
     private String login;
     private Hash hash;
+    private Set<LocationId> favoriteLocations = new HashSet<>();
+    private Set<BeerId> favoriteBeers = new HashSet<>();
     private Set<String> roles = new HashSet<>();
 
     public User() {}
@@ -49,6 +54,38 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
     	}
 	}
 
+    public void addFavoriteLocation(LocationId locationId) {
+    	if(!this.favoriteLocations.contains(locationId) && locationId != null) {
+    		final Set<LocationId> locationIds = new HashSet<>(this.favoriteLocations);
+    		locationIds.add(locationId);
+    		apply(new FavoriteLocationsUpdatedEvent(this.userId, locationIds));
+    	}
+	}
+
+	public void removeFavoriteLocation(LocationId locationId) {
+    	if(this.favoriteLocations.contains(locationId) && locationId != null) {
+    		final Set<LocationId> locationIds = new HashSet<>(this.favoriteLocations);
+    		locationIds.remove(locationId);
+    		apply(new FavoriteLocationsUpdatedEvent(this.userId, locationIds));
+    	}
+	}
+
+	public void addFavoriteBeer(BeerId beerId) {
+    	if(!this.favoriteBeers.contains(beerId) && beerId != null) {
+    		final Set<BeerId> beerIds = new HashSet<>(this.favoriteBeers);
+    		beerIds.add(beerId);
+    		apply(new FavoriteBeersUpdatedEvent(this.userId, beerIds));
+    	}
+	}
+
+	public void removeFavoriteBeer(BeerId beerId) {
+		if(this.favoriteBeers.contains(beerId) && beerId != null) {
+    		final Set<BeerId> beerIds = new HashSet<>(this.favoriteBeers);
+    		beerIds.remove(beerId);
+    		apply(new FavoriteBeersUpdatedEvent(this.userId, beerIds));
+    	}
+	}
+
 	@EventHandler
 	public void on(UserAddedEvent event) {
 		this.userId = event.userId;
@@ -59,6 +96,14 @@ public class User extends AbstractAnnotatedAggregateRoot<LocationId> {
 	@EventHandler
 	public void on(UserRolesUpdatedEvent event) {
 		this.roles = event.roles;
+	}
+	@EventHandler
+	public void on(FavoriteLocationsUpdatedEvent event) {
+		this.favoriteLocations = event.favoriteLocations;
+	}
+	@EventHandler
+	public void on(FavoriteBeersUpdatedEvent event) {
+		this.favoriteBeers = event.favoriteBeers;
 	}
 
 }

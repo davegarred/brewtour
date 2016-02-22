@@ -4,23 +4,30 @@ import static org.garred.brewtour.filter.AuthenticationFilter.USER_ATTR;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.io.IOException;
+import java.io.Reader;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.garred.brewtour.application.command.AggregateCommand;
+import org.garred.brewtour.application.command.user.AbstractUserFiredCommand;
 import org.garred.brewtour.controller.api.UserLogin;
-import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.LoginNotFoundException;
 import org.garred.brewtour.security.UserHolder;
 import org.garred.brewtour.service.UserDetailsService;
 import org.garred.brewtour.view.UserAuthView;
 import org.garred.brewtour.view.UserDetailsView;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 @Controller
+@RequestMapping(value = "user", produces="application/json")
 public class UserController extends AbstractRestController {
 
 	private final UserDetailsService userService;
@@ -31,13 +38,13 @@ public class UserController extends AbstractRestController {
 		this.commandGateway = commandGateway;
 	}
 
-	@RequestMapping(value = "/user", method = GET, produces="application/json")
+	@RequestMapping(method = GET)
 	@ResponseBody
 	public UserDetailsView user() {
 		return this.userService.getCurrentUserDetails();
 	}
 
-	@RequestMapping(value = "/user/login", method = POST, produces="application/json")
+	@RequestMapping(value = "login", method = POST)
 	@ResponseBody
 	public UserDetailsView user(@RequestBody UserLogin login) {
 		final UserAuthView auth = this.userService.login(login.login, login.password);
@@ -48,7 +55,7 @@ public class UserController extends AbstractRestController {
 		return this.userService.getCurrentUserDetails();
 	}
 
-	@RequestMapping(value = "/user/logout", method = GET, produces="application/json")
+	@RequestMapping(value = "logout", method = GET)
 	@ResponseBody
 	public UserAuthView logout(HttpServletRequest request) {
 		request.getSession().removeAttribute(USER_ATTR);
@@ -56,9 +63,14 @@ public class UserController extends AbstractRestController {
 		return null;
 	}
 
-	private UserDetailsView processUserCommand(AggregateCommand<UserId> command) {
+	@RequestMapping(value = "{commandName}", method = POST, produces="application/json")
+	@ResponseBody
+	public UserDetailsView command(@PathVariable("commandName") String commandName, Reader reader) throws ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
+		@SuppressWarnings("unchecked")
+		final Class<? extends AbstractUserFiredCommand> commandType = (Class<? extends AbstractUserFiredCommand>) Class.forName(String.format("org.garred.brewtour.application.command.user.%sCommand",commandName));
+		final AbstractUserFiredCommand command = this.objectMapper.readValue(reader, commandType);
 		this.commandGateway.sendAndWait(command);
-		final UserDetailsView currentUserDetails = this.userService.getCurrentUserDetails();
-		return currentUserDetails;
+		return this.userService.getCurrentUserDetails();
 	}
+
 }

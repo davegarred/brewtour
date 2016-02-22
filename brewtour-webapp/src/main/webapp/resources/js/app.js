@@ -50,6 +50,43 @@
     	$scope.reviewBeer = function(beer) {
     		LocationService.setBeer(beer);
     	}
+
+    	$scope.isFavoriteLocation = function(locationId) {
+    		for(var i in $scope.user.favoriteLocations) {
+    			if(locationId == $scope.user.favoriteLocations[i]) {
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
+    	$scope.isFavoriteBeer = function(beerId) {
+    		for(var i in $scope.user.favoriteBeers) {
+    			if(beerId == $scope.user.favoriteBeers[i]) {
+    				return true;
+    			}
+    		}
+    		return false;
+    	}
+    	function submitUserCommand(commandName, dto) {
+        	$http.post('user/' + commandName, dto)
+        	.then(function successCallback(response) {
+        		UserService.set(response.data);
+        	}, function errorCallback(response) {
+        		error(response);
+        	});
+    	}
+    	$scope.addFavoriteLocation = function(locationId) {
+    		submitUserCommand('AddFavoriteLocation',{locationId : locationId});
+    	}
+    	$scope.removeFavoriteLocation = function(locationId) {
+    		submitUserCommand('RemoveFavoriteLocation',{locationId : locationId});
+    	}
+    	$scope.addFavoriteBeer = function(beerId) {
+    		submitUserCommand('AddFavoriteBeer',{beerId : beerId});
+    	}
+    	$scope.removeFavoriteBeer = function(beerId) {
+    		submitUserCommand('RemoveFavoriteBeer',{beerId : beerId});
+    	}
     	
     	$scope.isUserAndHasNotReviewedLocation = function() {
     		if(!$scope.user) {
