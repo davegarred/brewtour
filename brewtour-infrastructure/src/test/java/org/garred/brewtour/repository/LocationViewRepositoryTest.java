@@ -9,7 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -43,7 +43,7 @@ public class LocationViewRepositoryTest {
 		LOCATION.longitude = ZERO;
 		LOCATION.images = NO_IMAGES;
 		LOCATION.reviews = emptyList();
-		LOCATION.beers = new HashMap<>();
+		LOCATION.beers = new ArrayList<>();
 
 		LOCATION_2.locationId = LOCATION_ID;
 		LOCATION_2.name = "";
@@ -52,7 +52,7 @@ public class LocationViewRepositoryTest {
 		LOCATION_2.longitude = ONE;
 		LOCATION_2.images = NO_IMAGES;
 		LOCATION_2.reviews = emptyList();
-		LOCATION_2.beers = new HashMap<>();
+		LOCATION_2.beers = new ArrayList<>();
 	}
 
 	@Autowired

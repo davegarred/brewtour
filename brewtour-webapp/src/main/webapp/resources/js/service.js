@@ -37,17 +37,24 @@
     	var ibu = false;
     	var abv = false;
     	var currentBeer = null;
+    	var beers = [];
     	return {
-    		set : function(location) {
-    			var beerList = [];
-    			for(var i in location.beers) {
-    				beerList.push(location.beers[i]);
-    			}
-    			location.beers = beerList; 
-    			currentLocation = location;
-    			ibu = hasIbu(location.beers);
-    			abv = hasAbv(location.beers);
+    		set : function(response) {
+    			beers = response.beers; 
+    			currentLocation = response.location;
+    			ibu = hasIbu(beers);
+    			abv = hasAbv(beers);
     			currentBeer = null;
+    		},
+    		update : function(location) {
+    			currentLocation = location;
+    			currentBeer = null;
+    		},
+    		updateBeer : function(beer) {
+    			beers[beer.id] = beer;
+    		},
+    		beers : function() {
+    			return beers;
     		},
     		clear : function() {
     			currentLocation = null;

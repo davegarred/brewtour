@@ -22,6 +22,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class AbstractObjectRepository<I extends Identifier,T extends Entity<I>> implements ViewRepository<I,T> {
 
 	protected static final String SCHEMA = "brewtour";
+
+	protected final ResultSetExtractor<T> resultSetExtractor = new ResultSetExtractor<T>() {
+		@Override
+		public T extractData(ResultSet rs) throws SQLException, DataAccessException {
+			if(!rs.next()) {
+				return null;
+			}
+			final Reader data = rs.getCharacterStream("data");
+			return deserialize(data);
+		}
+	};
+	protected final RowMapper<T> rowMapperExtractor = new RowMapper<T>() {
+		@Override
+		public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+			final Reader data = rs.getCharacterStream("data");
+			return deserialize(data);
+		}
+	};
 
 	private final PreparedStatementCreatorFactory findOne;
 	private final PreparedStatementCreatorFactory insert;
@@ -89,17 +108,7 @@ public abstract class AbstractObjectRepository<I extends Identifier,T extends En
 
 	@Override
 	public T get(I key) {
-		final ResultSetExtractor<T> extractor = new ResultSetExtractor<T>() {
-			@Override
-			public T extractData(ResultSet rs) throws SQLException, DataAccessException {
-				if(!rs.next()) {
-					return null;
-				}
-				final Reader data = rs.getCharacterStream("data");
-				return deserialize(data);
-			}
-		};
-		return this.jdbcTemplate.query(this.findOne.newPreparedStatementCreator(asList(key.getId())), extractor);
+		return this.jdbcTemplate.query(this.findOne.newPreparedStatementCreator(asList(key.getId())), this.resultSetExtractor);
 	}
 
 	@Override

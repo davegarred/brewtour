@@ -43,6 +43,7 @@
 		c:userRepo-ref="userAuthRepo" />
 	<bean id="locationService" class="org.garred.brewtour.service.LocationServiceImpl"
 		c:localeRepository-ref="localeViewRepo"
+		c:beerRepository-ref="beerViewRepo"
 		c:locationRepository-ref="locationViewRepo"
 		c:commandGateway-ref="commandGateway"/>
 		

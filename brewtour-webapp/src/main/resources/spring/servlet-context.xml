@@ -36,7 +36,9 @@
 		c:locationService-ref="locationService"
 		c:userService-ref="userDetailsService" />
 	<beans:bean class="org.garred.brewtour.controller.BeerController"
-		c:locationService-ref="locationService" />
+		c:commandGateway-ref="commandGateway"
+		c:beerRepo-ref="beerViewRepo"
+		c:userService-ref="userDetailsService"/>
 	
 	<beans:bean class="org.garred.brewtour.controller.ApplicationStatusController"/>
 
