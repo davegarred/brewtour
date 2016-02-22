@@ -59,6 +59,4 @@
 	<bean id="objectMapper" class="org.garred.brewtour.infrastructure.ObjectMapperFactory"
 		factory-method="objectMapper"/>
 		
-	<bean class="org.garred.brewtour.config.SecureAspect" />
-		
 </beans>

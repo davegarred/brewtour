@@ -43,12 +43,21 @@
 	<bean id="commandGateway" class="org.axonframework.commandhandling.gateway.DefaultCommandGateway" >
 		<constructor-arg name="commandBus" ref="commandBus" />
 		<constructor-arg name="commandDispatchInterceptors">
-			<array></array>
+			<array>
+				<bean class="org.garred.brewtour.infrastructure.BeertourCommandDispatchInterceptor"/>
+			</array>
 		</constructor-arg>
 	</bean>
 	
-	
-	<axon:command-bus id="commandBus" />
+ 	<bean id="commandBus" class="org.axonframework.commandhandling.SimpleCommandBus">
+ 		<property name="handlerInterceptors">
+ 			<array>
+ 				<bean class="org.axonframework.auditing.AuditingInterceptor">
+ 					<property name="auditDataProvider"><bean class="org.garred.brewtour.infrastructure.BeertourAuditDataProvider"/></property>
+ 				</bean>
+ 			</array>
+ 		</property>
+ 	</bean>
 
 	<axon:event-bus id="eventBus"/>
 	<axon:event-sourcing-repository id="locationEventRepo"
