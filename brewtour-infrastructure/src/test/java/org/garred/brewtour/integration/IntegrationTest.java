@@ -3,6 +3,7 @@ package org.garred.brewtour.integration;
 import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 import static org.garred.brewtour.domain.ReviewMedal.GOLD;
 import static org.garred.brewtour.domain.ReviewMedal.SILVER;
+import static org.garred.brewtour.security.SystemUserAuth.SYSTEM;
 import static org.garred.brewtour.view.BeerView.newBeerView;
 import static org.junit.Assert.assertEquals;
 
@@ -102,6 +103,7 @@ public class IntegrationTest {
 
 	@Test
 	public void test() {
+		UserHolder.set(SYSTEM);
 		this.commandGateway.sendAndWait(ADD_USER_COMMAND);
 		final UserId userId = this.userCommandHandlerService.lastUserId();
 		setCurrentUser(userId);

@@ -7,6 +7,7 @@ import static org.garred.brewtour.config.BrewDbDataPrep.BREWERY_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.CUSTOM_BEER_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.CUSTOM_LOCATION_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.LOCATION_FILE;
+import static org.garred.brewtour.security.SystemUserAuth.SYSTEM;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +42,7 @@ import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
+import org.garred.brewtour.security.UserHolder;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
@@ -202,6 +204,7 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 				return;
 			}
 			completed = true;
+			UserHolder.set(SYSTEM);
 			this.commandGateway.send(new AddUserCommand("FBS", "dave", "password"));
 			final Map<String,LocationId> brewDbLocationIdMap = new HashMap<>();
 			for(final Location location : this.locationMap.values()) {

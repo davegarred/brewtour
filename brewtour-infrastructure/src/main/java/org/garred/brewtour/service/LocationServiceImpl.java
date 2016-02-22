@@ -7,7 +7,6 @@ import org.garred.brewtour.domain.LocaleId;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.repository.LocaleViewRepository;
 import org.garred.brewtour.repository.LocationViewRepository;
-import org.garred.brewtour.security.Secure;
 import org.garred.brewtour.view.LocaleView;
 import org.garred.brewtour.view.LocationView;
 
@@ -21,12 +20,6 @@ public class LocationServiceImpl implements LocationService, LocationQueryServic
 		this.locationRepository = locationRepository;
 		this.localeRepository = localeRepository;
 		this.commandGateway = commandGateway;
-	}
-
-	@Override
-	@Secure
-	public void fireSecuredCommand(Object command) {
-		this.commandGateway.sendAndWait(command);
 	}
 
 	@Override
