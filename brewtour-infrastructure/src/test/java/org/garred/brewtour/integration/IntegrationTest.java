@@ -27,6 +27,7 @@ import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.repository.AdminViewRepository;
+import org.garred.brewtour.repository.BeerViewRepository;
 import org.garred.brewtour.repository.LocaleViewRepository;
 import org.garred.brewtour.repository.LocationViewRepository;
 import org.garred.brewtour.repository.UserDetailsViewRepository;
@@ -99,6 +100,8 @@ public class IntegrationTest {
 	@Autowired
 	private LocaleViewRepository localeRepo;
 	@Autowired
+	private BeerViewRepository beerRepo;
+	@Autowired
 	private AdminViewRepository adminRepo;
 
 	@Test
@@ -122,7 +125,9 @@ public class IntegrationTest {
 		final BeerId beerId = this.beerIdentifierFactory.last();
 		this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
 		location = this.locationRepo.get(locationId);
-		assertSingleItemInCollection(newBeerView(beerId, BEER_NAME, BEER_DESCRIPTION, STYLE, CATEGORY, ABV, IBU), location.beers.values());
+		assertSingleItemInCollection(beerId, location.beers);
+		final BeerView beer = this.beerRepo.get(beerId);
+		assertEquals(newBeerView(beerId, BEER_NAME, BEER_DESCRIPTION, STYLE, CATEGORY, ABV, IBU), beer);
 
 		final Review expectedReview = new Review(SCREEN_NAME, GOLD.name(), LOCATION_REVIEW);
 		this.commandGateway.sendAndWait(addLocationReviewCommand(locationId));
@@ -135,9 +140,9 @@ public class IntegrationTest {
 
 		final Review expectedBeerReview = new Review(SCREEN_NAME, SILVER.name(), BEER_REVIEW);
 		this.commandGateway.sendAndWait(addBeerReviewCommand(beerId));
-		final BeerView beer = this.locationRepo.get(locationId).beers.get(beerId);
-		assertEquals(SILVER.name(), beer.medal);
-		assertSingleItemInCollection(expectedBeerReview, beer.userReviews);
+		final BeerView reviewedBeer = this.beerRepo.get(beerId);
+		assertEquals(SILVER.name(), reviewedBeer.medal);
+		assertSingleItemInCollection(expectedBeerReview, reviewedBeer.userReviews);
 
 		userDetails = this.userDetailsRepo.get(userId);
 		assertEquals(expectedBeerReview, userDetails.beerReviews.get(beerId));

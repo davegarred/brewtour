@@ -2,9 +2,6 @@ package org.garred.brewtour.repository;
 
 import static java.lang.String.format;
 
-import java.io.Reader;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +12,6 @@ import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.view.LocationView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,16 +27,9 @@ public class LocationViewRepositoryImpl extends AbstractViewRepository<LocationI
 
 	@Override
 	public Collection<LocationView> findLocationsWithBeer(BeerId beerId) {
-		final RowMapper<LocationView> extractor = new RowMapper<LocationView>() {
-			@Override
-			public LocationView mapRow(ResultSet rs, int rowNum) throws SQLException {
-				final Reader data = rs.getCharacterStream("data");
-				return deserialize(data);
-			}
-		};
 		final List<LocationView> result = new ArrayList<>();
-		for(final LocationView view : this.jdbcTemplate.query(this.findAll, extractor)) {
-			if(view != null && view.beers.containsKey(beerId)) {
+		for(final LocationView view : this.jdbcTemplate.query(this.findAll, this.rowMapperExtractor)) {
+			if(view != null && view.beers.contains(beerId)) {
 				result.add(view);
 			}
 		}

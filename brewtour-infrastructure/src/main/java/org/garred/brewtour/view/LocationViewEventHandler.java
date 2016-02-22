@@ -1,9 +1,6 @@
 package org.garred.brewtour.view;
 
 import org.axonframework.eventhandling.annotation.EventHandler;
-import org.garred.brewtour.application.event.beer.AbstractBeerReviewAddedEvent;
-import org.garred.brewtour.application.event.beer.BeerModifiedEvent;
-import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.location.BeerAvailableEvent;
 import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
@@ -17,18 +14,15 @@ import org.garred.brewtour.application.event.location.LocationWebsiteUpdatedEven
 import org.garred.brewtour.application.event.location.user_fired.AbstractLocationReviewAddedEvent;
 import org.garred.brewtour.application.event.location.user_fired.LocationRatingUpdatedEvent;
 import org.garred.brewtour.domain.LocationId;
-import org.garred.brewtour.repository.BeerViewRepository;
 import org.garred.brewtour.repository.LocationViewRepository;
 
 public class LocationViewEventHandler extends AbstractViewEventHandler<LocationId, LocationView> {
 
 	private final LocationViewRepository locationRepository;
-	private final BeerViewRepository beerRepository;
 
-	public LocationViewEventHandler(LocationViewRepository repository, BeerViewRepository beerRepository) {
+	public LocationViewEventHandler(LocationViewRepository repository) {
 		super(repository);
 		this.locationRepository = repository;
-		this.beerRepository = beerRepository;
 	}
 
 	@EventHandler
@@ -74,24 +68,9 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
     	update(event.locationId, l -> l.website = event.website);
     }
 
-	@EventHandler
-    public void on(BeerModifiedEvent event) {
-		for(final LocationView location : this.locationRepository.findLocationsWithBeer(event.beerId)) {
-			update(location.locationId, l -> {
-				final BeerView beer = l.requireBeer(event.beerId);
-				beer.style = event.style;
-				beer.category = event.category;
-				beer.abv = event.abv;
-				beer.ibu = event.ibu;
-			});
-		}
-	}
     @EventHandler
     public void on(BeerAvailableEvent event) {
-    	final BeerView beer = this.beerRepository.get(event.beerId);
-    	update(event.locationId, l -> {
-    		l.beers.put(event.beerId, beer);
-    	});
+    	update(event.locationId, l -> l.beers.add(event.beerId));
     }
     @EventHandler
     public void on(BeerUnavailableEvent event) {
@@ -105,27 +84,8 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
     	update(event.locationId, l -> l.medal = event.medal.name());
     }
     @EventHandler
-    public void on(BeerRatingUpdatedEvent event) {
-    	for(final LocationView location : this.locationRepository.findLocationsWithBeer(event.beerId)) {
-			update(location.locationId, l -> {
-				final BeerView beer = l.requireBeer(event.beerId);
-				beer.medal = event.medal.toString();
-			});
-		}
-    }
-    @EventHandler
     public void on(AbstractLocationReviewAddedEvent event) {
     	final Review review = new Review(event.userScreenName, event.medal.name(), event.review);
     	update(event.locationId, l -> l.reviews.add(review));
-    }
-    @EventHandler
-    public void on(AbstractBeerReviewAddedEvent event) {
-    	final Review review = new Review(event.userScreenName, event.medal.name(), event.review);
-    	for(final LocationView location : this.locationRepository.findLocationsWithBeer(event.beerId)) {
-    		update(location.locationId, l -> {
-    			final BeerView beer = l.requireBeer(event.beerId);
-    			beer.addReview(review);
-    		});
-    	}
     }
 }

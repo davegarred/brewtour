@@ -13,6 +13,7 @@
    		$scope.$watch(function(){ return LocationService.location() }, function(newVal,oldVal) {
     		$scope.hasIbu = LocationService.hasIbu();
     		$scope.hasAbv = LocationService.hasAbv();
+    		$scope.beers = LocationService.beers();
    			return $scope.locationDetails = newVal
    		}, true);
         
@@ -33,6 +34,7 @@
     	$scope.$watch(function(){ return LocationService.location() }, function(newVal,oldVal) {
     		$scope.hasIbu = LocationService.hasIbu();
     		$scope.hasAbv = LocationService.hasAbv();
+    		$scope.beers = LocationService.beers();
     		return $scope.locationDetails = newVal
     	}, true);
     	
@@ -54,29 +56,13 @@
     			return false;
     		}
     		var locationId = LocationService.location().locationId;
-    		for(var i in $scope.user.locationReviews) {
-    			if(locationId == i) {
-    				return false; 
-    			}
-    		}
-    		return true;
+    		return $scope.user.locationReviews[locationId] == null;
     	}
-    	$scope.isUserAndHasNotReviewedBeer = function(beerName) {
+    	$scope.isUserAndHasNotReviewedBeer = function(beerId) {
     		if(!$scope.user) {
     			return false;
     		}
-    		var locationId = LocationService.location().locationId;
-    		for(var i in $scope.user.beerReviews) {
-    			if(locationId == i) {
-    				for(var j in $scope.user.beerReviews[i]) {
-    					if(beerName == j) {
-    						return false; 
-    					}
-    				}
-    				return true;
-    			}
-    		}
-    		return true;
+    		return $scope.user.beerReviews[beerId] == null;
     	}
     	
     }]);
@@ -187,7 +173,7 @@
     			$scope.medal = null;
     			$scope.locationReview = "";
     			UserService.set(response.data.user);
-    			LocationService.set(response.data.location);
+    			LocationService.update(response.data.location);
     		}, function errorCallback(response) {
     			error(response);
     		})
@@ -197,6 +183,7 @@
     beertour.controller('BeerReviewController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
    		$scope.location = null;
    		$scope.$watch(function(){ return LocationService.location() }, function(newVal,oldVal) {
+    		$scope.beers = LocationService.beers();
    			return $scope.location = newVal
    		}, true);
    		$scope.reviewingBeer = null;
@@ -219,16 +206,11 @@
     		};
     		$http.post('beer/AddBeerReview', dto)
     		.then(function successCallback(response) {
+    			LocationService.updateBeer(response.data.beer);
+    			UserService.set(response.data.user);
     			$('#beerReviewModal').modal('hide');
     			$scope.medal = null;
     			$scope.beerReview = "";
-    			$http.get('location/' + LocationService.location().locationId + '/wuser')
-    			.then(function successCallback(response) {
-        			UserService.set(response.data.user);
-        			LocationService.set(response.data.location);
-    			}, function errorCallback(response) {
-    				error(response);
-    			});
     		}, function errorCallback(response) {
     			error(response);
     		})

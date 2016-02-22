@@ -40,7 +40,7 @@
 				<th ng-if="hasIbu">IBU</th>
 				<th></th>
 			</tr>
-			<tr ng-repeat="beer in locationDetails.beers">
+			<tr ng-repeat="(beerId,beer) in beers">
 				<td>
 					<beer-medal-img></beer-medal-img>
 				</td>
@@ -48,7 +48,7 @@
 				<td ng-if="hasAbv"><span ng-if="beer.abv">{{beer.abv}}%</span></td>
 				<td ng-if="hasIbu"><span ng-if="beer.ibu">{{beer.ibu}}</span></td>
 				<td>
-					<span ng-if="isUserAndHasNotReviewedBeer(beer.name)">
+					<span ng-if="isUserAndHasNotReviewedBeer(beerId)">
 						<a data-toggle="modal" data-target="#beerReviewModal" href="#" ng-click="reviewBeer(beer)">Rate!</a>
 					</span>
 				</td>

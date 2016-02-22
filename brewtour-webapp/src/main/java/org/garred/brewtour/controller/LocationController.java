@@ -18,6 +18,7 @@ import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.service.LocationQueryService;
 import org.garred.brewtour.service.UserDetailsService;
 import org.garred.brewtour.view.LocaleView;
+import org.garred.brewtour.view.LocationBeersCombinedView;
 import org.garred.brewtour.view.LocationUserCombinedView;
 import org.garred.brewtour.view.LocationView;
 import org.springframework.stereotype.Controller;
@@ -51,8 +52,8 @@ public class LocationController extends AbstractRestController {
 
 	@RequestMapping(value = "{locationId}", method = GET, produces="application/json")
 	@ResponseBody
-	public LocationView location(@PathVariable String locationId) {
-		return this.locationService.getLocation(new LocationId(locationId));
+	public LocationBeersCombinedView location(@PathVariable String locationId) {
+		return this.locationService.getLocationDetails(new LocationId(locationId));
 	}
 	@RequestMapping(value = "{locationId}/wuser", method = GET, produces="application/json")
 	@ResponseBody

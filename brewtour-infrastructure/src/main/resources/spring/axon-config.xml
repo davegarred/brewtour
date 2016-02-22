@@ -10,8 +10,7 @@
 
 	<!-- View Event Handlers -->
 	<bean id="locationViewEventHandler" class="org.garred.brewtour.view.LocationViewEventHandler"
-		c:repository-ref="locationViewRepo" 
-		c:beerRepository-ref="beerViewRepo"/>
+		c:repository-ref="locationViewRepo"/>
 	<bean id="beerViewEventHandler" class="org.garred.brewtour.view.BeerViewEventHandler"
 		c:repository-ref="beerViewRepo"/>
 	<bean id="localeViewEventHandler" class="org.garred.brewtour.view.LocaleViewEventHandler"

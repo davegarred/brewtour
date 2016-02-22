@@ -20,7 +20,7 @@ public class LocationViewRepositoryStub extends AbstractRepositoryStub<LocationI
 	public Collection<LocationView> findLocationsWithBeer(BeerId beerId) {
 		final List<LocationView> result = new ArrayList<>();
 		for(final LocationView view : this.objectMap.values()) {
-			if(view.beers.containsKey(beerId)) {
+			if(view.beers.contains(beerId)) {
 				result.add(view);
 			}
 		}

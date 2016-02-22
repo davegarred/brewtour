@@ -4,9 +4,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.garred.brewtour.application.event.location.AbstractLocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
@@ -34,7 +32,7 @@ public class LocationView extends AbstractView implements Entity<LocationId> {
 	public String phoneNumber;
 	public String website;
 	public AvailableImages images;
-	public Map<BeerId,BeerView> beers;
+	public List<BeerId> beers;
 	public List<Review> reviews;
 
 	public String medal;
@@ -48,23 +46,12 @@ public class LocationView extends AbstractView implements Entity<LocationId> {
 		final LocationView view = new LocationView();
 		view.locationId = event.locationId;
 		view.name = event.name;
-		view.beers = new HashMap<>();
+		view.beers = new ArrayList<>();
 		view.reviews = new ArrayList<>();
 		return view;
 	}
 	public static LocationView fromEvent(LocationAddedEvent event) {
 		return initialize(event);
-	}
-
-	public BeerView findBeer(BeerId beerId) {
-		return this.beers.get(beerId);
-	}
-	public BeerView requireBeer(BeerId beerId) {
-		final BeerView beer = findBeer(beerId);
-		if(beer == null) {
-			throw new RuntimeException("Beer '" + beerId + "' could not be found in location view " + this.locationId);
-		}
-		return beer;
 	}
 
 }
