@@ -8,6 +8,11 @@ public interface UserAuth {
 
 	UserId identifier();
 	String screenName();
+
+	/**
+	 * Identified as a valid registered user
+	 * @return
+	 */
 	boolean identified();
 	Collection<String> roles();
 
