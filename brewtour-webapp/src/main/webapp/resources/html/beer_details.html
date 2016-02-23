@@ -1,0 +1,21 @@
+<div>
+	<div ng-if="beer.abv">
+		<strong>ABV:</strong><i>{{beer.abv}}%</i>
+	</div>
+	<div ng-if="beer.ibu">
+		<strong>IBU:</strong><i>{{beer.ibu}}</i>
+	</div>
+	
+	<p>{{beer.description}}</p>
+	<table class="table">
+		<tr ng-repeat="review in beer.userReviews">
+			<td>
+				<div>
+					<location-medal-img></location-medal-img>
+					{{review.userScreenName}}
+				</div>
+				<div>{{review.review}}</div>
+			</td>
+		</tr>
+	</table>
+</div>

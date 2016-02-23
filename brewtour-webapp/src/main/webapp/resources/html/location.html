@@ -72,7 +72,7 @@
 					</span>
 				</td>
 				<td>
-					<a href="#" ng-if="beer.description" uib-popover="{{beer.description}}" popover-title="{{beer.beerName}}"
+					<a href="#" ng-if="beer.description" uib-popover-template="'resources/html/beer_details.html'" popover-title="{{beer.beerName}}"
 						popover-placement="right" popover-trigger="focus"
 						>{{beer.beerName}}</a>
 					<span ng-if="!beer.description">{{beer.beerName}}</span>
