@@ -5,6 +5,8 @@ import static org.garred.brewtour.view.UserAuthView.ADMIN_ROLE;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.garred.brewtour.application.command.AddAggregateCallback;
 import org.garred.brewtour.application.command.AddAggregateCommand;
 import org.garred.brewtour.domain.BeerId;
@@ -19,8 +21,11 @@ public class AddBeerCommand  implements AddAggregateCommand<BeerId> {
 
 	private final List<AddAggregateCallback<BeerId>> callbacks = new ArrayList<>();
 
+	@NotNull
 	public final String beerName;
+	@NotNull
 	public final LocationId breweryId;
+	@NotNull
 	public final String breweryName;
 
 	@JsonCreator

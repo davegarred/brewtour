@@ -12,7 +12,7 @@ import org.garred.brewtour.security.UserHolder;
 import org.garred.brewtour.security.UserNotLoggedInException;
 import org.joda.time.LocalDateTime;
 
-public class BeertourCommandDispatchInterceptor implements CommandDispatchInterceptor {
+public class AuthorizationCommandDispatchInterceptor implements CommandDispatchInterceptor {
 
 	@Override
 	public CommandMessage<?> handle(CommandMessage<?> commandMessage) {

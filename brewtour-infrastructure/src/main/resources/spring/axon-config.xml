@@ -35,12 +35,13 @@
 		c:repository-ref="userEventRepo"
 		c:userCommandHandlerService-ref="userCommandHandlerService"/>
 
-
 	<bean id="commandGateway" class="org.axonframework.commandhandling.gateway.DefaultCommandGateway" >
 		<constructor-arg name="commandBus" ref="commandBus" />
 		<constructor-arg name="commandDispatchInterceptors">
 			<array>
-				<bean class="org.garred.brewtour.infrastructure.BeertourCommandDispatchInterceptor"/>
+				<bean class="org.garred.brewtour.infrastructure.ValidationCommandDispatchInterceptor"
+					c:validator-ref="validator"/>
+				<bean class="org.garred.brewtour.infrastructure.AuthorizationCommandDispatchInterceptor"/>
 			</array>
 		</constructor-arg>
 	</bean>

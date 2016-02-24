@@ -16,14 +16,14 @@ import org.garred.brewtour.security.UserNotLoggedInException;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BeertourCommandDispatchInterceptorTest {
+public class AuthorizationCommandDispatchInterceptorTest {
 
 	private static final UserId USER_ID = new UserId("userId");
 	private static final GuestUserAuth GUEST_USER = new GuestUserAuth(USER_ID);
 	private static final CommandMessage<AddUserCommand> ADMIN_COMMAND_MESSAGE = new GenericCommandMessage<AddUserCommand>(new AddUserCommand("screen name", "login", "password"));
 	private static final CommandMessage<AddLocationReviewCommand> NORMAL_COMMAND_MESSAGE = new GenericCommandMessage<AddLocationReviewCommand>(new AddLocationReviewCommand(new LocationId("locationId"), SILVER, "Some review"));
 
-	private final BeertourCommandDispatchInterceptor interceptor = new BeertourCommandDispatchInterceptor();
+	private final AuthorizationCommandDispatchInterceptor interceptor = new AuthorizationCommandDispatchInterceptor();
 
 	@Before
 	public void setup() {
