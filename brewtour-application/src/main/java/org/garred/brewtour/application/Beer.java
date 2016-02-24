@@ -16,18 +16,21 @@ import org.axonframework.eventsourcing.annotation.AggregateIdentifier;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.beer.AddBeerRatingCommand;
 import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
-import org.garred.brewtour.application.command.beer.ModifyBeerCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
 import org.garred.brewtour.application.event.beer.AbstractBeerReviewAddedEvent;
 import org.garred.brewtour.application.event.beer.AbstractBeerStarRatingAddedEvent;
+import org.garred.brewtour.application.event.beer.BeerAbvUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerAddedEvent;
+import org.garred.brewtour.application.event.beer.BeerDescriptionUpdatedEvent;
+import org.garred.brewtour.application.event.beer.BeerIbuUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerImagesUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerModifiedEvent;
 import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByUserEvent;
+import org.garred.brewtour.application.event.beer.BeerSrmUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerStarRatingAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.beer.BeerStarRatingAddedByUserEvent;
+import org.garred.brewtour.application.event.beer.BeerStyleUpdatedEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.LocationId;
@@ -46,9 +49,9 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
 
 	private LocationId breweryId;
 	private String breweryName;
+	private String description;
 	private String style;
-	private String category;
-	private BigDecimal abv, ibu;
+	private BigDecimal abv, ibu,srm;
 	private AvailableImages images;
 	private final Set<LocationId> availableLocationIds = new HashSet<>();
 
@@ -65,8 +68,24 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
     	return beer;
     }
 
-	public void modifyBeer(ModifyBeerCommand modifyBeer) {
-		apply(BeerModifiedEvent.fromCommand(modifyBeer));
+    public void modifyDescription(String description) {
+    	this.apply(new BeerDescriptionUpdatedEvent(this.id, description));
+	}
+
+	public void modifyStyle(String style) {
+		this.apply(new BeerStyleUpdatedEvent(this.id, style));
+	}
+
+	public void modifyAbv(BigDecimal abv) {
+		this.apply(new BeerAbvUpdatedEvent(this.id, abv));
+	}
+
+	public void modifyIbu(BigDecimal ibu) {
+		this.apply(new BeerIbuUpdatedEvent(this.id, ibu));
+	}
+
+	public void modifySrm(BigDecimal srm) {
+		this.apply(new BeerSrmUpdatedEvent(this.id, srm));
 	}
 
 	public void updateImages(UpdateBeerImagesCommand command) {
@@ -105,18 +124,27 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
 		this.beerName = event.beerName;
 		this.breweryId = event.breweryId;
 		this.breweryName = event.breweryName;
-		this.style = event.style;
-		this.category = event.category;
-		this.abv = event.abv;
-		this.ibu = event.ibu;
     }
 
     @EventHandler
-    public void on(BeerModifiedEvent event) {
+    public void on(BeerDescriptionUpdatedEvent event) {
+    	this.description = event.description;
+    }
+    @EventHandler
+    public void on(BeerStyleUpdatedEvent event) {
     	this.style = event.style;
-    	this.category = event.category;
+    }
+    @EventHandler
+    public void on(BeerAbvUpdatedEvent event) {
     	this.abv = event.abv;
+    }
+    @EventHandler
+    public void on(BeerIbuUpdatedEvent event) {
     	this.ibu = event.ibu;
+    }
+    @EventHandler
+    public void on(BeerSrmUpdatedEvent event) {
+    	this.srm = event.srm;
     }
     @EventHandler
     public void on(BeerImagesUpdatedEvent event) {

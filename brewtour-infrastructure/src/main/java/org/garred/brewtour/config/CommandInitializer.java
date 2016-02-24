@@ -26,8 +26,13 @@ import org.garred.brewdb.domain.Beer;
 import org.garred.brewdb.domain.Images;
 import org.garred.brewdb.domain.Location;
 import org.garred.brewtour.application.command.GenericAddAggregateCallback;
+import org.garred.brewtour.application.command.beer.AbstractBeerCommand;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerStyleCommand;
 import org.garred.brewtour.application.command.location.AbstractLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
@@ -139,14 +144,23 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 		}
 
 		private BeerId fireBeerCommands(Beer beer, LocationId breweryId, String breweryName) {
-			final AddBeerCommand command = new AddBeerCommand(beer.name, beer.description, breweryId, breweryName,
-					beer.style == null ? null : beer.style.name,
-					(beer.style == null || beer.style.category == null) ? null : beer.style.category.name,
-					beer.abv == null ? null : new BigDecimal(beer.abv),
-					beer.ibu == null ? null : new BigDecimal(beer.ibu));
+			final AddBeerCommand command = new AddBeerCommand(beer.name, breweryId, breweryName);
 			final GenericAddAggregateCallback<BeerId> callback = forCommand(command);
 			this.commandGateway.sendAndWait(command);
 			final BeerId beerId = callback.identifier();
+
+			if(beer.description != null && !beer.description.isEmpty()) {
+				this.commandGateway.sendAndWait(new UpdateBeerDescriptionCommand(beerId, beer.description));
+			}
+			if(beer.style != null) {
+				this.commandGateway.sendAndWait(new UpdateBeerStyleCommand(beerId, beer.style.name));
+			}
+			if(beer.abv  != null && !beer.abv.isEmpty()) {
+				this.commandGateway.sendAndWait(new UpdateBeerAbvCommand(beerId, new BigDecimal(beer.abv)));
+			}
+			if(beer.ibu  != null && !beer.ibu.isEmpty()) {
+				this.commandGateway.sendAndWait(new UpdateBeerIbuCommand(beerId, new BigDecimal(beer.ibu)));
+			}
 
 			final Images bdbImages = beer.labels;
 			if(bdbImages != null && (
@@ -220,11 +234,17 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 				final LocationId locationId = this.nameToLocationIdMap.get(command.locationName);
 				this.commandGateway.sendAndWait(setLocation(locationId, command.command));
 			}
-			for(final AddBeerCommand command : customAddBeerCommands()) {
-				final LocationId locationId = this.nameToLocationIdMap.get(command.breweryName);
-				final GenericAddAggregateCallback<BeerId> callback = GenericAddAggregateCallback.forCommand(command);
-				this.commandGateway.sendAndWait(setField(locationId, "breweryId", command));
-				this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, callback.identifier()));
+			for(final NewBeerCommands commands : customAddBeerCommands()) {
+				final AddBeerCommand addCommand = commands.addCommand;
+				final LocationId locationId = this.nameToLocationIdMap.get(addCommand.breweryName);
+				final GenericAddAggregateCallback<BeerId> callback = GenericAddAggregateCallback.forCommand(addCommand);
+				this.commandGateway.sendAndWait(setField(locationId, "breweryId", addCommand));
+				final BeerId beerId = callback.identifier();
+				this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
+				for(final AbstractBeerCommand command : commands.detailCommands) {
+					this.commandGateway.sendAndWait(setField(beerId, "beerId", command));
+				}
+
 			}
 		}
 
@@ -242,15 +262,56 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			}
 		}
 
-		private static Collection<AddBeerCommand> customAddBeerCommands() {
-			final List<AddBeerCommand> result = new ArrayList<>();
-			result.add(new AddBeerCommand("Boss Fight Triple IPA", "Triple IPA Season is upon us! Intense hop flavors and aromas from heavy double dry hopping at over 2 pounds per barrel. Our 3x IPA is bigger, meaner, and has a lot more hit points than your standard IPA.", null, "Lucky Envelope Brewing", null, "Imperial or Double India Pale Ale", new BigDecimal("10.3"), new BigDecimal("104")));
-			result.add(new AddBeerCommand("ENIAC 2.0 Mosaic India Pale Ale", "Version 2.0 of our ENIAC IPA screams Mosaic hops and a balanced malt profile with notes of juicy tropical fruit and resinous pine.", null, "Lucky Envelope Brewing", null, "American-Style India Pale Ale", new BigDecimal("6.4"), new BigDecimal("68")));
-			result.add(new AddBeerCommand("50th Street India Pale Ale", "Our San Diego-inspired IPA is a bitter and grapefruit-forward hoppy beer. The pilsner malt base is crisp and clean to let the hop profile shine.", null, "Lucky Envelope Brewing", null, "American-Style India Pale Ale", new BigDecimal("6.8"), new BigDecimal("80")));
-			result.add(new AddBeerCommand("Galaxy Session IPA", "This hoppy, yet sessionable beer packs the hop kick of a traditional IPA but with less alcohol. Australian Galaxy hops provide a juicy, tropical fruit aroma.", null, "Lucky Envelope Brewing", null, "Session India Pale Ale", new BigDecimal("4.6"), new BigDecimal("52")));
-			result.add(new AddBeerCommand("Imperial Porter", "The imperial robust porter packs complex malt flavor while still being able to enjoy a pint. This beer is bold and chewy with flavors of espresso, milk chocolate, and caramel.", null, "Lucky Envelope Brewing", null, "American-Style Imperial Porter", new BigDecimal("7.5"), new BigDecimal("42")));
-			result.add(new AddBeerCommand("Flying Envelope Washington Lager", "This American Craft Lager uses 100% Washington-grown ingredients and our house lager strain. Light and crisp, this beer showcases local heirloom malt with a smooth bready finish.", null, "Lucky Envelope Brewing", null, null, new BigDecimal("4.7"), new BigDecimal("26")));
-			result.add(new AddBeerCommand("Buddha’s Hand Pale Ale", "A classic Pacific Northwest pale ale infused with zest from Buddha’s Hand and Chinese pomelo citrus fruits. Both citrus fruits are native to southeastern Asia", null, "Lucky Envelope Brewing", null, "American-Style Pale Ale", new BigDecimal("5.1"), new BigDecimal("38")));
+		private static List<NewBeerCommands> customAddBeerCommands() {
+			final List<NewBeerCommands> result = new ArrayList<>();
+			result.add(new NewBeerCommands(
+					new AddBeerCommand("Boss Fight Triple IPA", null, "Lucky Envelope Brewing"),
+					new UpdateBeerDescriptionCommand(null, "Triple IPA Season is upon us! Intense hop flavors and aromas from heavy double dry hopping at over 2 pounds per barrel. Our 3x IPA is bigger, meaner, and has a lot more hit points than your standard IPA."),
+					new UpdateBeerStyleCommand(null, "Imperial or Double India Pale Ale"),
+					new UpdateBeerAbvCommand(null, new BigDecimal("10.3")),
+					new UpdateBeerIbuCommand(null, new BigDecimal("104"))
+					));
+			result.add(new NewBeerCommands(
+					new AddBeerCommand("ENIAC 2.0 Mosaic India Pale Ale", null, "Lucky Envelope Brewing"),
+					new UpdateBeerDescriptionCommand(null, "Version 2.0 of our ENIAC IPA screams Mosaic hops and a balanced malt profile with notes of juicy tropical fruit and resinous pine."),
+					new UpdateBeerStyleCommand(null, "Imperial or Double India Pale Ale"),
+					new UpdateBeerAbvCommand(null, new BigDecimal("6.4")),
+					new UpdateBeerIbuCommand(null, new BigDecimal("68"))
+					));
+			result.add(new NewBeerCommands(
+					new AddBeerCommand("50th Street India Pale Ale", null, "Lucky Envelope Brewing"),
+					new UpdateBeerDescriptionCommand(null, "Our San Diego-inspired IPA is a bitter and grapefruit-forward hoppy beer. The pilsner malt base is crisp and clean to let the hop profile shine."),
+					new UpdateBeerStyleCommand(null, "American-Style India Pale Ale"),
+					new UpdateBeerAbvCommand(null, new BigDecimal("6.8")),
+					new UpdateBeerIbuCommand(null, new BigDecimal("80"))
+					));
+			result.add(new NewBeerCommands(
+					new AddBeerCommand("Galaxy Session IPA", null, "Lucky Envelope Brewing"),
+					new UpdateBeerDescriptionCommand(null, "This hoppy, yet sessionable beer packs the hop kick of a traditional IPA but with less alcohol. Australian Galaxy hops provide a juicy, tropical fruit aroma."),
+					new UpdateBeerStyleCommand(null, "Session India Pale Ale"),
+					new UpdateBeerAbvCommand(null, new BigDecimal("4.6")),
+					new UpdateBeerIbuCommand(null, new BigDecimal("52"))
+					));
+			result.add(new NewBeerCommands(
+					new AddBeerCommand("Imperial Porter", null, "Lucky Envelope Brewing"),
+					new UpdateBeerDescriptionCommand(null, "The imperial robust porter packs complex malt flavor while still being able to enjoy a pint. This beer is bold and chewy with flavors of espresso, milk chocolate, and caramel."),
+					new UpdateBeerStyleCommand(null, "American-Style Imperial Porter"),
+					new UpdateBeerAbvCommand(null, new BigDecimal("7.5")),
+					new UpdateBeerIbuCommand(null, new BigDecimal("42"))
+					));
+			result.add(new NewBeerCommands(
+					new AddBeerCommand("Flying Envelope Washington Lager", null, "Lucky Envelope Brewing"),
+					new UpdateBeerDescriptionCommand(null, "This American Craft Lager uses 100% Washington-grown ingredients and our house lager strain. Light and crisp, this beer showcases local heirloom malt with a smooth bready finish."),
+					new UpdateBeerAbvCommand(null, new BigDecimal("4.7")),
+					new UpdateBeerIbuCommand(null, new BigDecimal("26"))
+					));
+			result.add(new NewBeerCommands(
+					new AddBeerCommand("Buddha’s Hand Pale Ale", null, "Lucky Envelope Brewing"),
+					new UpdateBeerDescriptionCommand(null, "A classic Pacific Northwest pale ale infused with zest from Buddha’s Hand and Chinese pomelo citrus fruits. Both citrus fruits are native to southeastern Asia"),
+					new UpdateBeerStyleCommand(null, "American-Style Pale Ale"),
+					new UpdateBeerAbvCommand(null, new BigDecimal("5.1")),
+					new UpdateBeerIbuCommand(null, new BigDecimal("38"))
+					));
 
 
 //			result.add(new AddBeerCommand("Pigeonhole IPA", "IPA with Chinook, Citra, Amarillo, and LOTS of Simcoe", null, "Cloudburst Brewing", null, "American-Style India Pale Ale", null, null));
@@ -287,6 +348,15 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			public final AddLocationCommand addCommand;
 			public final List<AbstractLocationCommand> detailCommands;
 			public NewLocationCommands(AddLocationCommand addCommand, AbstractLocationCommand... detailCommands) {
+				this.addCommand = addCommand;
+				this.detailCommands = Arrays.asList(detailCommands);
+			}
+
+		}
+		private static class NewBeerCommands {
+			public final AddBeerCommand addCommand;
+			public final List<AbstractBeerCommand> detailCommands;
+			public NewBeerCommands(AddBeerCommand addCommand, AbstractBeerCommand... detailCommands) {
 				this.addCommand = addCommand;
 				this.detailCommands = Arrays.asList(detailCommands);
 			}

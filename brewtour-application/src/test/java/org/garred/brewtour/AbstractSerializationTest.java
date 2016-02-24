@@ -44,6 +44,7 @@ public abstract class AbstractSerializationTest {
 	protected static final String BEER_STYLE = "awesome style";
 	protected static final String BEER_STATUS = "someStatus";
 	protected static final BigDecimal BEER_IBU = new BigDecimal("45");
+	protected static final BigDecimal BEER_SRM = new BigDecimal("20");
 	protected static final BigDecimal BEER_ABV = new BigDecimal("6.2");
 	protected static final String BEER_REVIEW = "spicy but with a full body";
 	protected static final String LOCATION_REVIEW = "A nice place to hang out";

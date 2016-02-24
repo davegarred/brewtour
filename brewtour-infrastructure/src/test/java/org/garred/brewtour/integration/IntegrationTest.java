@@ -129,7 +129,7 @@ public class IntegrationTest {
 		location = this.locationRepo.get(locationId);
 		assertSingleItemInCollection(beerId, location.beers);
 		final BeerView beer = this.beerRepo.get(beerId);
-		assertEquals(newBeerView(beerId, BEER_NAME, BEER_DESCRIPTION, STYLE, CATEGORY, ABV, IBU), beer);
+		assertEquals(newBeerView(beerId, BEER_NAME, LOCATION_NAME), beer);
 
 		setCurrentUser(userId);
 		final Review expectedReview = new Review(SCREEN_NAME, GOLD.name(), LOCATION_REVIEW);
@@ -165,7 +165,7 @@ public class IntegrationTest {
 	}
 
 	private static AddBeerCommand addBeerCommand(LocationId locationId) {
-		return new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, locationId, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
+		return new AddBeerCommand(BEER_NAME, locationId, BREWERY_NAME);
 	}
 	private static AddLocationReviewCommand addLocationReviewCommand(LocationId locationId) {
 		return new AddLocationReviewCommand(locationId, GOLD, LOCATION_REVIEW);
