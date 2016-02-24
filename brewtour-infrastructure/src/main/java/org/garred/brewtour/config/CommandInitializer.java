@@ -6,6 +6,7 @@ import static org.garred.brewtour.config.BrewDbDataPrep.BEER_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.BREWERY_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.LOCATION_FILE;
 import static org.garred.brewtour.security.SystemUserAuth.SYSTEM;
+import static org.garred.brewtour.view.UserAuthView.ADMIN_ROLE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewdb.domain.Beer;
@@ -32,17 +34,20 @@ import org.garred.brewtour.application.command.location.AbstractLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationAddressCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationBreweryAssociationCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationHoursOfOperationCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationImagesCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationPhoneCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationPositionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationWebsiteCommand;
+import org.garred.brewtour.application.command.user.AddRoleToUserCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
 import org.garred.brewtour.security.UserHolder;
 import org.springframework.context.ApplicationListener;
@@ -175,7 +180,11 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			}
 			completed = true;
 			UserHolder.set(SYSTEM);
-			this.commandGateway.send(new AddUserCommand("FBS", "dave", "password"));
+			AddUserCommand command = new AddUserCommand("FBS", "dave", "password");
+			GenericAddAggregateCallback<UserId> callback = GenericAddAggregateCallback.forCommand(command);
+			this.commandGateway.send(command);
+			this.commandGateway.send(new AddRoleToUserCommand(callback.identifier(), ADMIN_ROLE));
+			this.commandGateway.send(new AddUserCommand("PBR", "melissa", "password"));
 			final Map<String,LocationId> brewDbLocationIdMap = new HashMap<>();
 			for(final Location location : this.locationMap.values()) {
 				final LocationId locationId = fireLocationCommands(location);
@@ -195,9 +204,19 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 				}
 			}
 			this.fireCustomCommands();
+			this.associateLocationsWithBreweries();
 		}
 
 
+
+		private void associateLocationsWithBreweries() {
+			for(Entry<String, LocationId> entry : this.nameToLocationIdMap.entrySet()) {
+				LocationId locationId = entry.getValue();
+				BreweryId breweryId = this.nameToBreweryIdMap.get(entry.getKey());
+				this.commandGateway.sendAndWait(new UpdateLocationBreweryAssociationCommand(locationId, breweryId));
+			}
+			
+		}
 
 		private void fireCustomCommands() {
 			for(final NewLocationCommands commandList : customNewLocationCommands()) {
@@ -255,27 +274,28 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			result.add(new AddBeerCommand("Buddha’s Hand Pale Ale", "A classic Pacific Northwest pale ale infused with zest from Buddha’s Hand and Chinese pomelo citrus fruits. Both citrus fruits are native to southeastern Asia", null, "Lucky Envelope Brewing", null, "American-Style Pale Ale", new BigDecimal("5.1"), new BigDecimal("38")));
 
 
-			result.add(new AddBeerCommand("Pigeonhole IPA", "IPA with Chinook, Citra, Amarillo, and LOTS of Simcoe", null, "Cloudburst Brewing", null, "American-Style India Pale Ale", null, null));
-			result.add(new AddBeerCommand("Born Again", "Strong Blonde Ale spiced with grains of paradise, long peppercorns, & coriander", null, "Cloudburst Brewing", null, null, null, null));
-			result.add(new AddBeerCommand("Punch Drunk Love", "Strong Pale Ale with Sweet Cherry puree and Pineapple juice.", null, "Cloudburst Brewing", null, null, null, null));
-			result.add(new AddBeerCommand("Psycho Hose Beast", "Triple IPA", null, "Cloudburst Brewing", null, null, null, null));
-			result.add(new AddBeerCommand("Market Fresh Saison", "Version 2: Grapefruit & Rosemary", null, "Cloudburst Brewing", null, null, null, null));
-			result.add(new AddBeerCommand("Aw Shucks", "Oyster Stout", null, "Cloudburst Brewing", null, null, null, null));
-			result.add(new AddBeerCommand("Unreliable Narrator", "Dry Hopped Pale with GR Mandarina & NZ Nelson Sauvin hops", null, "Cloudburst Brewing", null, null, null, null));
-			result.add(new AddBeerCommand("Cure-All", "Nitro Milk Stout", null, "Cloudburst Brewing", null, null, null, null));
-			result.add(new AddBeerCommand("Hotline Bling IPA", "IPA with Mosaic, Galaxy, & El Dorado", null, "Cloudburst Brewing", null, null, null, null));
-			result.add(new AddBeerCommand("Hoppy Little Clouds", "Dry-Hopped Pilsner", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Pigeonhole IPA", "IPA with Chinook, Citra, Amarillo, and LOTS of Simcoe", null, "Cloudburst Brewing", null, "American-Style India Pale Ale", null, null));
+//			result.add(new AddBeerCommand("Born Again", "Strong Blonde Ale spiced with grains of paradise, long peppercorns, & coriander", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Punch Drunk Love", "Strong Pale Ale with Sweet Cherry puree and Pineapple juice.", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Psycho Hose Beast", "Triple IPA", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Market Fresh Saison", "Version 2: Grapefruit & Rosemary", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Aw Shucks", "Oyster Stout", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Unreliable Narrator", "Dry Hopped Pale with GR Mandarina & NZ Nelson Sauvin hops", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Cure-All", "Nitro Milk Stout", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Hotline Bling IPA", "IPA with Mosaic, Galaxy, & El Dorado", null, "Cloudburst Brewing", null, null, null, null));
+//			result.add(new AddBeerCommand("Hoppy Little Clouds", "Dry-Hopped Pilsner", null, "Cloudburst Brewing", null, null, null, null));
 			return result;
 		}
 
 		private static Collection<NewLocationCommands> customNewLocationCommands() {
-			final NewLocationCommands cloudburst = new NewLocationCommands(new AddLocationCommand("Cloudburst Brewing"),
-					new UpdateLocationAddressCommand(null, "2116 Western Ave", null, "Seattle", "WA", "98121"),
-					new UpdateLocationPositionCommand(null, new BigDecimal("47.6112849"), new BigDecimal("-122.345076")),
-					new UpdateLocationWebsiteCommand(null, "http://cloudburstbrew.com/"),
-					new UpdateLocationImagesCommand(null, AvailableImages.fromString(null, "resources/img/breweries/initial/cloudburst.png", null))
-					);
-			return Collections.singletonList(cloudburst);
+//			final NewLocationCommands cloudburst = new NewLocationCommands(new AddLocationCommand("Cloudburst Brewing"),
+//					new UpdateLocationAddressCommand(null, "2116 Western Ave", null, "Seattle", "WA", "98121"),
+//					new UpdateLocationPositionCommand(null, new BigDecimal("47.6112849"), new BigDecimal("-122.345076")),
+//					new UpdateLocationWebsiteCommand(null, "http://cloudburstbrew.com/"),
+//					new UpdateLocationImagesCommand(null, AvailableImages.fromString(null, "resources/img/breweries/initial/cloudburst.png", null))
+//					);
+//			return Collections.singletonList(cloudburst);
+			return Collections.emptyList();
 		}
 		private static Collection<ExistingLocationCommands> buildCustomExistingLocationCommands() {
 			final List<ExistingLocationCommands> commands = new ArrayList<>();

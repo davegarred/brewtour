@@ -5,6 +5,7 @@ import org.garred.brewtour.application.event.location.BeerAvailableEvent;
 import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationBreweryAssociationUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationDescriptionUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationHoursOfOperationUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent;
@@ -40,6 +41,10 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
     		l.postalCode = event.postalCode;
     	});
 	}
+    @EventHandler
+    public void on(LocationBreweryAssociationUpdatedEvent event) {
+    	update(event.locationId, l -> l.breweryId = event.breweryId);
+    }
     @EventHandler
     public void on(LocationDescriptionUpdatedEvent event) {
     	update(event.locationId, l -> l.description = event.description);

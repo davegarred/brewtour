@@ -10,6 +10,7 @@ import org.garred.brewtour.application.event.location.AbstractLocationAddedEvent
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
+import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.Entity;
 import org.garred.brewtour.domain.LocationId;
 
@@ -21,6 +22,7 @@ public class LocationView extends AbstractView implements Entity<LocationId> {
 	public LocationId locationId;
 	public String name;
 	public String description;
+	public BreweryId breweryId;
 	public String streetAddress;
 	public String streetAddress2;
     public String city;

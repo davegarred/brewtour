@@ -47,7 +47,7 @@ public class Hash extends AbstractObject {
 	}
 
 	private static String salt(UserId userId, String password) {
-		return format("brewtour{%s:salt:%s}boss", userId, password);
+		return format("brewtour{%s:salt:%s}boss", userId.id, password);
 	}
 
 	@Override

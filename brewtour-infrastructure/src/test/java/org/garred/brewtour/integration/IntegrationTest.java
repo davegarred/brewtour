@@ -1,15 +1,19 @@
 package org.garred.brewtour.integration;
 
+import static java.util.Arrays.asList;
 import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 import static org.garred.brewtour.domain.ReviewMedal.GOLD;
 import static org.garred.brewtour.domain.ReviewMedal.SILVER;
 import static org.garred.brewtour.security.SystemUserAuth.SYSTEM;
 import static org.garred.brewtour.view.BeerView.newBeerView;
+import static org.garred.brewtour.view.UserAuthView.ADMIN_ROLE;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewtour.application.IdentifierFactory;
@@ -109,7 +113,7 @@ public class IntegrationTest {
 		UserHolder.set(SYSTEM);
 		this.commandGateway.sendAndWait(ADD_USER_COMMAND);
 		final UserId userId = this.userCommandHandlerService.lastUserId();
-		setCurrentUser(userId);
+		setCurrentUser(userId, ADMIN_ROLE);
 		UserDetailsView userDetails = this.userDetailsRepo.get(userId);
 		assertEquals(LOGIN, userDetails.login);
 
@@ -129,6 +133,7 @@ public class IntegrationTest {
 		final BeerView beer = this.beerRepo.get(beerId);
 		assertEquals(newBeerView(beerId, BEER_NAME, BEER_DESCRIPTION, STYLE, CATEGORY, ABV, IBU), beer);
 
+		setCurrentUser(userId);
 		final Review expectedReview = new Review(SCREEN_NAME, GOLD.name(), LOCATION_REVIEW);
 		this.commandGateway.sendAndWait(addLocationReviewCommand(locationId));
 		location = this.locationRepo.get(locationId);
@@ -153,10 +158,11 @@ public class IntegrationTest {
 		assertEquals(LOCATION_COMMENT, adminView.comments.get(0).comment);
 	}
 
-	public static void setCurrentUser(UserId userId) {
+	public static void setCurrentUser(UserId userId, String... roles) {
 		final UserAuthView view = new UserAuthView();
 		view.userId = userId;
 		view.screenName = SCREEN_NAME;
+		view.roles = roles == null ? Collections.emptySet() : new HashSet<>(asList(roles));
 		UserHolder.set(view);
 	}
 

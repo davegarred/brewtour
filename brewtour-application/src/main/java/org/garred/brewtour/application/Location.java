@@ -31,6 +31,7 @@ import org.garred.brewtour.application.event.location.BeerAvailableEvent;
 import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationBreweryAssociationUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationDescriptionUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationHoursOfOperationUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent;
@@ -47,6 +48,7 @@ import org.garred.brewtour.application.event.location.user_fired.LocationStarRat
 import org.garred.brewtour.application.event.location.user_fired.LocationStarRatingAddedByUserEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
+import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.ReviewMedal;
 import org.garred.brewtour.domain.UserId;
@@ -60,6 +62,7 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     private LocationId id;
 
 	private String name;
+	private BreweryId breweryId;
 	private String description;
 	private String streetAddress;
     private String streetAddress2;
@@ -101,6 +104,12 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 	public void updateDescription(UpdateLocationDescriptionCommand command) {
 		if(!Objects.equals(this.description,command.description)) {
 			apply(new LocationDescriptionUpdatedEvent(this.id, command.description));
+		}
+	}
+	
+	public void associateWithBrewery(BreweryId brewery) {
+		if(!Objects.equals(this.breweryId, brewery)) {
+			apply(new LocationBreweryAssociationUpdatedEvent(this.id, brewery));
 		}
 	}
 
@@ -195,6 +204,10 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     @EventHandler
     public void on(LocationDescriptionUpdatedEvent event) {
     	this.description = event.description;
+    }
+    @EventHandler
+    public void on(LocationBreweryAssociationUpdatedEvent event) {
+    	this.breweryId = event.breweryId;
     }
     @EventHandler
     public void on(LocationHoursOfOperationUpdatedEvent event) {

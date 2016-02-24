@@ -1,6 +1,7 @@
 package org.garred.brewtour.view;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.garred.brewtour.application.event.user.UserAddedEvent;
@@ -18,7 +19,7 @@ public class UserAuthView extends AbstractView implements Entity<UserId>,UserAut
 	public String screenName;
 	public String login;
 	public Hash hash;
-	public Set<String> roles;
+	public Set<String> roles = new HashSet<>();
 
 	@Override
 	public UserId identifier() {
