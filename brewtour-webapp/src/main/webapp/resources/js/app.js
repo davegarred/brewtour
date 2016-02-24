@@ -112,9 +112,15 @@
     		for(var l in locale.locations) {
     			var location = locale.locations[l];
     			var locationPosition = {lat: location.latitude, lng: location.longitude};
+//    			var opacity = 0.0;
+//    			if(LocationService.visited(location.locationId)) {
+//    				opacity = 0.15;
+//    			}
     			var details = {
     					position: locationPosition,
-    					title: location.name
+    					title: location.name,
+    					icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+//    					opacity: opacity
     			};
     			var marker = new google.maps.Marker(details);
     			marker.setMap($scope.map);
@@ -130,18 +136,13 @@
     			if(openInfoWindow) {
     				openInfoWindow.close();
     			}
+    			marker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
     			var infowindow = new google.maps.InfoWindow({ content: html });
     			infowindow.open(map, marker);
     			$scope.focusedLocation = location;
     			$scope.$apply();
     			openInfoWindow = infowindow;
-    			
-    			$http.get('location/' + location.locationId)
-    			.then(function successCallback(response) {
-    				LocationService.set(response.data);
-    			}, function errorCallback(response) {
-    				error(response);
-    			});
+    			LocationService.goTo(location.locationId);
     		});
     	}
     	
