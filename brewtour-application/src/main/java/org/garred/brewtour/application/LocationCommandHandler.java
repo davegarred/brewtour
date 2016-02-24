@@ -48,7 +48,7 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 	}
 	@CommandHandler
 	public void handle(UpdateLocationBreweryAssociationCommand command) {
-		require(command).associateWithBrewery(command.breweryId);
+		require(command).associateWithBrewery(command.associatedBreweryId);
 	}
 	@CommandHandler
 	public void handle(UpdateLocationHoursOfOperationCommand command) {

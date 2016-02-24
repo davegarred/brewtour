@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
+import org.garred.brewtour.domain.LocationId;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,17 +13,17 @@ public class BeerAddedEvent extends AbstractBeerEvent {
 
 	public final String beerName;
 	public final String description;
-	public final BreweryId breweryId;
+	public final LocationId breweryId;
 	public final String breweryName;
 	public final String style;
 	public final String category;
 	public final BigDecimal abv,ibu;
-	
+
 	@JsonCreator
 	public BeerAddedEvent(@JsonProperty("beerId") BeerId beerId,
 			@JsonProperty("beerName") String beerName,
 			@JsonProperty("description") String description,
-			@JsonProperty("breweryId") BreweryId breweryId,
+			@JsonProperty("breweryId") LocationId breweryId,
 			@JsonProperty("breweryName") String breweryName,
 			@JsonProperty("style") String style,
 			@JsonProperty("category") String category,

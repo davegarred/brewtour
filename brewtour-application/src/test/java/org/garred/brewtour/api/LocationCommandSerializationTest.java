@@ -71,7 +71,7 @@ public class LocationCommandSerializationTest extends AbstractSerializationTest 
 
 	@Test
 	public void testUpdateLocationBreweryAssociation() {
-		reflectionValidate(new UpdateLocationBreweryAssociationCommand(LOCATION_ID, BREWERY_ID));
+		reflectionValidate(new UpdateLocationBreweryAssociationCommand(LOCATION_ID, LOCATION_ID_2));
 	}
 
 	@Test

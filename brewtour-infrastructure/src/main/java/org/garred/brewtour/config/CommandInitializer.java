@@ -1,6 +1,5 @@
 package org.garred.brewtour.config;
 
-import static java.util.stream.Collectors.toList;
 import static org.garred.brewtour.application.command.GenericAddAggregateCallback.forCommand;
 import static org.garred.brewtour.config.BrewDbDataPrep.BEER_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.BREWERY_FILE;
@@ -29,7 +28,6 @@ import org.garred.brewdb.domain.Location;
 import org.garred.brewtour.application.command.GenericAddAggregateCallback;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
-import org.garred.brewtour.application.command.brewery.AddBreweryCommand;
 import org.garred.brewtour.application.command.location.AbstractLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
@@ -45,7 +43,6 @@ import org.garred.brewtour.application.command.user.AddRoleToUserCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.infrastructure.ObjectMapperFactory;
@@ -66,7 +63,7 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 		public final Map<String,BeerSetMapping> beerMap;
 
 		public final Map<String,LocationId> nameToLocationIdMap = new HashMap<>();
-		public final Map<String,BreweryId> nameToBreweryIdMap = new HashMap<>();
+		public final Map<String,LocationId> nameToBreweryIdMap = new HashMap<>();
 
 		private final CommandGateway commandGateway;
 
@@ -141,15 +138,7 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			return locationId;
 		}
 
-		private BreweryId fireBreweryCommands(BreweryData brewery) {
-			final AddBreweryCommand command = new AddBreweryCommand(brewery.breweryName);
-			final GenericAddAggregateCallback<BreweryId> callback = forCommand(command);
-			this.commandGateway.sendAndWait(command);
-			final BreweryId breweryId = callback.identifier();
-			this.nameToBreweryIdMap.put(brewery.breweryName, breweryId);
-			return breweryId;
-		}
-		private BeerId fireBeerCommands(Beer beer, BreweryId breweryId, String breweryName, List<LocationId> locationIds) {
+		private BeerId fireBeerCommands(Beer beer, LocationId breweryId, String breweryName) {
 			final AddBeerCommand command = new AddBeerCommand(beer.name, beer.description, breweryId, breweryName,
 					beer.style == null ? null : beer.style.name,
 					(beer.style == null || beer.style.category == null) ? null : beer.style.category.name,
@@ -167,9 +156,7 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 				this.commandGateway.sendAndWait(new UpdateBeerImagesCommand(beerId, AvailableImages.fromString(bdbImages.icon, bdbImages.medium,bdbImages.large)));
 			}
 
-			for(final LocationId locationId : locationIds) {
-				this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
-			}
+			this.commandGateway.sendAndWait(new BeerAvailableCommand(breweryId, beerId));
 			return beerId;
 		}
 
@@ -180,8 +167,8 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			}
 			completed = true;
 			UserHolder.set(SYSTEM);
-			AddUserCommand command = new AddUserCommand("FBS", "dave", "password");
-			GenericAddAggregateCallback<UserId> callback = GenericAddAggregateCallback.forCommand(command);
+			final AddUserCommand command = new AddUserCommand("FBS", "dave", "password");
+			final GenericAddAggregateCallback<UserId> callback = GenericAddAggregateCallback.forCommand(command);
 			this.commandGateway.send(command);
 			this.commandGateway.send(new AddRoleToUserCommand(callback.identifier(), ADMIN_ROLE));
 			this.commandGateway.send(new AddUserCommand("PBR", "melissa", "password"));
@@ -191,15 +178,13 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 				brewDbLocationIdMap.put(location.id, locationId);
 			}
 			for(final BreweryData brewery : this.breweryMap.values()) {
-				final BreweryId breweryId = fireBreweryCommands(brewery);
 				final String breweryName = brewery.breweryName;
-				final List<LocationId> locationIds = brewery.locationIds.stream()
-						.map(l -> brewDbLocationIdMap.get(l))
-						.collect(toList());
+				final LocationId locationId = this.nameToLocationIdMap.get(breweryName);
+				this.nameToBreweryIdMap.put(breweryName, locationId);
 				final BeerSetMapping beers = this.beerMap.get(brewery.breweryId);
 				if(beers != null) {
 					for(final Beer beer : beers) {
-						fireBeerCommands(beer, breweryId, breweryName, locationIds);
+						fireBeerCommands(beer, locationId, breweryName);
 					}
 				}
 			}
@@ -210,12 +195,11 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 
 
 		private void associateLocationsWithBreweries() {
-			for(Entry<String, LocationId> entry : this.nameToLocationIdMap.entrySet()) {
-				LocationId locationId = entry.getValue();
-				BreweryId breweryId = this.nameToBreweryIdMap.get(entry.getKey());
-				this.commandGateway.sendAndWait(new UpdateLocationBreweryAssociationCommand(locationId, breweryId));
+			for(final Entry<String, LocationId> entry : this.nameToLocationIdMap.entrySet()) {
+				final LocationId locationId = entry.getValue();
+				this.commandGateway.sendAndWait(new UpdateLocationBreweryAssociationCommand(locationId, locationId));
 			}
-			
+
 		}
 
 		private void fireCustomCommands() {
@@ -226,11 +210,7 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 				final LocationId locationId = callback.identifier();
 
 				this.nameToLocationIdMap.put(addCommand.name, locationId);
-				final AddBreweryCommand addBreweryCommand = new AddBreweryCommand(addCommand.name);
-				final GenericAddAggregateCallback<BreweryId> breweryCallback = GenericAddAggregateCallback.forCommand(addBreweryCommand);
-				this.commandGateway.sendAndWait(addBreweryCommand);
-				final BreweryId breweryId = breweryCallback.identifier();
-				this.nameToBreweryIdMap.put(addBreweryCommand.breweryName, breweryId);
+				this.commandGateway.sendAndWait(new UpdateLocationBreweryAssociationCommand(locationId, locationId));
 
 				for(final AbstractLocationCommand command : commandList.detailCommands) {
 					this.commandGateway.sendAndWait(setLocation(locationId, command));
@@ -243,8 +223,7 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			for(final AddBeerCommand command : customAddBeerCommands()) {
 				final LocationId locationId = this.nameToLocationIdMap.get(command.breweryName);
 				final GenericAddAggregateCallback<BeerId> callback = GenericAddAggregateCallback.forCommand(command);
-				final BreweryId breweryId = this.nameToBreweryIdMap.get(command.breweryName);
-				this.commandGateway.sendAndWait(setField(breweryId, "breweryId", command));
+				this.commandGateway.sendAndWait(setField(locationId, "breweryId", command));
 				this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, callback.identifier()));
 			}
 		}

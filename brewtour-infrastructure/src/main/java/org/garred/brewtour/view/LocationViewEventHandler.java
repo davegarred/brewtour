@@ -43,7 +43,7 @@ public class LocationViewEventHandler extends AbstractViewEventHandler<LocationI
 	}
     @EventHandler
     public void on(LocationBreweryAssociationUpdatedEvent event) {
-    	update(event.locationId, l -> l.breweryId = event.breweryId);
+    	update(event.locationId, l -> l.associatedBreweryId = event.associatedBreweryId);
     }
     @EventHandler
     public void on(LocationDescriptionUpdatedEvent event) {

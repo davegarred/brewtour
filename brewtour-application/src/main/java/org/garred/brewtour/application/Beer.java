@@ -30,7 +30,6 @@ import org.garred.brewtour.application.event.beer.BeerStarRatingAddedByAnonymous
 import org.garred.brewtour.application.event.beer.BeerStarRatingAddedByUserEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.ReviewMedal;
 import org.garred.brewtour.domain.UserId;
@@ -45,7 +44,7 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
 
 	private String beerName;
 
-	private BreweryId breweryId;
+	private LocationId breweryId;
 	private String breweryName;
 	private String style;
 	private String category;
