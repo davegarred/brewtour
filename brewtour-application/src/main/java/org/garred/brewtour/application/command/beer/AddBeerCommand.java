@@ -2,7 +2,6 @@ package org.garred.brewtour.application.command.beer;
 
 import static org.garred.brewtour.view.UserAuthView.ADMIN_ROLE;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,31 +20,17 @@ public class AddBeerCommand  implements AddAggregateCommand<BeerId> {
 	private final List<AddAggregateCallback<BeerId>> callbacks = new ArrayList<>();
 
 	public final String beerName;
-	public final String description;
 	public final LocationId breweryId;
 	public final String breweryName;
-	public final String style;
-	public final String category;
-	public final BigDecimal abv,ibu;
 
 	@JsonCreator
 	public AddBeerCommand(
 			@JsonProperty("beerName") String beerName,
-			@JsonProperty("description") String description,
 			@JsonProperty("breweryId") LocationId breweryId,
-			@JsonProperty("breweryName") String breweryName,
-			@JsonProperty("style") String style,
-			@JsonProperty("category") String category,
-			@JsonProperty("abv") BigDecimal abv,
-			@JsonProperty("ibu") BigDecimal ibu) {
+			@JsonProperty("breweryName") String breweryName) {
 		this.beerName = beerName;
-		this.description = description;
 		this.breweryId = breweryId;
 		this.breweryName = breweryName;
-		this.style = style;
-		this.category = category;
-		this.abv = abv;
-		this.ibu = ibu;
 	}
 
 	@Override

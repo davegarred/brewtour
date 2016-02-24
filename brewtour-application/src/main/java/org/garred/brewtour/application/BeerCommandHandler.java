@@ -5,8 +5,12 @@ import org.axonframework.repository.Repository;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.beer.AddBeerRatingCommand;
 import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
-import org.garred.brewtour.application.command.beer.ModifyBeerCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerSrmCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerStyleCommand;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.security.UserAuth;
 import org.garred.brewtour.security.UserHolder;
@@ -31,8 +35,24 @@ public class BeerCommandHandler extends AbstractCommandHandler<BeerId,Beer> {
 
 
 	@CommandHandler
-	public void handle(ModifyBeerCommand command) {
-		require(command).modifyBeer(command);
+	public void handle(UpdateBeerDescriptionCommand command) {
+		require(command).modifyDescription(command.description);
+	}
+	@CommandHandler
+	public void handle(UpdateBeerStyleCommand command) {
+		require(command).modifyStyle(command.style);
+	}
+	@CommandHandler
+	public void handle(UpdateBeerAbvCommand command) {
+		require(command).modifyAbv(command.abv);
+	}
+	@CommandHandler
+	public void handle(UpdateBeerIbuCommand command) {
+		require(command).modifyIbu(command.ibu);
+	}
+	@CommandHandler
+	public void handle(UpdateBeerSrmCommand command) {
+		require(command).modifySrm(command.srm);
 	}
 	@CommandHandler
 	public void handle(UpdateBeerImagesCommand command) {

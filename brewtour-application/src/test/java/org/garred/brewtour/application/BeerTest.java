@@ -9,14 +9,21 @@ import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
-import org.garred.brewtour.application.command.beer.ModifyBeerCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerSrmCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerStyleCommand;
+import org.garred.brewtour.application.event.beer.BeerAbvUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerAddedEvent;
-import org.garred.brewtour.application.event.beer.BeerImagesUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerModifiedEvent;
+import org.garred.brewtour.application.event.beer.BeerDescriptionUpdatedEvent;
+import org.garred.brewtour.application.event.beer.BeerIbuUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByUserEvent;
+import org.garred.brewtour.application.event.beer.BeerSrmUpdatedEvent;
+import org.garred.brewtour.application.event.beer.BeerStyleUpdatedEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.Image;
@@ -42,21 +49,21 @@ public class BeerTest {
 	private static final UpdateBeerImagesCommand UPDATE_BEER_IMAGES_COMMAND = new UpdateBeerImagesCommand(BEER_ID, AVAILABLE_IMAGES);
 	private static final String BEER_NAME = "A beer name";
 	private static final String STYLE = "Beer Style";
-	private static final String STYLE_2 = "another beer Style";
-	private static final String CATEGORY = "beer category";
-	private static final String CATEGORY_2 = "another beer category";
 	private static final BigDecimal ABV = new BigDecimal("6.3");
-	private static final BigDecimal ABV_2 = new BigDecimal("5.1");
 	private static final BigDecimal IBU = new BigDecimal("76");
-	private static final BigDecimal IBU_2 = new BigDecimal("29");
+	private static final BigDecimal SRM = new BigDecimal("20");
 	protected static final UserId USER_ID = new UserId("a user id");
 	private static final String SCREEN_NAME = "User ScreenName";
 	protected static final LocalDateTime DATE_TIME = LocalDateTime.of(2015, 9, 20, 8, 50);
 	private static final String BEER_REVIEW = "spicy but with a full body";
 	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(BEER_ID, SILVER, BEER_REVIEW);
 
-	private static final ModifyBeerCommand MODIFY_BEER_COMMAND = new ModifyBeerCommand(BEER_ID, BEER_DESCRIPTION,STYLE_2, CATEGORY_2, ABV_2, IBU_2);
-	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, LOCATION_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
+	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(BEER_NAME, LOCATION_ID, BREWERY_NAME);
+	private static final UpdateBeerDescriptionCommand UPDATE_BEER_DESCRIPTION = new UpdateBeerDescriptionCommand(BEER_ID, BEER_DESCRIPTION);
+	private static final UpdateBeerStyleCommand UPDATE_BEER_STYLE = new UpdateBeerStyleCommand(BEER_ID, STYLE);
+	private static final UpdateBeerAbvCommand UPDATE_BEER_ABV = new UpdateBeerAbvCommand(BEER_ID, ABV);
+	private static final UpdateBeerIbuCommand UPDATE_BEER_IBU = new UpdateBeerIbuCommand(BEER_ID, IBU);
+	private static final UpdateBeerSrmCommand UPDATE_BEER_SRM = new UpdateBeerSrmCommand(BEER_ID, SRM);
 
 
 	private FixtureConfiguration<Beer> fixture;
@@ -87,17 +94,34 @@ public class BeerTest {
 	}
 
 	@Test
-	public void testModifyBeer() {
+	public void testUpdateBeerDescription() {
 		this.fixture.givenCommands(ADD_BEER)
-			.when(MODIFY_BEER_COMMAND)
-			.expectEvents(BeerModifiedEvent.fromCommand(MODIFY_BEER_COMMAND));
+		.when(UPDATE_BEER_DESCRIPTION)
+		.expectEvents(new BeerDescriptionUpdatedEvent(BEER_ID, BEER_DESCRIPTION));
 	}
-
 	@Test
-	public void testUpdateBeerImages() {
+	public void testUpdateBeerStyle() {
 		this.fixture.givenCommands(ADD_BEER)
-		.when(UPDATE_BEER_IMAGES_COMMAND)
-		.expectEvents(BeerImagesUpdatedEvent.fromCommand(UPDATE_BEER_IMAGES_COMMAND));
+		.when(UPDATE_BEER_STYLE)
+		.expectEvents(new BeerStyleUpdatedEvent(BEER_ID, STYLE));
+	}
+	@Test
+	public void testUpdateBeerAbv() {
+		this.fixture.givenCommands(ADD_BEER)
+		.when(UPDATE_BEER_ABV)
+		.expectEvents(new BeerAbvUpdatedEvent(BEER_ID, ABV));
+	}
+	@Test
+	public void testUpdateBeerIbu() {
+		this.fixture.givenCommands(ADD_BEER)
+		.when(UPDATE_BEER_IBU)
+		.expectEvents(new BeerIbuUpdatedEvent(BEER_ID, IBU));
+	}
+	@Test
+	public void testUpdateBeerSrm() {
+		this.fixture.givenCommands(ADD_BEER)
+		.when(UPDATE_BEER_SRM)
+		.expectEvents(new BeerSrmUpdatedEvent(BEER_ID, SRM));
 	}
 	@Test
 	public void testUpdateBeerImages_idempotent() {
