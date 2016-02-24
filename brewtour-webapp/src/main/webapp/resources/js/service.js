@@ -32,23 +32,46 @@
     	
     }]);
     
-    services.factory('LocationService', ['$http', function ($http) {
+    services.factory('LocationService', ['$http', '$location', function ($http, $location) {
     	var currentLocation = null;
     	var ibu = false;
     	var abv = false;
     	var currentBeer = null;
     	var beers = [];
+//    	var visitedLocations = [];
+
+    	var locationIdentifiers = $location.search();
+    	if(locationIdentifiers) {
+    		if(locationIdentifiers.l && locationIdentifiers.l.length == 7) {
+    			var initialLocation = locationIdentifiers.l;
+    			loadLocation(initialLocation);
+    		}
+//    		if(locationIdentifiers.v) {
+//    			for(var i in locationIdentifiers.v) {
+//    				visitedLocations.push(locationIdentifiers.v[i]);
+//    			}
+//    		}
+    	}
+    	
     	return {
-    		set : function(response) {
-    			beers = response.beers; 
-    			currentLocation = response.location;
-    			ibu = hasIbu(beers);
-    			abv = hasAbv(beers);
-    			currentBeer = null;
+    		goTo : function(locationId) {
+    			loadLocation(locationId);
     		},
+//    		visited : function(locationId) {
+//    			if(!locationId || locationId.length != 7) {
+//    				return false;
+//    			}
+//    			for(var i in visitedLocations) {
+//    				if(locationId == visitedLocations[i]) {
+//    					return true;
+//    				}
+//    			}
+//    			return false;
+//    		},
     		update : function(location) {
     			currentLocation = location;
     			currentBeer = null;
+    			$location.search('l',currentLocation.locationId);
     		},
     		updateBeer : function(beer) {
     			beers[beer.id] = beer;
@@ -58,6 +81,7 @@
     		},
     		clear : function() {
     			currentLocation = null;
+    			$location.search('l',null);
     		},
     		location : function() {
     			return currentLocation;
@@ -77,6 +101,22 @@
 
     	}
     	
+    	function loadLocation(locationId) {
+			$http.get('location/' + locationId)
+			.then(function successCallback(response) {
+    			beers = response.data.beers; 
+    			currentLocation = response.data.location;
+    			ibu = hasIbu(beers);
+    			abv = hasAbv(beers);
+    			currentBeer = null;
+//    			visitedLocations.push(currentLocation.locationId);
+//    			$location.search('v',visitedLocations);
+    			$location.search('l',currentLocation.locationId);
+			}, function errorCallback(response) {
+				error(response);
+			});
+    	}
+
     	function hasIbu(beerList) {
     		for(var i in beerList) {
     			if(beerList[i].ibu) {
@@ -94,10 +134,10 @@
     		return false;
     	}
     	
+
     }]);
 
     function error(error) {
     	console.log(error);
-    	debugger;
     }
 })(window.angular, window.jQuery)
