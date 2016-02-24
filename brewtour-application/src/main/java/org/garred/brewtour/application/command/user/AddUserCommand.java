@@ -1,5 +1,7 @@
 package org.garred.brewtour.application.command.user;
 
+import static org.garred.brewtour.view.UserAuthView.ADMIN_ROLE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +9,11 @@ import org.garred.brewtour.application.command.AddAggregateCallback;
 import org.garred.brewtour.application.command.AddAggregateCommand;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.SecuredCommand;
-import org.garred.brewtour.view.UserAuthView;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@SecuredCommand(UserAuthView.ADMIN_ROLE)
+@SecuredCommand(ADMIN_ROLE)
 public class AddUserCommand implements AddAggregateCommand<UserId> {
 
 	private final List<AddAggregateCallback<UserId>> callbacks = new ArrayList<>();

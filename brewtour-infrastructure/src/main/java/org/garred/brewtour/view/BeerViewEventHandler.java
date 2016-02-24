@@ -24,6 +24,7 @@ public class BeerViewEventHandler extends AbstractViewEventHandler<BeerId, BeerV
 	@EventHandler
     public void on(BeerModifiedEvent event) {
 		update(event.beerId, b -> {
+			b.description = event.description;
 			b.style = event.style;
 			b.category = event.category;
 			b.abv = event.abv;

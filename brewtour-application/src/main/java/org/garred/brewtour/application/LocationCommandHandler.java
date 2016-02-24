@@ -9,6 +9,7 @@ import org.garred.brewtour.application.command.location.AddLocationReviewCommand
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationAddressCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationBreweryAssociationCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationHoursOfOperationCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationImagesCommand;
@@ -44,6 +45,10 @@ public class LocationCommandHandler extends AbstractCommandHandler<LocationId,Lo
 	@CommandHandler
 	public void handle(UpdateLocationDescriptionCommand command) {
 		require(command).updateDescription(command);
+	}
+	@CommandHandler
+	public void handle(UpdateLocationBreweryAssociationCommand command) {
+		require(command).associateWithBrewery(command.breweryId);
 	}
 	@CommandHandler
 	public void handle(UpdateLocationHoursOfOperationCommand command) {

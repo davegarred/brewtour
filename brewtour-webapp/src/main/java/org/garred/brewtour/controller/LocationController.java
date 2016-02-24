@@ -61,18 +61,6 @@ public class LocationController extends AbstractRestController {
 		return updatedLocationUserCombinedView(locationId);
 	}
 
-//	@RequestMapping(value = "/beerAvailable", method = POST, produces="application/json")
-//	@ResponseBody
-//	public void beerAvailable(@RequestBody BeerAvailableCommand beerAvailable) {
-//		this.locationService.fireSecuredCommand(beerAvailable);
-//	}
-//
-//	@RequestMapping(value = "/beerUnavailable", method = POST, produces="application/json")
-//	@ResponseBody
-//	public void beerUnavailable(@RequestBody BeerUnavailableCommand beerUnavailable) {
-//		this.locationService.fireSecuredCommand(beerUnavailable);
-//	}
-
 	@RequestMapping(value = "AddLocationComment", method = POST, produces="application/json")
 	@ResponseBody
 	public void addLocationComment(@RequestBody AddLocationCommentCommand locationComment) {

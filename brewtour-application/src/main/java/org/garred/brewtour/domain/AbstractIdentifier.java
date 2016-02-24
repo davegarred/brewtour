@@ -17,6 +17,11 @@ public abstract class AbstractIdentifier extends AbstractObject implements Ident
 	public String getId() {
 		return this.id;
 	}
+	
+	@Override
+	public String toString() {
+		return this.id;
+	}
 
 	@Override
 	public int hashCode() {

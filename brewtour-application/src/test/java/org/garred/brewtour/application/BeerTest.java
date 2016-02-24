@@ -55,7 +55,7 @@ public class BeerTest {
 	private static final String BEER_REVIEW = "spicy but with a full body";
 	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(BEER_ID, SILVER, BEER_REVIEW);
 
-	private static final ModifyBeerCommand MODIFY_BEER_COMMAND = new ModifyBeerCommand(BEER_ID, STYLE_2, CATEGORY_2, ABV_2, IBU_2);
+	private static final ModifyBeerCommand MODIFY_BEER_COMMAND = new ModifyBeerCommand(BEER_ID, BEER_DESCRIPTION,STYLE_2, CATEGORY_2, ABV_2, IBU_2);
 	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, BREWERY_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
 
 

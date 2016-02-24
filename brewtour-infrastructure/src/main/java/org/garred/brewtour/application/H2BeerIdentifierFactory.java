@@ -7,7 +7,7 @@ import org.garred.brewtour.domain.BeerId;
 public class H2BeerIdentifierFactory extends AbstractH2IdentifierFactory<BeerId> {
 
 	private static final String LOCATION_SEQUENCE = "beerSequence";
-	private static final String IDENTIFIER_PREFIX = "BEER";
+	private static final String IDENTIFIER_PREFIX = "B";
 
 	public H2BeerIdentifierFactory(DataSource dataSource) {
 		super(dataSource);

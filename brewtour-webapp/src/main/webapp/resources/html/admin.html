@@ -10,17 +10,36 @@
 			</table>
 		</div>
 		<div class="col-md-6">
+			<div>{{focusedLocation.locationId}}</div>
+			<div>
+				<textarea rows="7" cols="50" ng-model="descriptionDto.description"></textarea>
+				<button type="submit" class="btn btn-primary btn-xs" ng-click="updateLocation('UpdateLocationDescription',descriptionDto)" >Update</button>
+			</div>
+		</div>
+	</div>
+	<br/>
+	<div class="row">
+		<div class="col-md-6">
 			<table class="table table-condensed table-sm" ng-if="focusedLocation">
-				<tr ng-repeat="beer in focusedLocation.beers" style="font-size: x-small">
+				<tr ng-repeat="beer in beers" style="font-size: x-small">
 					<td>{{beer.id}}</td>
 					<td>{{beer.beerName}}</td>
 					<td><button type="button" class="btn btn-default btn-xs" ng-click="focusBeer(beer)">Edit</button></td>
 				</tr>
 			</table>
 		</div>
-
+		<div class="col-md-6">
+			<div>{{focusedBeer.id}}</div>
+			<div>
+				<textarea rows="7" cols="50" ng-model="beerDto.description"></textarea>
+				<input type="text" ng-model="beerDto.abv" placeholder="ABV">%
+				<input type="text" ng-model="beerDto.ibu" placeholder="IBU">
+				<button type="submit" class="btn btn-primary btn-xs" ng-click="updateBeer('ModifyBeer',beerDto)" >Update</button>
+			</div>
+		</div>
 	</div>
 
+	
 	<pre style="font-size: x-small">{{focusedBeer | json}}</pre>
 	<pre style="font-size: x-small">{{focusedLocation | json}}</pre>
 

@@ -10,6 +10,6 @@ public class HashTest {
 	@Test
 	public void testHash() {
 		Hash hash = hashFromPassword(new UserId("userId"), "password");
-		assertEquals("a6b0739a02bb5f17683434f03f1964b1dc7b912df3beecc56e3948fd4a9e07dd", hash.getValue());
+		assertEquals("4c1353e9e73987b685665af53d3529d702c291f7bf2560d141a9aef08fdba590", hash.getValue());
 	}
 }

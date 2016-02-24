@@ -7,7 +7,7 @@ import org.garred.brewtour.domain.LocationId;
 public class H2LocationIdentifierFactory extends AbstractH2IdentifierFactory<LocationId> {
 
 	private static final String LOCATION_SEQUENCE = "locationSequence";
-	private static final String IDENTIFIER_PREFIX = "LOCA";
+	private static final String IDENTIFIER_PREFIX = "L";
 
 	public H2LocationIdentifierFactory(DataSource dataSource) {
 		super(dataSource);

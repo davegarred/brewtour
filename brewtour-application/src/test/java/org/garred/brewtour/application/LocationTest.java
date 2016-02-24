@@ -13,6 +13,7 @@ import org.garred.brewtour.application.command.location.AddLocationReviewCommand
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationAddressCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationBreweryAssociationCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationHoursOfOperationCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationImagesCommand;
@@ -23,6 +24,7 @@ import org.garred.brewtour.application.event.location.BeerAvailableEvent;
 import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
 import org.garred.brewtour.application.event.location.LocationAddedEvent;
 import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
+import org.garred.brewtour.application.event.location.LocationBreweryAssociationUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationDescriptionUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationHoursOfOperationUpdatedEvent;
 import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent;
@@ -122,6 +124,12 @@ public class LocationTest {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND)
 		.when(new UpdateLocationImagesCommand(LOCATION_ID, AVAILABLE_IMAGES))
 		.expectEvents(new LocationImagesUpdatedEvent(LOCATION_ID, AVAILABLE_IMAGES));
+	}
+	@Test
+	public void testUpdateLocationBreweryAssociation() {
+		this.fixture.givenCommands(ADD_LOCATION_COMMAND)
+		.when(new UpdateLocationBreweryAssociationCommand(LOCATION_ID, BREWERY_ID))
+		.expectEvents(new LocationBreweryAssociationUpdatedEvent(LOCATION_ID, BREWERY_ID));
 	}
 	@Test
 	public void testUpdateLocationPosition() {

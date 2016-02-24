@@ -13,6 +13,7 @@ import org.garred.brewtour.application.command.location.AddLocationReviewCommand
 import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationAddressCommand;
+import org.garred.brewtour.application.command.location.UpdateLocationBreweryAssociationCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationHoursOfOperationCommand;
 import org.garred.brewtour.application.command.location.UpdateLocationImagesCommand;
@@ -66,6 +67,11 @@ public class LocationCommandSerializationTest extends AbstractSerializationTest 
 	@Test
 	public void testUpdateLocationDescription() {
 		reflectionValidate(new UpdateLocationDescriptionCommand(LOCATION_ID, "A cute little brewpub to hang out"));
+	}
+
+	@Test
+	public void testUpdateLocationBreweryAssociation() {
+		reflectionValidate(new UpdateLocationBreweryAssociationCommand(LOCATION_ID, BREWERY_ID));
 	}
 
 	@Test
