@@ -9,7 +9,7 @@
 				</tr>
 			</table>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-6" ng-if="focusedLocation">
 			<div>{{focusedLocation.locationId}}</div>
 			<div>
 				<textarea rows="7" cols="50" ng-model="descriptionDto.description"></textarea>
@@ -28,13 +28,28 @@
 				</tr>
 			</table>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-6" ng-if="focusedLocation && !focusedBeer">
+			<div>
+				<input type="text" ng-model="addBeerDto.beerName" placeholder="Beer name">
+				<button type="submit" class="btn btn-primary btn-xs" ng-click="updateBeer('addBeer',addBeerDto)" >Add Beer</button>
+			</div>
+			
+		</div>
+		<div class="col-md-6" ng-if="focusedBeer">
 			<div>{{focusedBeer.id}}</div>
 			<div>
-				<textarea rows="7" cols="50" ng-model="beerDto.description"></textarea>
-				<input type="text" ng-model="beerDto.abv" placeholder="ABV">%
-				<input type="text" ng-model="beerDto.ibu" placeholder="IBU">
-				<button type="submit" class="btn btn-primary btn-xs" ng-click="updateBeer('ModifyBeer',beerDto)" >Update</button>
+				<div>
+					<textarea rows="7" cols="50" ng-model="beerDescriptionDto.description"></textarea>
+					<button type="submit" class="btn btn-primary btn-xs" ng-click="updateBeer('UpdateBeerDescription',beerDescriptionDto)" >Update</button>
+				</div>
+				<div>
+					<input type="text" ng-model="beerAbvDto.abv" placeholder="ABV">%
+					<button type="submit" class="btn btn-primary btn-xs" ng-click="updateBeer('UpdateBeerAbv',beerAbvDto)" >Update</button>
+				</div>
+				<div>
+					<input type="text" ng-model="beerIbuDto.ibu" placeholder="IBU">
+					<button type="submit" class="btn btn-primary btn-xs" ng-click="updateBeer('UpdateBeerIbu',beerIbuDto)" >Update</button>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -79,7 +79,6 @@ public class IntegrationTest {
 
 	private static final String LOGIN = "a user login";
 	private static final String PASSWORD = "password";
-//	private static final UserId USER_ID = new UserId("a user id");
 	private static final String SCREEN_NAME = "screen name";
 
 	private static final AddUserCommand ADD_USER_COMMAND = new AddUserCommand(SCREEN_NAME, LOGIN, PASSWORD);
@@ -129,7 +128,7 @@ public class IntegrationTest {
 		location = this.locationRepo.get(locationId);
 		assertSingleItemInCollection(beerId, location.beers);
 		final BeerView beer = this.beerRepo.get(beerId);
-		assertEquals(newBeerView(beerId, BEER_NAME, LOCATION_NAME), beer);
+		assertEquals(newBeerView(beerId, BEER_NAME, BREWERY_NAME), beer);
 
 		setCurrentUser(userId);
 		final Review expectedReview = new Review(SCREEN_NAME, GOLD.name(), LOCATION_REVIEW);

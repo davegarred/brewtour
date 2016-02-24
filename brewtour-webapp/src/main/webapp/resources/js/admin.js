@@ -41,7 +41,6 @@
     		.then(function successCallback(response) {
     			setLocation(response.data.location);
     			$scope.beers = response.data.beers;
-
     		}, function errorCallback(response) {
     			error(response);
     		});
@@ -51,6 +50,11 @@
     		$scope.focusedLocation = location;
 			$scope.descriptionDto = {};
 			$scope.descriptionDto.description = location.description;
+			$scope.addBeerDto = {
+					beerName: "test name",
+					breweryId: location.locationId,
+					breweryName: location.name
+			};
     	}
     	
     	$scope.focusBeer = function(beer) {
@@ -59,14 +63,22 @@
     	
     	function setBeer(beer) {
     		$scope.focusedBeer = beer;
-			$scope.beerDto = {};
-			$scope.beerDto.beerId = beer.id;
-//			$scope.beerDto.beerName = beer.beerName;
-			$scope.beerDto.description = beer.description;
-			$scope.beerDto.style = beer.style;
-			$scope.beerDto.category = beer.category;
-			$scope.beerDto.abv = beer.abv;
-			$scope.beerDto.ibu = beer.ibu;
+			$scope.beerDescriptionDto = {
+					beerId: beer.id,
+					description: beer.description
+			};
+			$scope.beerStyleDto = {
+					beerId: beer.id,
+					style: beer.style
+			};
+			$scope.beerAbvDto = {
+					beerId: beer.id,
+					abv: beer.abv
+			};
+			$scope.beerIbuDto = {
+					beerId: beer.id,
+					ibu: beer.ibu
+			};
     	}
     	
     }]);

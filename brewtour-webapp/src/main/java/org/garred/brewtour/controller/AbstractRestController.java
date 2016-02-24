@@ -3,6 +3,7 @@ package org.garred.brewtour.controller;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import org.garred.brewtour.security.LoginNotFoundException;
+import org.garred.brewtour.security.UserAuthorizationException;
 import org.garred.brewtour.security.UserNotLoggedInException;
 import org.garred.brewtour.validation.ConstraintViolationDto;
 import org.garred.brewtour.validation.ConstraintViolationException;
@@ -33,9 +34,16 @@ public class AbstractRestController {
 
 	@ExceptionHandler(value = UserNotLoggedInException.class)
 	@ResponseBody
-	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
 	public String userNotLoggedInException() throws JsonProcessingException {
 		return this.objectMapper.writeValueAsString(new ErrorBody("This resource is only available to registered users"));
+	}
+
+	@ExceptionHandler(value = UserAuthorizationException.class)
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.FORBIDDEN)
+	public String userNotAuthorizedException() throws JsonProcessingException {
+		return this.objectMapper.writeValueAsString(new ErrorBody("You are not authorized for this action"));
 	}
 
 	@ExceptionHandler(value = ConstraintViolationException.class)

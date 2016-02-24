@@ -19,13 +19,13 @@
 
 <style>
 html, body {
-	height: 95%;
+	height: 97%;
 	margin: 0;
 	padding: 0;
 }
 @media (max-width: 768px) {
     html, body {
-    	height: 90%;
+    	height: 97%;
     }
 }
 #map {

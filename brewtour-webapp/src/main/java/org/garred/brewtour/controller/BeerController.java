@@ -11,6 +11,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.garred.brewtour.application.command.GenericAddAggregateCallback;
 import org.garred.brewtour.application.command.beer.AbstractBeerCommand;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
+import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.repository.BeerViewRepository;
 import org.garred.brewtour.service.UserDetailsService;
@@ -43,7 +44,9 @@ public class BeerController extends AbstractRestController {
 	public BeerId addlocation(@RequestBody AddBeerCommand addBeer) {
 		final GenericAddAggregateCallback<BeerId> callback = forCommand(addBeer);
 		this.commandGateway.sendAndWait(addBeer);
-		return callback.identifier();
+		final BeerId beerId = callback.identifier();
+		this.commandGateway.sendAndWait(new BeerAvailableCommand(addBeer.breweryId, beerId));
+		return beerId;
 	}
 
 	@RequestMapping(value = "{commandName}", method = POST, produces="application/json")
