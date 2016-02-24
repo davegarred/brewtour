@@ -26,7 +26,6 @@ import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
@@ -59,7 +58,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class IntegrationTest {
 
 	private static final String BREWERY_NAME = "Stone Brewing";
-	private static final BreweryId BREWERY_ID = new BreweryId("BREW1001");
 	private static final String LOCATION_COMMENT = "Some very important comment on this location";
 	private static final String LOCATION_NAME = "a location name";
 	private static final BigDecimal LONGITUDE = new BigDecimal("-122.315");
@@ -125,7 +123,7 @@ public class IntegrationTest {
 		final LocaleView locale = this.localeRepo.get(SEATTLE);
 		assertEquals(SEATTLE.id, locale.name);
 
-		this.commandGateway.sendAndWait(addBeerCommand());
+		this.commandGateway.sendAndWait(addBeerCommand(locationId));
 		final BeerId beerId = this.beerIdentifierFactory.last();
 		this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
 		location = this.locationRepo.get(locationId);
@@ -166,8 +164,8 @@ public class IntegrationTest {
 		UserHolder.set(view);
 	}
 
-	private static AddBeerCommand addBeerCommand() {
-		return new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, BREWERY_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
+	private static AddBeerCommand addBeerCommand(LocationId locationId) {
+		return new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, locationId, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
 	}
 	private static AddLocationReviewCommand addLocationReviewCommand(LocationId locationId) {
 		return new AddLocationReviewCommand(locationId, GOLD, LOCATION_REVIEW);

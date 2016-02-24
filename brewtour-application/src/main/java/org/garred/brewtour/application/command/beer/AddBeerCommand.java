@@ -9,7 +9,7 @@ import java.util.List;
 import org.garred.brewtour.application.command.AddAggregateCallback;
 import org.garred.brewtour.application.command.AddAggregateCommand;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
+import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.security.SecuredCommand;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -22,17 +22,17 @@ public class AddBeerCommand  implements AddAggregateCommand<BeerId> {
 
 	public final String beerName;
 	public final String description;
-	public final BreweryId breweryId;
+	public final LocationId breweryId;
 	public final String breweryName;
 	public final String style;
 	public final String category;
 	public final BigDecimal abv,ibu;
-	
+
 	@JsonCreator
 	public AddBeerCommand(
 			@JsonProperty("beerName") String beerName,
 			@JsonProperty("description") String description,
-			@JsonProperty("breweryId") BreweryId breweryId,
+			@JsonProperty("breweryId") LocationId breweryId,
 			@JsonProperty("breweryName") String breweryName,
 			@JsonProperty("style") String style,
 			@JsonProperty("category") String category,

@@ -19,8 +19,8 @@ import org.garred.brewtour.application.event.beer.BeerReviewAddedByAnonymousEven
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByUserEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.Image;
+import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.security.GuestUserAuth;
 import org.garred.brewtour.security.UserHolder;
@@ -34,8 +34,8 @@ public class BeerTest {
 	private static final BeerId BEER_ID = new BeerId("BEER10101");
 	protected static final String BEER_DESCRIPTION = "a very tasty beer";
 	protected static final String BREWERY_NAME = "Stone Brewing";
-	protected static final BreweryId BREWERY_ID = new BreweryId("BREW10001");
 
+	private static final LocationId LOCATION_ID = new LocationId("LOCA10001");
 	private static final Image IMAGE_1 = new Image("image 1");
 	private static final Image IMAGE_2 = new Image("image 2");
 	private static final AvailableImages AVAILABLE_IMAGES = new AvailableImages(IMAGE_1, IMAGE_2, null);
@@ -56,7 +56,7 @@ public class BeerTest {
 	private static final AddBeerReviewCommand ADD_BEER_REVIEW_COMMAND = new AddBeerReviewCommand(BEER_ID, SILVER, BEER_REVIEW);
 
 	private static final ModifyBeerCommand MODIFY_BEER_COMMAND = new ModifyBeerCommand(BEER_ID, BEER_DESCRIPTION,STYLE_2, CATEGORY_2, ABV_2, IBU_2);
-	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, BREWERY_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
+	private static final AddBeerCommand ADD_BEER = new AddBeerCommand(BEER_NAME, BEER_DESCRIPTION, LOCATION_ID, BREWERY_NAME, STYLE, CATEGORY, ABV, IBU);
 
 
 	private FixtureConfiguration<Beer> fixture;

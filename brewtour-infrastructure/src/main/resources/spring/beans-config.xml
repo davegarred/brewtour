@@ -51,8 +51,6 @@
 		c:identifierFactory-ref="locationIdentifierFactory" />
 	<bean id="beerCommandHandlerService" class="org.garred.brewtour.service.BeerCommandHandlerServiceImpl"
 		c:identifierFactory-ref="beerIdentifierFactory" />
-	<bean id="breweryCommandHandlerService" class="org.garred.brewtour.service.BreweryCommandHandlerServiceImpl"
-		c:identifierFactory-ref="breweryIdentifierFactory" />
 	<bean id="userCommandHandlerService" class="org.garred.brewtour.service.UserCommandHandlerServiceImpl"/>
 		
 		

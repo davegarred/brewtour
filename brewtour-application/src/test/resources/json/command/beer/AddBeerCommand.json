@@ -1,7 +1,7 @@
 {
   "beerName" : "a beer name",
   "description" : "a very tasty beer",
-  "breweryId" : "BREW10001",
+  "breweryId" : "another location id",
   "breweryName" : "Stone Brewing",
   "style" : "awesome style",
   "category" : "niche category",

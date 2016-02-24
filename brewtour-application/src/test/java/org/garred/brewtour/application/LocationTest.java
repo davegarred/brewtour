@@ -37,7 +37,6 @@ import org.garred.brewtour.application.event.location.user_fired.LocationReviewA
 import org.garred.brewtour.application.event.location.user_fired.LocationReviewAddedByUserEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
@@ -53,9 +52,9 @@ public class LocationTest {
 	private static final BigDecimal LONGITUDE = new BigDecimal("-122.315");
 	private static final BigDecimal LATITUDE = new BigDecimal("47.614");
 	private static final LocationId LOCATION_ID = new LocationId("LOCA10001");
+	private static final LocationId LOCATION_ID_2 = new LocationId("LOCA10002");
 	private static final BeerId BEER_ID = new BeerId("BEER10101");
 	protected static final String BREWERY_NAME = "Stone Brewing";
-	protected static final BreweryId BREWERY_ID = new BreweryId("BREW10001");
 
 	private static final AddLocationCommentCommand ADD_LOCATION_COMMENT_COMMAND = new AddLocationCommentCommand(LOCATION_ID, "This place closes early on Mondays");
 	private static final String LOCATION_DESCRIPTION = "some interesting description";
@@ -128,8 +127,8 @@ public class LocationTest {
 	@Test
 	public void testUpdateLocationBreweryAssociation() {
 		this.fixture.givenCommands(ADD_LOCATION_COMMAND)
-		.when(new UpdateLocationBreweryAssociationCommand(LOCATION_ID, BREWERY_ID))
-		.expectEvents(new LocationBreweryAssociationUpdatedEvent(LOCATION_ID, BREWERY_ID));
+		.when(new UpdateLocationBreweryAssociationCommand(LOCATION_ID, LOCATION_ID_2))
+		.expectEvents(new LocationBreweryAssociationUpdatedEvent(LOCATION_ID, LOCATION_ID_2));
 	}
 	@Test
 	public void testUpdateLocationPosition() {

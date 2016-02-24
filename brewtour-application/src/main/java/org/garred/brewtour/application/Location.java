@@ -48,7 +48,6 @@ import org.garred.brewtour.application.event.location.user_fired.LocationStarRat
 import org.garred.brewtour.application.event.location.user_fired.LocationStarRatingAddedByUserEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.ReviewMedal;
 import org.garred.brewtour.domain.UserId;
@@ -62,7 +61,7 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     private LocationId id;
 
 	private String name;
-	private BreweryId breweryId;
+	private LocationId associatedBreweryId;
 	private String description;
 	private String streetAddress;
     private String streetAddress2;
@@ -106,10 +105,10 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 			apply(new LocationDescriptionUpdatedEvent(this.id, command.description));
 		}
 	}
-	
-	public void associateWithBrewery(BreweryId brewery) {
-		if(!Objects.equals(this.breweryId, brewery)) {
-			apply(new LocationBreweryAssociationUpdatedEvent(this.id, brewery));
+
+	public void associateWithBrewery(LocationId associatedBrewery) {
+		if(!Objects.equals(this.associatedBreweryId, associatedBrewery)) {
+			apply(new LocationBreweryAssociationUpdatedEvent(this.id, associatedBrewery));
 		}
 	}
 
@@ -207,7 +206,7 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
     }
     @EventHandler
     public void on(LocationBreweryAssociationUpdatedEvent event) {
-    	this.breweryId = event.breweryId;
+    	this.associatedBreweryId = event.associatedBreweryId;
     }
     @EventHandler
     public void on(LocationHoursOfOperationUpdatedEvent event) {

@@ -20,7 +20,6 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
-import org.garred.brewtour.domain.BreweryId;
 import org.garred.brewtour.domain.Image;
 import org.garred.brewtour.domain.LocalePoint;
 import org.garred.brewtour.domain.LocationId;
@@ -38,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class AbstractSerializationTest {
 
 	protected static final String BREWERY_NAME = "Stone Brewing";
-	protected static final BreweryId BREWERY_ID = new BreweryId("BREW10001");
 	protected static final BeerId BEER_ID = new BeerId("BEER10101");
 
 	protected static final String BEER_DESCRIPTION = "a very tasty beer";
