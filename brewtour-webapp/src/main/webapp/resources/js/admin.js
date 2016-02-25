@@ -51,7 +51,7 @@
 			$scope.descriptionDto = {};
 			$scope.descriptionDto.description = location.description;
 			$scope.addBeerDto = {
-					beerName: "test name",
+					beerName: "",
 					breweryId: location.locationId,
 					breweryName: location.name
 			};
@@ -63,6 +63,9 @@
     	
     	function setBeer(beer) {
     		$scope.focusedBeer = beer;
+			$scope.beerAvailableDto = {
+					beerId: beer.id
+			};
 			$scope.beerDescriptionDto = {
 					beerId: beer.id,
 					description: beer.description

@@ -14,6 +14,7 @@ public class BeerView extends AbstractView implements Entity<BeerId> {
 	public String beerName,breweryName,description,style;
 	public BigDecimal abv, ibu, srm;
 	public AvailableImages images;
+	public List<ProfessionalReview> professionalReviews = new ArrayList<>();
 	public List<Review> userReviews = new ArrayList<>();
 
 	public String medal;
@@ -29,10 +30,15 @@ public class BeerView extends AbstractView implements Entity<BeerId> {
 	public void addReview(Review review) {
 		this.userReviews.add(review);
 	}
+	public void addReview(ProfessionalReview professionalReview) {
+		this.professionalReviews.add(professionalReview);
+	}
 
 	@Override
 	public BeerId identifier() {
 		return this.id;
 	}
+
+
 
 }

@@ -33,6 +33,7 @@
     }]);
     
     services.factory('LocationService', ['$http', '$location', function ($http, $location) {
+    	var currentLocationId = null;
     	var currentLocation = null;
     	var ibu = false;
     	var abv = false;
@@ -86,6 +87,9 @@
     		location : function() {
     			return currentLocation;
     		},
+    		locationId : function() {
+    			return currentLocationId;
+    		},
     		hasIbu : function() {
     			return ibu;
     		},
@@ -102,6 +106,7 @@
     	}
     	
     	function loadLocation(locationId) {
+    		currentLocationId = locationId;
 			$http.get('location/' + locationId)
 			.then(function successCallback(response) {
     			beers = response.data.beers; 

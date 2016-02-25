@@ -1,7 +1,10 @@
 package org.garred.brewtour.api;
 
 import static org.garred.brewtour.AbstractSerializationTest.TestType.COMMAND;
+import static org.garred.brewtour.domain.ProfessionalRatingGroup.RATE_BEER;
 import static org.garred.brewtour.domain.ReviewMedal.GOLD;
+
+import java.math.BigDecimal;
 
 import org.garred.brewtour.AbstractSerializationTest;
 import org.garred.brewtour.application.command.beer.AddBeerCommand;
@@ -11,6 +14,7 @@ import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerProfessionalRatingCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerSrmCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerStyleCommand;
 import org.garred.brewtour.domain.AvailableImages;
@@ -45,6 +49,11 @@ public class BeerCommandSerializationTest extends AbstractSerializationTest {
 	@Test
 	public void testUpdateBeerSrm() {
 		reflectionValidate(new UpdateBeerSrmCommand(BEER_ID, BEER_SRM));
+	}
+
+	@Test
+	public void testUpdateBeerProfessionalRating() {
+		reflectionValidate(new UpdateBeerProfessionalRatingCommand(BEER_ID, RATE_BEER, "http://www.ratebeer.com/beer/fremont-universale-pale-ale/104575/", new BigDecimal(89), new BigDecimal(100)));
 	}
 
 	@Test

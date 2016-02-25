@@ -1,5 +1,7 @@
 package org.garred.brewtour.application;
 
+import static java.math.RoundingMode.HALF_UP;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import org.garred.brewtour.application.command.beer.AddBeerCommand;
 import org.garred.brewtour.application.command.beer.AddBeerRatingCommand;
 import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerProfessionalRatingCommand;
 import org.garred.brewtour.application.event.beer.AbstractBeerReviewAddedEvent;
 import org.garred.brewtour.application.event.beer.AbstractBeerStarRatingAddedEvent;
 import org.garred.brewtour.application.event.beer.BeerAbvUpdatedEvent;
@@ -24,6 +27,7 @@ import org.garred.brewtour.application.event.beer.BeerAddedEvent;
 import org.garred.brewtour.application.event.beer.BeerDescriptionUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerIbuUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerImagesUpdatedEvent;
+import org.garred.brewtour.application.event.beer.BeerProfessionalRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByUserEvent;
@@ -34,6 +38,7 @@ import org.garred.brewtour.application.event.beer.BeerStyleUpdatedEvent;
 import org.garred.brewtour.domain.AvailableImages;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.ProfessionalRatingGroup;
 import org.garred.brewtour.domain.ReviewMedal;
 import org.garred.brewtour.domain.UserId;
 import org.garred.brewtour.domain.UserReview;
@@ -57,6 +62,8 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
 
 	private final List<UserReview> reviews = new ArrayList<>();
 	private final Map<UserId,ReviewMedal> userMedalRatings = new HashMap<>();
+	private final Map<ProfessionalRatingGroup,BigDecimal> overallRatings = new HashMap<>();
+	private BigDecimal overallRating;
 
 	private ReviewMedal medal;
 
@@ -94,6 +101,10 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
 		}
 	}
 
+	public void rate(UpdateBeerProfessionalRatingCommand command, LocalDateTime time) {
+		apply(new BeerProfessionalRatingUpdatedEvent(this.id, command.ratingGroup, command.link, command.rating, command.ratingMax, time));
+		updateRating();
+	}
 
 	public void addBeerStarRating(AddBeerRatingCommand beerReview, UserAuth user) {
 		if(user.identified()) {
@@ -101,10 +112,7 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
 		} else {
 			apply(BeerStarRatingAddedByAnonymousEvent.fromCommand(beerReview, user.identifier()));
 		}
-		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(this.userMedalRatings.values()));
-		if(!Objects.equals(updatedMedal, this.medal)) {
-			apply(new BeerRatingUpdatedEvent(this.id, updatedMedal));
-		}
+		updateRating();
 	}
 	public void addBeerReview(AddBeerReviewCommand beerReview, UserAuth user, LocalDateTime time) {
 		if(user.identified()) {
@@ -112,7 +120,10 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
 		} else {
 			apply(BeerReviewAddedByAnonymousEvent.fromCommand(beerReview, user.identifier(), time));
 		}
-		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(this.userMedalRatings.values()));
+		updateRating();
+	}
+	private void updateRating() {
+		final ReviewMedal updatedMedal = ReviewMedal.average(this.userMedalRatings.values(), this.overallRatings.values());
 		if(!Objects.equals(updatedMedal, this.medal)) {
 			apply(new BeerRatingUpdatedEvent(this.id, updatedMedal));
 		}
@@ -150,6 +161,12 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
     public void on(BeerImagesUpdatedEvent event) {
     	this.images = event.images;
     }
+
+    @EventHandler
+    public void on(BeerProfessionalRatingUpdatedEvent event) {
+    	final BigDecimal ratingValue = event.rating.setScale(2).divide(event.ratingMax.setScale(2), HALF_UP);
+    	this.overallRatings.put(event.ratingGroup, ratingValue);
+    }
     @EventHandler
     public void on(AbstractBeerStarRatingAddedEvent event) {
     	this.userMedalRatings.put(event.userId, event.medal);
@@ -160,5 +177,6 @@ public class Beer extends AbstractAnnotatedAggregateRoot<BeerId> {
     	this.reviews.add(review);
     	on((AbstractBeerStarRatingAddedEvent)event);
     }
+
 
 }

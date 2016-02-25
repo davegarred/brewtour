@@ -1,7 +1,7 @@
 'use strict';
 (function (angular) {
     var beertour = angular.module('beertour', ['services', 'ui.bootstrap']);
-
+    
     beertour.controller('MainController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
    		$scope.user = null;
    		$scope.$watch(function(){ return UserService.user() }, function(newVal,oldVal) {
@@ -105,38 +105,41 @@
     }]);
     beertour.controller('MapController', ['$scope', '$http', 'UserService', 'LocationService', function ($scope, $http, UserService, LocationService) {
     	
+    	var openInfoWindow = null;
+    	var clickedIcon = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+
     	function initMap() {
     		var locale = $scope.locale;
     		$scope.map = new google.maps.Map(document.getElementById('map'), locale.googleMapsParameters);
-    		
+    		var currentLocationId = LocationService.locationId();
     		for(var l in locale.locations) {
     			var location = locale.locations[l];
     			var locationPosition = {lat: location.latitude, lng: location.longitude};
-//    			var opacity = 0.0;
-//    			if(LocationService.visited(location.locationId)) {
-//    				opacity = 0.15;
-//    			}
+
     			var details = {
     					position: locationPosition,
     					title: location.name,
     					icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-//    					opacity: opacity
     			};
     			var marker = new google.maps.Marker(details);
     			marker.setMap($scope.map);
     			
     			var infoWindowContent = "<strong>" + location.name + "</strong>";
     			bindInfoWindow(marker, $scope.map, infoWindowContent, location); 
+    			
+    			if(currentLocationId === location.locationId) {
+    				openInfoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
+    				marker.setIcon(clickedIcon);
+    				openInfoWindow.open($scope.map, marker);
+    			}
     		}
-    		
     	}
-    	var openInfoWindow = null;
     	function bindInfoWindow(marker, map, html, location) {
     		google.maps.event.addListener(marker, 'click', function() {
     			if(openInfoWindow) {
     				openInfoWindow.close();
     			}
-    			marker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
+    			marker.setIcon(clickedIcon);
     			var infowindow = new google.maps.InfoWindow({ content: html });
     			infowindow.open(map, marker);
     			$scope.focusedLocation = location;
