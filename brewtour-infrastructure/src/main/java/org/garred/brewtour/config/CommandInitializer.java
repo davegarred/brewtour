@@ -1,5 +1,6 @@
 package org.garred.brewtour.config;
 
+import static java.math.RoundingMode.HALF_UP;
 import static org.garred.brewtour.application.command.GenericAddAggregateCallback.forCommand;
 import static org.garred.brewtour.config.BrewDbDataPrep.BEER_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.BREWERY_FILE;
@@ -156,10 +157,10 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 				this.commandGateway.sendAndWait(new UpdateBeerStyleCommand(beerId, beer.style.name));
 			}
 			if(beer.abv  != null && !beer.abv.isEmpty()) {
-				this.commandGateway.sendAndWait(new UpdateBeerAbvCommand(beerId, new BigDecimal(beer.abv)));
+				this.commandGateway.sendAndWait(new UpdateBeerAbvCommand(beerId, new BigDecimal(beer.abv).setScale(1, HALF_UP)));
 			}
 			if(beer.ibu  != null && !beer.ibu.isEmpty()) {
-				this.commandGateway.sendAndWait(new UpdateBeerIbuCommand(beerId, new BigDecimal(beer.ibu)));
+				this.commandGateway.sendAndWait(new UpdateBeerIbuCommand(beerId, new BigDecimal(beer.ibu).setScale(0, HALF_UP)));
 			}
 
 			final Images bdbImages = beer.labels;

@@ -19,7 +19,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {
 		"classpath:spring/persistence-config.xml",
 		"classpath:spring/beans-config.xml",
-		"classpath:spring/axon-config.xml"
+		"classpath:spring/axon-config.xml",
+		"classpath:spring/validator-config.xml"
 })
 public class UserAuthViewRepositoryTest {
 
