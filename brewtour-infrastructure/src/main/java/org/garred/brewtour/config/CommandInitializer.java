@@ -5,6 +5,8 @@ import static org.garred.brewtour.application.command.GenericAddAggregateCallbac
 import static org.garred.brewtour.config.BrewDbDataPrep.BEER_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.BREWERY_FILE;
 import static org.garred.brewtour.config.BrewDbDataPrep.LOCATION_FILE;
+import static org.garred.brewtour.domain.ProfessionalRatingGroup.BEER_ADVOCATE;
+import static org.garred.brewtour.domain.ProfessionalRatingGroup.RATE_BEER;
 import static org.garred.brewtour.security.SystemUserAuth.SYSTEM;
 import static org.garred.brewtour.view.UserAuthView.ADMIN_ROLE;
 
@@ -33,6 +35,7 @@ import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerProfessionalRatingCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerStyleCommand;
 import org.garred.brewtour.application.command.location.AbstractLocationCommand;
 import org.garred.brewtour.application.command.location.AddLocationCommand;
@@ -70,6 +73,8 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 
 		public final Map<String,LocationId> nameToLocationIdMap = new HashMap<>();
 		public final Map<String,LocationId> nameToBreweryIdMap = new HashMap<>();
+
+		public final Map<String,Map<String,BeerId>> locationNameToBeerNameToBeerIdMap = new HashMap<>();
 
 		private final CommandGateway commandGateway;
 
@@ -150,6 +155,8 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 			this.commandGateway.sendAndWait(command);
 			final BeerId beerId = callback.identifier();
 
+			addToBeerNameMap(breweryName, beerId, command.beerName);
+
 			if(beer.description != null && !beer.description.isEmpty()) {
 				this.commandGateway.sendAndWait(new UpdateBeerDescriptionCommand(beerId, beer.description));
 			}
@@ -173,6 +180,15 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 
 			this.commandGateway.sendAndWait(new BeerAvailableCommand(breweryId, beerId));
 			return beerId;
+		}
+
+		private void addToBeerNameMap(String breweryName, final BeerId beerId, String beerName) {
+			Map<String, BeerId> beerNameToIdMap = this.locationNameToBeerNameToBeerIdMap.get(breweryName);
+			if(beerNameToIdMap == null) {
+				beerNameToIdMap = new HashMap<>();
+				this.locationNameToBeerNameToBeerIdMap.put(breweryName,beerNameToIdMap);
+			}
+			beerNameToIdMap.put(beerName, beerId);
 		}
 
 		@Override
@@ -241,12 +257,14 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 				final GenericAddAggregateCallback<BeerId> callback = GenericAddAggregateCallback.forCommand(addCommand);
 				this.commandGateway.sendAndWait(setField(locationId, "breweryId", addCommand));
 				final BeerId beerId = callback.identifier();
+				addToBeerNameMap(addCommand.breweryName, beerId, addCommand.beerName);
+
 				this.commandGateway.sendAndWait(new BeerAvailableCommand(locationId, beerId));
 				for(final AbstractBeerCommand command : commands.detailCommands) {
 					this.commandGateway.sendAndWait(setField(beerId, "beerId", command));
 				}
-
 			}
+			fireCustomExistingBeerCommands();
 		}
 
 		private static Object setLocation(final LocationId locationId, final AbstractLocationCommand command) {
@@ -327,6 +345,28 @@ public class CommandInitializer implements ApplicationListener<ContextRefreshedE
 //			result.add(new AddBeerCommand("Hoppy Little Clouds", "Dry-Hopped Pilsner", null, "Cloudburst Brewing", null, null, null, null));
 			return result;
 		}
+
+		private void fireCustomExistingBeerCommands() {
+			BeerId id = this.locationNameToBeerNameToBeerIdMap.get("Fremont Brewing").get("Universale Pale Ale");
+			this.commandGateway.sendAndWait(new UpdateBeerProfessionalRatingCommand(id, RATE_BEER, "http://www.ratebeer.com/beer/fremont-universale-pale-ale/104575/", new BigDecimal(89), new BigDecimal(100)));
+			this.commandGateway.sendAndWait(new UpdateBeerProfessionalRatingCommand(id, BEER_ADVOCATE, "http://www.beeradvocate.com/beer/profile/20680/51503/", new BigDecimal(83), new BigDecimal(100)));
+
+			id = this.locationNameToBeerNameToBeerIdMap.get("Fremont Brewing").get("Interurban India Pale Ale");
+			this.commandGateway.sendAndWait(new UpdateBeerProfessionalRatingCommand(id, RATE_BEER, "http://www.ratebeer.com/beer/fremont-interurban-ipa/104576/", new BigDecimal(94), new BigDecimal(100)));
+			this.commandGateway.sendAndWait(new UpdateBeerProfessionalRatingCommand(id, BEER_ADVOCATE, "http://www.ratebeer.com/beer/fremont-interurban-ipa/104576/", new BigDecimal(86), new BigDecimal(100)));
+
+			id = this.locationNameToBeerNameToBeerIdMap.get("Fremont Brewing").get("Wandering Wheat");
+			this.commandGateway.sendAndWait(new UpdateBeerProfessionalRatingCommand(id, RATE_BEER, "http://www.ratebeer.com/beer/fremont-wandering-wheat/139240/", new BigDecimal(49), new BigDecimal(100)));
+
+			id = this.locationNameToBeerNameToBeerIdMap.get("Fremont Brewing").get("77 Fremont Select");
+			this.commandGateway.sendAndWait(new UpdateBeerProfessionalRatingCommand(id, BEER_ADVOCATE, "http://www.beeradvocate.com/beer/profile/20680/77858/", new BigDecimal(83), new BigDecimal(100)));
+
+			id = this.locationNameToBeerNameToBeerIdMap.get("Fremont Brewing").get("The Sister Imperial IPA");
+			this.commandGateway.sendAndWait(new UpdateBeerProfessionalRatingCommand(id, RATE_BEER, "http://www.ratebeer.com/beer/fremont-the-sister/153446/", new BigDecimal(96), new BigDecimal(100)));
+			this.commandGateway.sendAndWait(new UpdateBeerProfessionalRatingCommand(id, BEER_ADVOCATE, "http://www.beeradvocate.com/beer/profile/20680/72584/", new BigDecimal(88), new BigDecimal(100)));
+
+		}
+
 
 		private static Collection<NewLocationCommands> customNewLocationCommands() {
 //			final NewLocationCommands cloudburst = new NewLocationCommands(new AddLocationCommand("Cloudburst Brewing"),

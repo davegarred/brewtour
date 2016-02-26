@@ -9,6 +9,7 @@ import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerProfessionalRatingCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerSrmCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerStyleCommand;
 import org.garred.brewtour.domain.BeerId;
@@ -57,6 +58,11 @@ public class BeerCommandHandler extends AbstractCommandHandler<BeerId,Beer> {
 	@CommandHandler
 	public void handle(UpdateBeerImagesCommand command) {
 		require(command).updateImages(command);
+	}
+
+	@CommandHandler
+	public void handle(UpdateBeerProfessionalRatingCommand command) {
+		require(command).rate(command, this.service.now());
 	}
 
 	// user fired commands

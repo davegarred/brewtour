@@ -57,20 +57,9 @@
 				<th ng-if="hasIbu">IBU</th>
 				<th></th>
 			</tr>
-			<tr ng-repeat="(beerId,beer) in beers">
+			<tr ng-repeat="(beerId,beer) in beers | orderObjectBy : 'beerName'">
 				<td>
-					<span ng-if="user.login">
-						<span class="glyphicon glyphicon-star"
-							aria-hidden="true" style="float: right; color: gold;"
-							ng-if="isFavoriteBeer(beerId)" 
-							ng-click="removeFavoriteBeer(beerId)"
-							data-placement="top" title="Remove this from your favorite beer list"></span>
-						<span class="glyphicon glyphicon-star-empty" aria-hidden="true"
-							style="float: right" 
-							ng-if="!isFavoriteBeer(beerId)"
-							ng-click="addFavoriteBeer(beerId)"
-							data-placement="top" title="Add this as a favorite beer"></span>
-					</span>
+					<beer-medal-img></beer-medal-img>
 				</td>
 				<td>
 					<a href="#" ng-if="beer.description" uib-popover-template="'resources/html/beer_details.html'" popover-title="{{beer.beerName}}"
@@ -80,11 +69,20 @@
 				</td>
 				<td ng-if="hasAbv"><span ng-if="beer.abv">{{beer.abv}}%</span></td>
 				<td ng-if="hasIbu"><span ng-if="beer.ibu">{{beer.ibu}}</span></td>
-				<td>
-					<beer-medal-img></beer-medal-img>
+				<td ng-if="user.login">
+						<span class="glyphicon glyphicon-star"
+							aria-hidden="true" style="float: right; color: gold;"
+							ng-if="isFavoriteBeer(beer.id)" 
+							ng-click="removeFavoriteBeer(beer.id)"
+							data-placement="top" title="Remove this from your favorite beer list"></span>
+						<span class="glyphicon glyphicon-star-empty" aria-hidden="true"
+							style="float: right" 
+							ng-if="!isFavoriteBeer(beer.id)"
+							ng-click="addFavoriteBeer(beer.id)"
+							data-placement="top" title="Add this as a favorite beer"></span>
 				</td>
 				<td>
-					<span ng-if="isUserAndHasNotReviewedBeer(beerId)">
+					<span ng-if="isUserAndHasNotReviewedBeer(beer.id)">
 						<a data-toggle="modal" data-target="#beerReviewModal" href="#" ng-click="reviewBeer(beer)">Rate!</a>
 					</span>
 				</td>

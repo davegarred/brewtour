@@ -7,6 +7,7 @@ import org.garred.brewtour.application.event.beer.BeerAddedEvent;
 import org.garred.brewtour.application.event.beer.BeerDescriptionUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerIbuUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerImagesUpdatedEvent;
+import org.garred.brewtour.application.event.beer.BeerProfessionalRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerSrmUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerStyleUpdatedEvent;
@@ -58,6 +59,11 @@ public class BeerViewEventHandler extends AbstractViewEventHandler<BeerId, BeerV
     @EventHandler
     public void on(AbstractBeerReviewAddedEvent event) {
     	update(event.beerId, b -> b.addReview(new Review(event.userScreenName, event.medal.name(), event.review)));
+    }
+
+    @EventHandler
+    public void on(BeerProfessionalRatingUpdatedEvent event) {
+    	update(event.beerId, b -> b.addReview(new ProfessionalReview(event.ratingGroup, event.rating, event.link)));
     }
 
 }

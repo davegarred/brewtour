@@ -1,5 +1,6 @@
 package org.garred.brewtour.application;
 
+import static org.garred.brewtour.domain.ProfessionalRatingGroup.RATE_BEER;
 import static org.garred.brewtour.domain.ReviewMedal.SILVER;
 
 import java.math.BigDecimal;
@@ -13,12 +14,14 @@ import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.application.command.beer.UpdateBeerProfessionalRatingCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerSrmCommand;
 import org.garred.brewtour.application.command.beer.UpdateBeerStyleCommand;
 import org.garred.brewtour.application.event.beer.BeerAbvUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerAddedEvent;
 import org.garred.brewtour.application.event.beer.BeerDescriptionUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerIbuUpdatedEvent;
+import org.garred.brewtour.application.event.beer.BeerProfessionalRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByAnonymousEvent;
 import org.garred.brewtour.application.event.beer.BeerReviewAddedByUserEvent;
@@ -38,6 +41,7 @@ import org.junit.Test;
 
 public class BeerTest {
 
+	private static final String BEER_RATING_LINK = "http://www.ratebeer.com/beer/fremont-universale-pale-ale/104575/";
 	private static final BeerId BEER_ID = new BeerId("BEER10101");
 	protected static final String BEER_DESCRIPTION = "a very tasty beer";
 	protected static final String BREWERY_NAME = "Stone Brewing";
@@ -128,6 +132,16 @@ public class BeerTest {
 		this.fixture.givenCommands(ADD_BEER,UPDATE_BEER_IMAGES_COMMAND)
 		.when(UPDATE_BEER_IMAGES_COMMAND)
 		.expectEvents();
+	}
+
+	@Test
+	public void testUpdateBeerProfessionalRating() {
+		this.fixture.givenCommands(ADD_BEER)
+		.when(new UpdateBeerProfessionalRatingCommand(BEER_ID, RATE_BEER, BEER_RATING_LINK, new BigDecimal("89"), new BigDecimal("100")))
+		.expectEvents(
+				new BeerProfessionalRatingUpdatedEvent(BEER_ID, RATE_BEER, BEER_RATING_LINK, new BigDecimal("89"), new BigDecimal("100"), DATE_TIME),
+				new BeerRatingUpdatedEvent(BEER_ID, SILVER)
+				);
 	}
 
 

@@ -6,6 +6,12 @@
 		<strong>IBU:</strong><i>{{beer.ibu}}</i>
 	</div>
 	
+	<span ng-repeat="review in beer.professionalReviews">
+		<a href="{{review.link}}">
+			<div target="_blank" ng-if="review.ratingGroup == 'RATE_BEER'">Rate Beer score: {{review.rating}}</div>
+			<div target="_blank" ng-if="review.ratingGroup == 'BEER_ADVOCATE'">Beer Advocate score: {{review.rating}}</div>
+		</a>
+	</span>
 	<p>{{beer.description}}</p>
 	<table class="table">
 		<tr ng-repeat="review in beer.userReviews">

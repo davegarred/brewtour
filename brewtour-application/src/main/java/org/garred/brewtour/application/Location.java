@@ -1,5 +1,7 @@
 package org.garred.brewtour.application;
 
+import static java.util.Collections.emptyList;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -167,23 +169,24 @@ public class Location extends AbstractAnnotatedAggregateRoot<LocationId> {
 		} else {
 			apply(LocationStarRatingAddedByAnonymousEvent.fromCommand(locationRating, user.identifier(), user.screenName()));
 		}
-		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(this.userMedalRatings.values()));
-		if(!Objects.equals(updatedMedal, this.medal)) {
-			apply(new LocationRatingUpdatedEvent(this.id, updatedMedal));
-		}
+		updateRatings();
 	}
+
 	public void addLocationReview(AddLocationReviewCommand locationReview, UserAuth user, LocalDateTime time) {
 		if(user.identified()) {
 			apply(LocationReviewAddedByUserEvent.fromCommand(locationReview, user.identifier(), user.screenName(), time));
 		} else {
 			apply(LocationReviewAddedByAnonymousEvent.fromCommand(locationReview, user.identifier(), time));
 		}
-		final ReviewMedal updatedMedal = ReviewMedal.average(new ArrayList<>(this.userMedalRatings.values()));
+		updateRatings();
+	}
+
+	private void updateRatings() {
+		final ReviewMedal updatedMedal = ReviewMedal.average(this.userMedalRatings.values(), emptyList());
 		if(!Objects.equals(updatedMedal, this.medal)) {
 			apply(new LocationRatingUpdatedEvent(this.id, updatedMedal));
 		}
 	}
-
 
 
     @EventHandler
