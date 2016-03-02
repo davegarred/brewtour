@@ -1,6 +1,6 @@
 package org.garred.brewtour.config;
 
-import org.garred.brewtour.application.command.beer.AddBeerCommand;
+import org.garred.brewtour.domain.command.beer.AddBeerCommand;
 
 public class CustomAddBeerCommand {
 	public String locationName;

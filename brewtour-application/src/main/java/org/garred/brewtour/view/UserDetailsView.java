@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.Entity;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.ReviewMedal;
 import org.garred.brewtour.domain.UserId;
+import org.garred.brewtour.domain.event.user.UserAddedEvent;
 
 public class UserDetailsView extends AbstractView implements Entity<UserId> {
 

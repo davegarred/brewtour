@@ -3,6 +3,8 @@ package org.garred.brewtour.domain;
 import static org.garred.brewtour.domain.Hash.hashFromPassword;
 import static org.junit.Assert.assertEquals;
 
+import org.garred.brewtour.domain.Hash;
+import org.garred.brewtour.domain.UserId;
 import org.junit.Test;
 
 public class HashTest {

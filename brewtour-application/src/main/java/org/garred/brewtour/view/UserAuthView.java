@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.garred.brewtour.application.event.user.UserAddedEvent;
 import org.garred.brewtour.domain.Entity;
 import org.garred.brewtour.domain.Hash;
 import org.garred.brewtour.domain.UserId;
+import org.garred.brewtour.domain.event.user.UserAddedEvent;
 import org.garred.brewtour.security.UserAuth;
 
 public class UserAuthView extends AbstractView implements Entity<UserId>,UserAuth {

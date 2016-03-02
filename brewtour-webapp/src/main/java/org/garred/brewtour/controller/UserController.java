@@ -1,5 +1,7 @@
 package org.garred.brewtour.controller;
 
+import static java.lang.Class.forName;
+import static java.lang.String.format;
 import static org.garred.brewtour.filter.AuthenticationFilter.USER_ATTR;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -10,8 +12,8 @@ import java.io.Reader;
 import javax.servlet.http.HttpServletRequest;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.garred.brewtour.application.command.user.AbstractUserFiredCommand;
 import org.garred.brewtour.controller.api.UserLogin;
+import org.garred.brewtour.domain.command.user.AbstractUserFiredCommand;
 import org.garred.brewtour.security.LoginNotFoundException;
 import org.garred.brewtour.security.UserHolder;
 import org.garred.brewtour.service.UserDetailsService;
@@ -67,7 +69,7 @@ public class UserController extends AbstractRestController {
 	@ResponseBody
 	public UserDetailsView command(@PathVariable("commandName") String commandName, Reader reader) throws ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
 		@SuppressWarnings("unchecked")
-		final Class<? extends AbstractUserFiredCommand> commandType = (Class<? extends AbstractUserFiredCommand>) Class.forName(String.format("org.garred.brewtour.application.command.user.%sCommand",commandName));
+		final Class<? extends AbstractUserFiredCommand> commandType = (Class<? extends AbstractUserFiredCommand>) forName(format("org.garred.brewtour.domain.command.user.%sCommand",commandName));
 		final AbstractUserFiredCommand command = this.objectMapper.readValue(reader, commandType);
 		this.commandGateway.sendAndWait(command);
 		return this.userService.getCurrentUserDetails();

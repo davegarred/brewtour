@@ -25,13 +25,13 @@
 	<!-- Command Handlers -->
 	<axon:annotation-config />
 	
-	<bean class="org.garred.brewtour.application.LocationCommandHandler"
+	<bean class="org.garred.brewtour.domain.aggregates.LocationCommandHandler"
 		c:repository-ref="locationEventRepo"
 		c:service-ref="locationCommandHandlerService" />
-	<bean class="org.garred.brewtour.application.BeerCommandHandler"
+	<bean class="org.garred.brewtour.domain.aggregates.BeerCommandHandler"
 		c:repository-ref="beerEventRepo"
 		c:service-ref="beerCommandHandlerService" />
-	<bean class="org.garred.brewtour.application.UserCommandHandler"
+	<bean class="org.garred.brewtour.domain.aggregates.UserCommandHandler"
 		c:repository-ref="userEventRepo"
 		c:userCommandHandlerService-ref="userCommandHandlerService"/>
 
@@ -58,13 +58,13 @@
 
 	<axon:event-bus id="eventBus"/>
 	<axon:event-sourcing-repository id="locationEventRepo"
-		aggregate-type="org.garred.brewtour.application.Location" 
+		aggregate-type="org.garred.brewtour.domain.aggregates.Location" 
 		event-bus="eventBus" event-store="eventStore"/>
 	<axon:event-sourcing-repository id="beerEventRepo"
-		aggregate-type="org.garred.brewtour.application.Beer" 
+		aggregate-type="org.garred.brewtour.domain.aggregates.Beer" 
 		event-bus="eventBus" event-store="eventStore"/>
 	<axon:event-sourcing-repository id="userEventRepo"
-		aggregate-type="org.garred.brewtour.application.User" 
+		aggregate-type="org.garred.brewtour.domain.aggregates.User" 
 		event-bus="eventBus" event-store="eventStore"/>
 
 

@@ -3,14 +3,14 @@ package org.garred.brewtour.api;
 import static org.garred.brewtour.AbstractSerializationTest.TestType.COMMAND;
 
 import org.garred.brewtour.AbstractSerializationTest;
-import org.garred.brewtour.application.command.user.AddFavoriteBeerCommand;
-import org.garred.brewtour.application.command.user.AddFavoriteLocationCommand;
-import org.garred.brewtour.application.command.user.AddRoleToUserCommand;
-import org.garred.brewtour.application.command.user.AddUserCommand;
-import org.garred.brewtour.application.command.user.RemoveFavoriteBeerCommand;
-import org.garred.brewtour.application.command.user.RemoveFavoriteLocationCommand;
-import org.garred.brewtour.application.command.user.RemoveRoleFromUserCommand;
 import org.garred.brewtour.domain.UserId;
+import org.garred.brewtour.domain.command.user.AddFavoriteBeerCommand;
+import org.garred.brewtour.domain.command.user.AddFavoriteLocationCommand;
+import org.garred.brewtour.domain.command.user.AddRoleToUserCommand;
+import org.garred.brewtour.domain.command.user.AddUserCommand;
+import org.garred.brewtour.domain.command.user.RemoveFavoriteBeerCommand;
+import org.garred.brewtour.domain.command.user.RemoveFavoriteLocationCommand;
+import org.garred.brewtour.domain.command.user.RemoveRoleFromUserCommand;
 import org.junit.Test;
 
 public class UserCommandSerializationTest extends AbstractSerializationTest {
@@ -18,7 +18,7 @@ public class UserCommandSerializationTest extends AbstractSerializationTest {
 	private static final UserId USER_ID_2 = new UserId("a user id");
 
 	public UserCommandSerializationTest() {
-		super("command/user", "org.garred.brewtour.application.command.user", COMMAND);
+		super("command/user", "org.garred.brewtour.domain.command.user", COMMAND);
 	}
 
 	@Test

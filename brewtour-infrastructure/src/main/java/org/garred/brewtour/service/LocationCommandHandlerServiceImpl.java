@@ -2,7 +2,7 @@ package org.garred.brewtour.service;
 
 import java.time.LocalDateTime;
 
-import org.garred.brewtour.application.IdentifierFactory;
+import org.garred.brewtour.domain.IdentifierFactory;
 import org.garred.brewtour.domain.LocationId;
 
 public class LocationCommandHandlerServiceImpl implements LocationCommandHandlerService {

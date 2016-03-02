@@ -1,18 +1,18 @@
 package org.garred.brewtour.controller;
 
 import static java.lang.String.format;
-import static org.garred.brewtour.application.command.GenericAddAggregateCallback.forCommand;
+import static org.garred.brewtour.domain.command.GenericAddAggregateCallback.forCommand;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.io.IOException;
 import java.io.Reader;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.garred.brewtour.application.command.GenericAddAggregateCallback;
-import org.garred.brewtour.application.command.beer.AbstractBeerCommand;
-import org.garred.brewtour.application.command.beer.AddBeerCommand;
-import org.garred.brewtour.application.command.location.BeerAvailableCommand;
 import org.garred.brewtour.domain.BeerId;
+import org.garred.brewtour.domain.command.GenericAddAggregateCallback;
+import org.garred.brewtour.domain.command.beer.AbstractBeerCommand;
+import org.garred.brewtour.domain.command.beer.AddBeerCommand;
+import org.garred.brewtour.domain.command.location.BeerAvailableCommand;
 import org.garred.brewtour.repository.BeerViewRepository;
 import org.garred.brewtour.service.UserDetailsService;
 import org.garred.brewtour.view.BeerUserCombinedView;
@@ -53,7 +53,7 @@ public class BeerController extends AbstractRestController {
 	@ResponseBody
 	public BeerUserCombinedView modifyBeer(@PathVariable("commandName") String commandName, Reader reader) throws ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
 		@SuppressWarnings("unchecked")
-		final Class<AbstractBeerCommand> commandType = (Class<AbstractBeerCommand>) Class.forName(format("org.garred.brewtour.application.command.beer.%sCommand",commandName));
+		final Class<AbstractBeerCommand> commandType = (Class<AbstractBeerCommand>) Class.forName(format("org.garred.brewtour.domain.command.beer.%sCommand",commandName));
 		final AbstractBeerCommand command = this.objectMapper.readValue(reader, commandType);
 		this.commandGateway.sendAndWait(command);
 		return new BeerUserCombinedView(this.beerRepo.get(command.beerId), this.userService.getCurrentUserDetails());

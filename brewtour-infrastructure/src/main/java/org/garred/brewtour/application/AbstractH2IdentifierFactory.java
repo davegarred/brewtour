@@ -3,6 +3,7 @@ package org.garred.brewtour.application;
 import javax.sql.DataSource;
 
 import org.garred.brewtour.domain.AbstractIdentifier;
+import org.garred.brewtour.domain.IdentifierFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 

@@ -7,23 +7,23 @@ import static org.garred.brewtour.domain.ReviewMedal.GOLD;
 import java.math.BigDecimal;
 
 import org.garred.brewtour.AbstractSerializationTest;
-import org.garred.brewtour.application.command.beer.AddBeerCommand;
-import org.garred.brewtour.application.command.beer.AddBeerRatingCommand;
-import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerImagesCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerProfessionalRatingCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerSrmCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerStyleCommand;
 import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.command.beer.AddBeerCommand;
+import org.garred.brewtour.domain.command.beer.AddBeerRatingCommand;
+import org.garred.brewtour.domain.command.beer.AddBeerReviewCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerAbvCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerDescriptionCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerIbuCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerImagesCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerProfessionalRatingCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerSrmCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerStyleCommand;
 import org.junit.Test;
 
 public class BeerCommandSerializationTest extends AbstractSerializationTest {
 
 	public BeerCommandSerializationTest() {
-		super("command/beer", "org.garred.brewtour.application.command.beer", COMMAND);
+		super("command/beer", "org.garred.brewtour.domain.command.beer", COMMAND);
 	}
 
 	@Test

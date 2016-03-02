@@ -5,10 +5,10 @@ import static org.garred.brewtour.security.SystemUserAuth.SYSTEM;
 
 import org.axonframework.commandhandling.CommandMessage;
 import org.axonframework.commandhandling.GenericCommandMessage;
-import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
-import org.garred.brewtour.application.command.user.AddUserCommand;
 import org.garred.brewtour.domain.LocationId;
 import org.garred.brewtour.domain.UserId;
+import org.garred.brewtour.domain.command.location.AddLocationReviewCommand;
+import org.garred.brewtour.domain.command.user.AddUserCommand;
 import org.garred.brewtour.security.GuestUserAuth;
 import org.garred.brewtour.security.UserAuthorizationException;
 import org.garred.brewtour.security.UserHolder;

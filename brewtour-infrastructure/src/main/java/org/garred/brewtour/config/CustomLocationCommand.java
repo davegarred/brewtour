@@ -1,6 +1,6 @@
 package org.garred.brewtour.config;
 
-import org.garred.brewtour.application.command.location.AbstractLocationCommand;
+import org.garred.brewtour.domain.command.location.AbstractLocationCommand;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

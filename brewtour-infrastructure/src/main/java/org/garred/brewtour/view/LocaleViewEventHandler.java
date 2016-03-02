@@ -6,13 +6,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.axonframework.eventhandling.annotation.EventHandler;
-import org.garred.brewtour.application.event.location.LocationAddedEvent;
-import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationPositionUpdatedEvent;
 import org.garred.brewtour.domain.GoogleMapsParameters;
-import org.garred.brewtour.domain.GoogleMapsParameters.GoogleMapsPosition;
 import org.garred.brewtour.domain.LocaleId;
 import org.garred.brewtour.domain.LocalePoint;
+import org.garred.brewtour.domain.GoogleMapsParameters.GoogleMapsPosition;
+import org.garred.brewtour.domain.event.location.LocationAddedEvent;
+import org.garred.brewtour.domain.event.location.LocationImagesUpdatedEvent;
+import org.garred.brewtour.domain.event.location.LocationPositionUpdatedEvent;
 import org.garred.brewtour.repository.LocaleViewRepository;
 
 public class LocaleViewEventHandler extends AbstractViewEventHandler<LocaleId, LocaleView> {

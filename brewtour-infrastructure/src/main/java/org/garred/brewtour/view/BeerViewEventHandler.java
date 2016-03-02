@@ -1,17 +1,17 @@
 package org.garred.brewtour.view;
 
 import org.axonframework.eventhandling.annotation.EventHandler;
-import org.garred.brewtour.application.event.beer.AbstractBeerReviewAddedEvent;
-import org.garred.brewtour.application.event.beer.BeerAbvUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerAddedEvent;
-import org.garred.brewtour.application.event.beer.BeerDescriptionUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerIbuUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerImagesUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerProfessionalRatingUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerRatingUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerSrmUpdatedEvent;
-import org.garred.brewtour.application.event.beer.BeerStyleUpdatedEvent;
 import org.garred.brewtour.domain.BeerId;
+import org.garred.brewtour.domain.event.beer.AbstractBeerReviewAddedEvent;
+import org.garred.brewtour.domain.event.beer.BeerAbvUpdatedEvent;
+import org.garred.brewtour.domain.event.beer.BeerAddedEvent;
+import org.garred.brewtour.domain.event.beer.BeerDescriptionUpdatedEvent;
+import org.garred.brewtour.domain.event.beer.BeerIbuUpdatedEvent;
+import org.garred.brewtour.domain.event.beer.BeerImagesUpdatedEvent;
+import org.garred.brewtour.domain.event.beer.BeerProfessionalRatingUpdatedEvent;
+import org.garred.brewtour.domain.event.beer.BeerRatingUpdatedEvent;
+import org.garred.brewtour.domain.event.beer.BeerSrmUpdatedEvent;
+import org.garred.brewtour.domain.event.beer.BeerStyleUpdatedEvent;
 import org.garred.brewtour.repository.BeerViewRepository;
 
 public class BeerViewEventHandler extends AbstractViewEventHandler<BeerId, BeerView> {

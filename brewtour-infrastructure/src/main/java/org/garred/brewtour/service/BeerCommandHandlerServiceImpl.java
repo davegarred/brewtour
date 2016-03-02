@@ -2,8 +2,8 @@ package org.garred.brewtour.service;
 
 import java.time.LocalDateTime;
 
-import org.garred.brewtour.application.IdentifierFactory;
 import org.garred.brewtour.domain.BeerId;
+import org.garred.brewtour.domain.IdentifierFactory;
 
 public class BeerCommandHandlerServiceImpl implements BeerCommandHandlerService {
 

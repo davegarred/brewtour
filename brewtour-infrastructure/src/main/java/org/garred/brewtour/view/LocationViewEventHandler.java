@@ -1,20 +1,20 @@
 package org.garred.brewtour.view;
 
 import org.axonframework.eventhandling.annotation.EventHandler;
-import org.garred.brewtour.application.event.location.BeerAvailableEvent;
-import org.garred.brewtour.application.event.location.BeerUnavailableEvent;
-import org.garred.brewtour.application.event.location.LocationAddedEvent;
-import org.garred.brewtour.application.event.location.LocationAddressUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationBreweryAssociationUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationDescriptionUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationHoursOfOperationUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationImagesUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationPhoneUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationPositionUpdatedEvent;
-import org.garred.brewtour.application.event.location.LocationWebsiteUpdatedEvent;
-import org.garred.brewtour.application.event.location.user_fired.AbstractLocationReviewAddedEvent;
-import org.garred.brewtour.application.event.location.user_fired.LocationRatingUpdatedEvent;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.event.location.BeerAvailableEvent;
+import org.garred.brewtour.domain.event.location.BeerUnavailableEvent;
+import org.garred.brewtour.domain.event.location.LocationAddedEvent;
+import org.garred.brewtour.domain.event.location.LocationAddressUpdatedEvent;
+import org.garred.brewtour.domain.event.location.LocationBreweryAssociationUpdatedEvent;
+import org.garred.brewtour.domain.event.location.LocationDescriptionUpdatedEvent;
+import org.garred.brewtour.domain.event.location.LocationHoursOfOperationUpdatedEvent;
+import org.garred.brewtour.domain.event.location.LocationImagesUpdatedEvent;
+import org.garred.brewtour.domain.event.location.LocationPhoneUpdatedEvent;
+import org.garred.brewtour.domain.event.location.LocationPositionUpdatedEvent;
+import org.garred.brewtour.domain.event.location.LocationWebsiteUpdatedEvent;
+import org.garred.brewtour.domain.event.location.user_fired.AbstractLocationReviewAddedEvent;
+import org.garred.brewtour.domain.event.location.user_fired.LocationRatingUpdatedEvent;
 import org.garred.brewtour.repository.LocationViewRepository;
 
 public class LocationViewEventHandler extends AbstractViewEventHandler<LocationId, LocationView> {

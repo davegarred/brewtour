@@ -4,8 +4,8 @@ import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.garred.brewtour.application.command.user.AddRoleToUserCommand;
-import org.garred.brewtour.application.command.user.AddUserCommand;
+import org.garred.brewtour.domain.command.user.AddRoleToUserCommand;
+import org.garred.brewtour.domain.command.user.AddUserCommand;
 import org.garred.brewtour.repository.AdminViewRepository;
 import org.garred.brewtour.security.UserHolder;
 import org.garred.brewtour.security.UserNotLoggedInException;

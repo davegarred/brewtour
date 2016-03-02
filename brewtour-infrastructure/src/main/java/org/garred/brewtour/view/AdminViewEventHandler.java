@@ -3,8 +3,8 @@ package org.garred.brewtour.view;
 import static org.garred.brewtour.domain.LocaleId.SEATTLE;
 
 import org.axonframework.eventhandling.annotation.EventHandler;
-import org.garred.brewtour.application.event.location.user_fired.LocationCommentAddedEvent;
 import org.garred.brewtour.domain.LocaleId;
+import org.garred.brewtour.domain.event.location.user_fired.LocationCommentAddedEvent;
 import org.garred.brewtour.repository.AdminViewRepository;
 import org.garred.brewtour.view.AdminView.CommentView;
 

@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 import javax.validation.Validator;
 
-import org.garred.brewtour.application.command.beer.AddBeerCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerAbvCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerDescriptionCommand;
-import org.garred.brewtour.application.command.beer.UpdateBeerIbuCommand;
 import org.garred.brewtour.domain.BeerId;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.command.beer.AddBeerCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerAbvCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerDescriptionCommand;
+import org.garred.brewtour.domain.command.beer.UpdateBeerIbuCommand;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

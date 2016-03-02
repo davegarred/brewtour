@@ -1,20 +1,22 @@
 package org.garred.brewtour.controller;
 
-import static org.garred.brewtour.application.command.GenericAddAggregateCallback.forCommand;
+import static java.lang.Class.forName;
+import static java.lang.String.format;
 import static org.garred.brewtour.domain.LocaleId.SEATTLE;
+import static org.garred.brewtour.domain.command.GenericAddAggregateCallback.forCommand;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.io.IOException;
 import java.io.Reader;
 
-import org.garred.brewtour.application.command.GenericAddAggregateCallback;
-import org.garred.brewtour.application.command.beer.AddBeerReviewCommand;
-import org.garred.brewtour.application.command.location.AbstractLocationCommand;
-import org.garred.brewtour.application.command.location.AddLocationCommand;
-import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
-import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
 import org.garred.brewtour.domain.LocationId;
+import org.garred.brewtour.domain.command.GenericAddAggregateCallback;
+import org.garred.brewtour.domain.command.beer.AddBeerReviewCommand;
+import org.garred.brewtour.domain.command.location.AbstractLocationCommand;
+import org.garred.brewtour.domain.command.location.AddLocationCommand;
+import org.garred.brewtour.domain.command.location.AddLocationCommentCommand;
+import org.garred.brewtour.domain.command.location.AddLocationReviewCommand;
 import org.garred.brewtour.service.LocationQueryService;
 import org.garred.brewtour.service.UserDetailsService;
 import org.garred.brewtour.view.LocaleView;
@@ -96,7 +98,7 @@ public class LocationController extends AbstractRestController {
 	@ResponseBody
 	public LocationView modifyLocation(@PathVariable("commandName") String commandName, Reader reader) throws ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
 		@SuppressWarnings("unchecked")
-		final Class<? extends AbstractLocationCommand> commandType = (Class<? extends AbstractLocationCommand>) Class.forName(String.format("org.garred.brewtour.application.command.location.%sCommand",commandName));
+		final Class<? extends AbstractLocationCommand> commandType = (Class<? extends AbstractLocationCommand>) Class.forName(String.format("org.garred.brewtour.domain.command.location.%sCommand",commandName));
 		final AbstractLocationCommand command = this.objectMapper.readValue(reader, commandType);
 		this.locationService.fireCommand(command);
 		return this.locationService.getLocation(command.locationId);
@@ -105,7 +107,7 @@ public class LocationController extends AbstractRestController {
 	@ResponseBody
 	public LocationView command(@PathVariable("commandName") String commandName, Reader reader) throws ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
 		@SuppressWarnings("unchecked")
-		final Class<? extends AbstractLocationCommand> commandType = (Class<? extends AbstractLocationCommand>) Class.forName(String.format("org.garred.brewtour.application.command.location.%sCommand",commandName));
+		final Class<? extends AbstractLocationCommand> commandType = (Class<? extends AbstractLocationCommand>) forName(format("org.garred.brewtour.domain.command.location.%sCommand",commandName));
 		final AbstractLocationCommand command = this.objectMapper.readValue(reader, commandType);
 		this.locationService.fireCommand(command);
 		return this.locationService.getLocation(command.locationId);

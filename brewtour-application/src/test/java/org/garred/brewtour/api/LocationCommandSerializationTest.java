@@ -6,27 +6,27 @@ import static org.garred.brewtour.domain.ReviewMedal.SILVER;
 import java.math.BigDecimal;
 
 import org.garred.brewtour.AbstractSerializationTest;
-import org.garred.brewtour.application.command.location.AddLocationCommand;
-import org.garred.brewtour.application.command.location.AddLocationCommentCommand;
-import org.garred.brewtour.application.command.location.AddLocationRatingCommand;
-import org.garred.brewtour.application.command.location.AddLocationReviewCommand;
-import org.garred.brewtour.application.command.location.BeerAvailableCommand;
-import org.garred.brewtour.application.command.location.BeerUnavailableCommand;
-import org.garred.brewtour.application.command.location.UpdateLocationAddressCommand;
-import org.garred.brewtour.application.command.location.UpdateLocationBreweryAssociationCommand;
-import org.garred.brewtour.application.command.location.UpdateLocationDescriptionCommand;
-import org.garred.brewtour.application.command.location.UpdateLocationHoursOfOperationCommand;
-import org.garred.brewtour.application.command.location.UpdateLocationImagesCommand;
-import org.garred.brewtour.application.command.location.UpdateLocationPhoneCommand;
-import org.garred.brewtour.application.command.location.UpdateLocationPositionCommand;
-import org.garred.brewtour.application.command.location.UpdateLocationWebsiteCommand;
 import org.garred.brewtour.domain.AvailableImages;
+import org.garred.brewtour.domain.command.location.AddLocationCommand;
+import org.garred.brewtour.domain.command.location.AddLocationCommentCommand;
+import org.garred.brewtour.domain.command.location.AddLocationRatingCommand;
+import org.garred.brewtour.domain.command.location.AddLocationReviewCommand;
+import org.garred.brewtour.domain.command.location.BeerAvailableCommand;
+import org.garred.brewtour.domain.command.location.BeerUnavailableCommand;
+import org.garred.brewtour.domain.command.location.UpdateLocationAddressCommand;
+import org.garred.brewtour.domain.command.location.UpdateLocationBreweryAssociationCommand;
+import org.garred.brewtour.domain.command.location.UpdateLocationDescriptionCommand;
+import org.garred.brewtour.domain.command.location.UpdateLocationHoursOfOperationCommand;
+import org.garred.brewtour.domain.command.location.UpdateLocationImagesCommand;
+import org.garred.brewtour.domain.command.location.UpdateLocationPhoneCommand;
+import org.garred.brewtour.domain.command.location.UpdateLocationPositionCommand;
+import org.garred.brewtour.domain.command.location.UpdateLocationWebsiteCommand;
 import org.junit.Test;
 
 public class LocationCommandSerializationTest extends AbstractSerializationTest {
 
 	public LocationCommandSerializationTest() {
-		super("command/location", "org.garred.brewtour.application.command.location", COMMAND);
+		super("command/location", "org.garred.brewtour.domain.command.location", COMMAND);
 	}
 
 	@Test
